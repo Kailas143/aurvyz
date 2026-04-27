@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, PhoneCall, Activity, Bot, LineChart } from "lucide-react";
+import { ArrowRight, PhoneCall, Activity, Bot, LineChart, Zap } from "lucide-react";
 
 const HERO_IMG =
   "https://images.unsplash.com/photo-1770321428577-4446e5cb7bab?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTV8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMDNkJTIwZ2VvbWV0cmljJTIwc2hhcGVzJTIwYmx1ZXxlbnwwfHx8fDE3NzczMTQ2NzR8MA&ixlib=rb-4.1.0&q=85";
@@ -55,6 +55,21 @@ export default function Hero() {
             automation systems that help businesses grow faster and operate
             smarter.
           </p>
+
+          <div
+            data-testid="hero-speed-badge"
+            className="mt-6 inline-flex items-center gap-3 pl-2 pr-4 py-2 rounded-full bg-white border border-[#2EC4B6]/40 shadow-sm"
+          >
+            <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-[#2EC4B6]/15 text-[#0B3C5D]">
+              <Zap className="w-3.5 h-3.5" strokeWidth={2.2} />
+            </span>
+            <span className="text-sm text-[#1F2937]">
+              <span className="font-semibold text-[#0B3C5D]">
+                Launch your first working solution in just 7 days
+              </span>
+              <span className="text-[#4B5563]"> — depending on scope.</span>
+            </span>
+          </div>
 
           <div className="mt-9 flex flex-col sm:flex-row gap-3">
             <Button

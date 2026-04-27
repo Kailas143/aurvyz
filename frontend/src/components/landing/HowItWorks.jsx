@@ -1,25 +1,29 @@
-import { Search, Lightbulb, Hammer, Trophy } from "lucide-react";
+import { Search, Lightbulb, Hammer, Trophy, Zap } from "lucide-react";
 
 const steps = [
   {
     icon: Search,
     title: "Analyze your business",
     desc: "We audit your current stack, workflows and bottlenecks — grounded in your actual data, not generic templates.",
+    when: "Day 1",
   },
   {
     icon: Lightbulb,
     title: "Identify opportunities",
     desc: "We isolate the 20% of workflows driving 80% of the leverage — and design the automation + product layer around them.",
+    when: "Day 2",
   },
   {
     icon: Hammer,
     title: "Build the solution",
     desc: "Our product + engineering team ships end-to-end: architecture, UX, AI integration, QA and deployment.",
+    when: "Day 3–6",
   },
   {
     icon: Trophy,
     title: "Deliver measurable results",
     desc: "You track real outcomes on a shared dashboard — hours saved, revenue lifted, errors reduced. No vague deliverables.",
+    when: "Day 7",
   },
 ];
 
@@ -39,12 +43,30 @@ export default function HowItWorks() {
             data-testid="how-headline"
             className="font-display mt-4 text-3xl sm:text-5xl font-bold text-[#0B3C5D] leading-[1.08] tracking-tight"
           >
-            A simple, outcome-driven process.
+            From idea to execution in
+            <span className="nx-gradient-text"> 7 days</span>.
           </h2>
           <p className="mt-5 text-base sm:text-lg text-[#4B5563] leading-relaxed">
-            Four steps from first call to compounding results. No mystery. No
-            scope creep.
+            Four steps from first call to compounding results. Rapid MVP
+            delivery — no mystery, no scope creep, no vague timelines.
           </p>
+
+          <div
+            data-testid="how-speed-banner"
+            className="mt-7 inline-flex items-center gap-3 px-4 py-2.5 rounded-full bg-white border border-[#0B3C5D]/10 shadow-sm"
+          >
+            <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-[#0B3C5D] text-[#2EC4B6]">
+              <Zap className="w-3.5 h-3.5" strokeWidth={2.2} />
+            </span>
+            <span className="text-sm text-[#1F2937]">
+              <span className="font-semibold text-[#0B3C5D]">
+                7-day working solution
+              </span>
+              <span className="text-[#4B5563]">
+                {" "}· delivered by a senior product team · scope-dependent
+              </span>
+            </span>
+          </div>
         </div>
 
         {/* Steps with connecting line */}
@@ -87,7 +109,14 @@ export default function HowItWorks() {
                 <h3 className="font-display text-lg font-semibold text-[#0B3C5D]">
                   {s.title}
                 </h3>
-                <p className="mt-2 text-sm text-[#4B5563] leading-relaxed max-w-xs">
+                <div
+                  data-testid={`how-step-${i}-timeline`}
+                  className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#2EC4B6]/15 text-[#0B3C5D] text-[11px] font-semibold tracking-wide"
+                >
+                  <Zap className="w-3 h-3" strokeWidth={2.4} />
+                  {s.when}
+                </div>
+                <p className="mt-3 text-sm text-[#4B5563] leading-relaxed max-w-xs">
                   {s.desc}
                 </p>
               </div>

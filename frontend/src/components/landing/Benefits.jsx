@@ -1,6 +1,7 @@
-import { Clock3, TrendingUp, Cog, Zap } from "lucide-react";
+import { Clock3, TrendingUp, Cog, Zap, Rocket } from "lucide-react";
 
 const benefits = [
+  { icon: Rocket, k: "Ship in 7 Days", v: "Rapid MVP development so you see a working solution in one week — scope-dependent, never rushed on quality." },
   { icon: Clock3, k: "Save Time", v: "Reclaim 20–40 hours per week by automating repetitive, manual workflows." },
   { icon: TrendingUp, k: "Increase Revenue", v: "Higher-converting systems and products that compound pipeline quarter over quarter." },
   { icon: Cog, k: "Reduce Manual Work", v: "Your team stops copy-pasting and starts compounding — with AI agents doing the grunt work." },
