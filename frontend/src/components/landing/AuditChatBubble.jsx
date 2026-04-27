@@ -115,7 +115,14 @@ export default function AuditChatBubble({ open: controlledOpen, onOpenChange }) 
             className="flex-1 overflow-y-auto px-4 py-5 space-y-4 bg-[#F7F9FB]"
           >
             {messages.map((m, i) => (
-              <ChatBubble key={i} role={m.role} content={m.content} />
+              <ChatBubble
+                key={i}
+                role={m.role}
+                content={m.content}
+                sessionId={sessionId}
+                emailCaptured={completed}
+                onEmailCaptured={() => setCompleted(true)}
+              />
             ))}
             {sending && (
               <div className="flex items-center gap-2 text-xs text-[#4B5563]">
@@ -223,7 +230,7 @@ function renderInline(line) {
 }
 
 /** Parse and render a structured audit report as a premium card. */
-function AuditReport({ content }) {
+function AuditReport({ content, sessionId, emailCaptured, onEmailCaptured }) {
   const sections = parseReport(content);
   return (
     <div
@@ -242,8 +249,108 @@ function AuditReport({ content }) {
         {sections.map((s, i) => (
           <ReportSection key={i} section={s} />
         ))}
+        {sessionId && (
+          <EmailReportBlock
+            sessionId={sessionId}
+            captured={emailCaptured}
+            onCaptured={onEmailCaptured}
+          />
+        )}
       </div>
     </div>
+  );
+}
+
+function EmailReportBlock({ sessionId, captured, onCaptured }) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(captured);
+  const [note, setNote] = useState("");
+
+  if (done || captured) {
+    return (
+      <div
+        data-testid="email-report-success"
+        className="rounded-xl border border-[#2EC4B6]/40 bg-[#2EC4B6]/10 p-3.5 text-sm text-[#0B3C5D]"
+      >
+        <div className="font-semibold flex items-center gap-2">
+          ✓ Report sent.
+        </div>
+        <div className="text-[12px] text-[#1F2937]/80 mt-1">
+          {note || "Check your inbox in a moment. Our team will follow up within 1 business day."}
+        </div>
+      </div>
+    );
+  }
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setSubmitting(true);
+    try {
+      const { data } = await axios.post(`${API}/audit-chat/email-report`, {
+        session_id: sessionId,
+        email: email.trim(),
+        name: name.trim() || null,
+      });
+      setNote(data?.note || "");
+      setDone(true);
+      if (onCaptured) onCaptured();
+    } catch (err) {
+      const detail = err?.response?.data?.detail;
+      setNote(typeof detail === "string" ? detail : "Couldn't send — please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <form
+      onSubmit={submit}
+      data-testid="email-report-form"
+      className="rounded-xl border border-[#0B3C5D]/15 bg-white p-3.5"
+    >
+      <div className="text-[11px] tracking-[0.18em] uppercase font-semibold text-[#0B3C5D]/80 mb-2 flex items-center gap-2">
+        📥 Email me this report
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        <Input
+          data-testid="email-report-name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Your name"
+          className="h-9 text-sm border-[#0B3C5D]/15"
+        />
+        <Input
+          data-testid="email-report-email"
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@company.com"
+          className="h-9 text-sm border-[#0B3C5D]/15"
+        />
+      </div>
+      <Button
+        type="submit"
+        data-testid="email-report-submit"
+        disabled={submitting || !email.trim()}
+        className="mt-2.5 h-9 w-full rounded-full bg-[#0B3C5D] hover:bg-[#08304a] text-white text-sm"
+      >
+        {submitting ? (
+          <>
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            Sending...
+          </>
+        ) : (
+          "Send the report"
+        )}
+      </Button>
+      {note && (
+        <div className="mt-2 text-[11px] text-[#4B5563]">{note}</div>
+      )}
+    </form>
   );
 }
 
