@@ -1,0 +1,106 @@
+{
+  "theme": "LIGHT",
+  "archetype": "4 (Swiss & High-Contrast)",
+  "emotional_tone": "Professional, authoritative, visionary, yet deeply trustworthy. Blends enterprise reliability with cutting-edge AI product development.",
+  "color_palette": {
+    "primary": "#0B3C5D",
+    "secondary": "#328CC1",
+    "accent": "#2EC4B6",
+    "background": "#F7F9FB",
+    "text_primary": "#1F2937",
+    "text_secondary": "#4B5563",
+    "border": "rgba(11, 60, 93, 0.1)",
+    "rules": [
+      "Use #F7F9FB as the global background. Avoid pure white except for elevated cards.",
+      "Use Deep Blue (#0B3C5D) for primary CTAs and heavy structural elements (like footer or high-impact bento grids).",
+      "Use Teal (#2EC4B6) selectively as a kinetic trigger - for micro-interactions, active states, glowing borders, or 'Tracing Beam' effects.",
+      "Ensure text contrast ratios (APCA) are strictly met. Never use Teal for text on light backgrounds without darkening."
+    ]
+  },
+  "typography": {
+    "heading_font": "Cabinet Grotesk",
+    "body_font": "Inter",
+    "rules": [
+      "No Inter for headings (E1 strictly forbids generic sans for H1-H3). Use Cabinet Grotesk for a premium, authoritative SaaS look.",
+      "Body text uses Inter to ensure maximum legibility for data-heavy/SaaS style content, honoring user preference.",
+      "H1 (Hero): text-5xl sm:text-6xl with tracking-tight and leading-none. Never exceed text-6xl.",
+      "Overlines/Labels: Uppercase, tracking-widest, text-xs. Use Soft Blue or Deep Blue.",
+      "Section Headings (H2): text-3xl sm:text-4xl, tracking-tight."
+    ]
+  },
+  "spacing_and_layout": {
+    "philosophy": "Generous Spacing + Asymmetry",
+    "grid_system": "Mode A: The 'Tetris' Grid for Marketing. Use bento-style cards for Services and Products sections.",
+    "rules": [
+      "Use p-8 to p-16 for section padding.",
+      "Cards must have generous internal padding (p-8) to prevent text collision.",
+      "Employ The 'Tetris' Grid (md:grid-cols-8 or 12). Span items across 2, 4, or 6 columns to create asymmetrical tension.",
+      "Never perfectly center everything. Use structural grayscale and grid alignments to guide flow.",
+      "Hero sections should not be the standard 50/50 split. Consider overlapping the hero text over an abstract AI graphic or dashboard visual."
+    ]
+  },
+  "surface_strategies": {
+    "cards": "Solid background (#FFFFFF) with 1px border (#0B3C5D/10) and subtle shadow-sm. On hover: -translate-y-1, shadow-lg, and border darkens to Soft Blue.",
+    "nav_header": "Glassmorphism: backdrop-blur-xl bg-[#F7F9FB]/80 with a 1px delicate inner stroke on the bottom.",
+    "high_impact_widgets": "Use 'The Tracing Beam' strategy for the primary AI Product showcase card. A subtle glowing teal border.",
+    "footer": "Contrast Shift: Footer must be Dark (#0B3C5D) with white/light text and massive spacing (py-24)."
+  },
+  "components_and_motion": {
+    "html_tailwind": "Use native HTML/Tailwind for large layout structures, asymmetrical bento grids, and overlapping sections.",
+    "shadcn": "Use Shadcn components for forms, inputs, buttons, and dialogs. Strip out standard 'Vercel' looks to match the brand.",
+    "motion": [
+      "Staggered entrance animations for bento grids.",
+      "Hover states must explicitly set text color (e.g., hover:bg-[#0B3C5D] hover:text-white).",
+      "Use lenis for smooth momentum scrolling to add a premium feel."
+    ]
+  },
+  "icons": {
+    "library": "@phosphor-icons/react",
+    "style": "Duotone weight to match the high-end premium B2B aesthetic."
+  },
+  "page_structure_instructions": {
+    "Hero": "Dual CTAs (Primary: Deep Blue, Secondary: Outline). Abstract 3D geometric AI graphic overlapping the right side. Headline must be Cabinet Grotesk.",
+    "Positioning": "Large, confident typography (text-3xl/4xl) in the center with vast negative space. 'More Than a Service Agency'.",
+    "Problem_Agitation": "Darker section (Deep Blue background) highlighting outdated systems. Use text-white and Soft Blue accents.",
+    "Services": "Bento 'Tetris' grid. 4 items overlapping. Sharp 1px borders.",
+    "Products": "Showcase dashboards. Floating UI cards. Use 'Tracing Beam' highlight on the flagship SaaS product.",
+    "How_It_Works": "4 steps connected by a subtle SVGs/animated dashed line (Soft Blue to Teal gradient).",
+    "Benefits": "Focus on metrics. Use Phosphor icons (Duotone) in Teal.",
+    "Case_Study": "Large high-quality photography of corporate professionals overlapping a data chart.",
+    "CTA": "Sticky or prominent Lead capture CTA before footer.",
+    "Footer": "Deep Blue background, generous py-24, structured links."
+  },
+  "media": {
+    "hero_graphic": {
+      "url": "https://images.unsplash.com/photo-1770321428577-4446e5cb7bab?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTV8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMDNkJTIwZ2VvbWV0cmljJTIwc2hhcGVzJTIwYmx1ZXxlbnwwfHx8fDE3NzczMTQ2NzR8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Abstract blue and dark geometric shapes for the right side of the hero section."
+    },
+    "product_dashboards": [
+      {
+        "url": "https://images.unsplash.com/photo-1763718528755-4bca23f82ac3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTN8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjB0ZWNoJTIwc29mdHdhcmUlMjBkYXNoYm9hcmQlMjBVSXxlbnwwfHx8fDE3NzczMTQ2NzV8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Modern SaaS dashboard UI for the 'Products' showcase section."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTN8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB0ZWNoJTIwc29mdHdhcmUlMjBkYXNoYm9hcmQlMjBVSXxlbnwwfHx8fDE3NzczMTQ2NzV8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Performance analytics on screen for 'Problem/Outdated systems' contrast or 'Benefits'."
+      }
+    ],
+    "case_study": {
+      "url": "https://images.pexels.com/photos/7108269/pexels-photo-7108269.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Business professionals discussing strategy in a modern office."
+    },
+    "sponsor_logos": [
+      {
+        "url": "https://images.unsplash.com/photo-1563119077-909657b24b19?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzV8MHwxfHNlYXJjaHwyfHx0ZWNoJTIwY29tcGFueSUyMGxvZ28lMjBibGFjayUyMGFuZCUyMHdoaXRlfGVufDB8fHx8MTc3NzMxNDY2MHww&ixlib=rb-4.1.0&q=85",
+        "description": "Client or partner logo 1"
+      },
+      {
+        "url": "https://images.pexels.com/photos/13597064/pexels-photo-13597064.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Client or partner logo 2"
+      }
+    ]
+  },
+  "testing": {
+    "attributes": "All interactive and key informational elements MUST include a 'data-testid' attribute (e.g., data-testid='hero-cta-button', data-testid='audit-form-submit')."
+  }
+}
