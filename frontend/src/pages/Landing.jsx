@@ -17,15 +17,17 @@ import AuditChatBubble from "@/components/landing/AuditChatBubble";
 
 export default function Landing() {
   const [bookingOpen, setBookingOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
   const openBooking = () => setBookingOpen(true);
+  const openAuditChat = () => setChatOpen(true);
 
   return (
     <main
       data-testid="landing-page"
       className="min-h-screen bg-[#F7F9FB] text-[#1F2937]"
     >
-      <Nav onBookCall={openBooking} />
-      <Hero onBookCall={openBooking} />
+      <Nav onBookCall={openBooking} onStartAudit={openAuditChat} />
+      <Hero onBookCall={openBooking} onStartAudit={openAuditChat} />
       <Logos />
       <Positioning />
       <Problem />
@@ -35,10 +37,10 @@ export default function Landing() {
       <Benefits />
       <CaseStudy />
       <Testimonials />
-      <CTASection onBookCall={openBooking} />
-      <Footer onBookCall={openBooking} />
+      <CTASection onBookCall={openBooking} onStartAudit={openAuditChat} />
+      <Footer onBookCall={openBooking} onStartAudit={openAuditChat} />
       <BookingModal open={bookingOpen} onOpenChange={setBookingOpen} />
-      <AuditChatBubble />
+      <AuditChatBubble open={chatOpen} onOpenChange={setChatOpen} />
     </main>
   );
 }

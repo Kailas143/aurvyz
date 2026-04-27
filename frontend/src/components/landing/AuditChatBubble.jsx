@@ -10,8 +10,14 @@ const API = `${BACKEND_URL}/api`;
 const INITIAL_GREETING =
   "Hey, I'm Nexie — Nexora's AI consultant. I'll run a quick 5-step audit of your business and send you 3 tailored recommendations. Ready? First — what industry are you in or what does your business do?";
 
-export default function AuditChatBubble() {
-  const [open, setOpen] = useState(false);
+export default function AuditChatBubble({ open: controlledOpen, onOpenChange }) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
+  const setOpen = (v) => {
+    const next = typeof v === "function" ? v(open) : v;
+    if (onOpenChange) onOpenChange(next);
+    setInternalOpen(next);
+  };
   const [sessionId, setSessionId] = useState(null);
   const [messages, setMessages] = useState([
     { role: "assistant", content: INITIAL_GREETING },

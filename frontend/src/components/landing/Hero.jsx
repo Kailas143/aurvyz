@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, PhoneCall, Activity, Bot, LineChart, Zap } from "lucide-react";
+import { ArrowRight, PhoneCall, Activity, Bot, LineChart, Sparkles, Gift } from "lucide-react";
 
 const HERO_IMG =
   "https://images.unsplash.com/photo-1770321428577-4446e5cb7bab?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTV8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMDNkJTIwZ2VvbWV0cmljJTIwc2hhcGVzJTIwYmx1ZXxlbnwwfHx8fDE3NzczMTQ2NzR8MA&ixlib=rb-4.1.0&q=85";
 
-export default function Hero({ onBookCall }) {
+export default function Hero({ onBookCall, onStartAudit }) {
   const scrollTo = (id) => () => {
     const el = document.querySelector(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -61,13 +61,15 @@ export default function Hero({ onBookCall }) {
             className="mt-6 inline-flex items-center gap-3 pl-2 pr-4 py-2 rounded-full bg-white border border-[#2EC4B6]/40 shadow-sm"
           >
             <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-[#2EC4B6]/15 text-[#0B3C5D]">
-              <Zap className="w-3.5 h-3.5" strokeWidth={2.2} />
+              <Gift className="w-3.5 h-3.5" strokeWidth={2.2} />
             </span>
             <span className="text-sm text-[#1F2937]">
               <span className="font-semibold text-[#0B3C5D]">
-                Launch your first working solution in just 7 days
+                Free AI audit report
               </span>
-              <span className="text-[#4B5563]"> — depending on scope.</span>
+              <span className="text-[#4B5563]">
+                {" "}+ 7-day MVP delivery — included.
+              </span>
             </span>
           </div>
 
@@ -79,6 +81,14 @@ export default function Hero({ onBookCall }) {
             >
               Get Free Business Audit
               <ArrowRight className="w-4 h-4 ml-1" />
+            </Button>
+            <Button
+              data-testid="hero-cta-start-audit"
+              onClick={onStartAudit}
+              className="h-12 px-7 rounded-full bg-[#2EC4B6] text-[#0B3C5D] hover:bg-[#26b0a4] shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all font-semibold"
+            >
+              <Sparkles className="w-4 h-4" />
+              Start AI Audit
             </Button>
             <Button
               data-testid="hero-cta-call"
