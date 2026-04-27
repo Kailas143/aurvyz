@@ -1,0 +1,39 @@
+{
+  "summary": "Iteration 2: Tested Resend background email + new BookingModal 2-step flow. Backend: 13/13 pytest passing including 2 new tests (response time <3s, lead_type=call+source=booking_modal). Resend integration confirmed working — backend logs show 'Lead notification sent: id=... to=kailasvs94@gmail.com' for every successful POST /api/leads. Frontend: nav-cta-call, submit-call (CTA section) and Footer 'Book a Call' all open BookingModal correctly. Modal intake → POST /api/leads with lead_type=call & source=booking_modal → step 2 Calendly iframe with name/email/a1 prefill all working. booking-back preserves form state. ONE BUG FOUND: hero-cta-call still calls scrollTo('#cta') instead of onBookCall — Hero.jsx line 85 was not updated.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/leads", "issue": "Each pytest run sends ~9 real Resend emails to NOTIFY_EMAIL (kailasvs94@gmail.com). Consider mocking Resend or making background task no-op when an env flag like TEST_MODE=1 is set."},
+      {"endpoint": "POST /api/leads", "issue": "No rate limiting on public endpoint — spam/abuse risk in production (carried over from iter 1)."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Hero.jsx (line 83-91)", "issue": "hero-cta-call button still uses onClick={scrollTo('#cta')} instead of onClick={onBookCall}. The onBookCall prop is destructured (line 7) but never wired to the Book a Call button. Spec requires this button to open BookingModal.", "selector": "[data-testid='hero-cta-call']", "priority": "HIGH"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_leads_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Fix Hero.jsx hero-cta-call: change onClick={scrollTo('#cta')} to onClick={onBookCall} (line 85). After fix, all 4 'Book a Call' entry points (hero, nav, CTA, footer) will open the modal as specified.",
+    "(Optional) Add a TEST_MODE / pytest fixture to skip real Resend sends during automated tests so /app/backend/tests/test_leads_api.py doesn't keep emailing the real inbox on every CI run."
+  ],
+  "critical_code_review_comments": [
+    "Hero.jsx — onBookCall prop is received but unused; line 85 still wired to scrollTo. Trivial one-line fix.",
+    "BookingModal.jsx is clean: useEffect resets state on close (300ms after animation), useMemo for calendly src, axios POST with lead_type/source — looks good.",
+    "server.py — send_lead_notification correctly catches all exceptions so Resend failures cannot 500 the lead endpoint. BackgroundTasks.add_task is non-blocking — verified via test_create_lead_response_is_fast (~<0.5s observed).",
+    "BookingModal: HTML5 `required` on name+email inputs blocks empty submit at the browser level BEFORE the JS toast (toast only fires if required attr is bypassed). This is acceptable — both validations exist."
+  ],
+  "updated_files": ["/app/backend/tests/test_leads_api.py"],
+  "success_rate": {"backend": "100% (13/13)", "frontend": "75% (3/4 Book-a-Call entry points work; hero broken)"},
+  "test_credentials": "N/A",
+  "seed_data_creation": "Test leads with TEST_ prefix inserted via pytest and via UI submit. Resend emails went to kailasvs94@gmail.com (~10 total this iteration).",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration 2 found one wiring bug in Hero.jsx: hero-cta-call uses scrollTo instead of onBookCall. Fix is trivial (replace onClick={scrollTo('#cta')} with onClick={onBookCall} at Hero.jsx line 85). All other booking flows (nav-cta-call, submit-call, Footer Book a Call) work end-to-end including POST /api/leads with lead_type=call+source=booking_modal and Calendly iframe prefill (name+email+a1 params). Backend tests in /app/backend/tests/test_leads_api.py now have 13 cases incl. fast-response (<3s) + booking_modal source. Resend email send verified via supervisor backend logs.",
+  "rca of the issue": "Hero.jsx file: the dev added `onBookCall` to the function signature (export default function Hero({ onBookCall }))` but forgot to replace the existing `onClick={scrollTo('#cta')}` on the data-testid='hero-cta-call' button with `onClick={onBookCall}`. Reproduction: visit landing page, click the 'Book a Call' outline button right next to 'Get Free Business Audit' in the Hero section — page scrolls to bottom CTA section instead of opening BookingModal. Mitigation: 1-line change in /app/frontend/src/components/landing/Hero.jsx line 85: onClick={scrollTo('#cta')} → onClick={onBookCall}."
+}

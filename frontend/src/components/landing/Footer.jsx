@@ -1,6 +1,6 @@
 import { Mail, Linkedin, Sparkles, ArrowUpRight } from "lucide-react";
 
-export default function Footer() {
+export default function Footer({ onBookCall }) {
   const scrollTo = (id) => () => {
     const el = document.querySelector(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -114,7 +114,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <button
-                    onClick={scrollTo("#cta")}
+                    onClick={onBookCall}
                     className="inline-flex items-center gap-1 hover:text-white"
                   >
                     Book a Call

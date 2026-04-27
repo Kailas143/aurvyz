@@ -10,7 +10,7 @@ const links = [
   { href: "#case-study", label: "Work" },
 ];
 
-export default function Nav() {
+export default function Nav({ onBookCall }) {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -63,6 +63,13 @@ export default function Nav() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={onBookCall}
+            data-testid="nav-cta-call"
+            className="hidden sm:inline-flex items-center gap-1.5 text-sm text-[#0B3C5D]/80 hover:text-[#0B3C5D] transition-colors px-3 h-10 rounded-full"
+          >
+            Book a Call
+          </button>
           <Button
             data-testid="nav-cta-audit"
             onClick={scrollTo("#cta")}

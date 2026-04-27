@@ -4,7 +4,7 @@ import { ArrowRight, PhoneCall, Activity, Bot, LineChart, Zap } from "lucide-rea
 const HERO_IMG =
   "https://images.unsplash.com/photo-1770321428577-4446e5cb7bab?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTV8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMDNkJTIwZ2VvbWV0cmljJTIwc2hhcGVzJTIwYmx1ZXxlbnwwfHx8fDE3NzczMTQ2NzR8MA&ixlib=rb-4.1.0&q=85";
 
-export default function Hero() {
+export default function Hero({ onBookCall }) {
   const scrollTo = (id) => () => {
     const el = document.querySelector(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });

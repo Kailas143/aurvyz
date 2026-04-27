@@ -84,6 +84,38 @@ class TestLeadsCreate:
         assert r.json()["lead_type"] == lead_type
 
 
+# ---- Background email task / Resend integration ----
+class TestLeadsBackgroundEmail:
+    def test_create_lead_response_is_fast(self, api_client):
+        """POST /api/leads must return quickly (< 3s) — Resend send must be in BackgroundTasks, not blocking."""
+        import time
+        t0 = time.time()
+        r = api_client.post(f"{API}/leads", json={
+            "name": "TEST_FastResponse",
+            "email": "test_fast@example.com",
+            "lead_type": "contact",
+            "source": "pytest_bg",
+        })
+        elapsed = time.time() - t0
+        assert r.status_code == 201
+        assert elapsed < 3.0, f"POST /api/leads took {elapsed:.2f}s — Resend likely blocking response"
+
+    def test_create_lead_call_type_with_booking_modal_source(self, api_client):
+        """Booking modal posts lead_type='call' + source='booking_modal' — must succeed."""
+        r = api_client.post(f"{API}/leads", json={
+            "name": "TEST_BookingModal",
+            "email": "test_booking@example.com",
+            "company": "TEST_BookCo",
+            "message": "Want to discuss intake automation",
+            "lead_type": "call",
+            "source": "booking_modal",
+        })
+        assert r.status_code == 201, r.text
+        d = r.json()
+        assert d["lead_type"] == "call"
+        assert d["source"] == "booking_modal"
+
+
 # ---- GET /api/leads ----
 class TestLeadsList:
     def test_list_leads_no_id_leak_and_sorted(self, api_client):

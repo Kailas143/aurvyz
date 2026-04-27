@@ -17,7 +17,7 @@ const initialState = {
   lead_type: "audit",
 };
 
-export default function CTASection() {
+export default function CTASection({ onBookCall }) {
   const [form, setForm] = useState(initialState);
   const [submitting, setSubmitting] = useState(false);
 
@@ -180,7 +180,7 @@ export default function CTASection() {
             <Button
               type="button"
               data-testid="submit-call"
-              onClick={(e) => submit(e, "call")}
+              onClick={onBookCall}
               disabled={submitting}
               variant="outline"
               className="h-12 px-6 rounded-full border-[#0B3C5D]/20 text-[#0B3C5D] hover:bg-[#0B3C5D] hover:text-white flex-1"
