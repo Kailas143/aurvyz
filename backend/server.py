@@ -12,6 +12,7 @@ import uuid
 from datetime import datetime, timezone
 import resend
 from emergentintegrations.llm.chat import LlmChat, UserMessage
+from calendly_poll import poll_calendly_once, start_scheduler, stop_scheduler
 
 
 ROOT_DIR = Path(__file__).parent
@@ -213,6 +214,26 @@ def send_lead_notification(lead: Lead) -> None:
         logger.error(f"Resend failed for lead {lead.email}: {e}")
 
 
+def send_calendly_confirmation_email(subject: str, html: str, reply_to: Optional[str] = None) -> None:
+    """Sync send used by the Calendly polling scheduler."""
+    if not RESEND_API_KEY or not NOTIFY_EMAIL:
+        logger.info("Resend not configured. Skipping Calendly confirmation email.")
+        return
+    try:
+        params = {
+            "from": f"Nexora AI <{SENDER_EMAIL}>",
+            "to": [NOTIFY_EMAIL],
+            "subject": subject,
+            "html": html,
+        }
+        if reply_to:
+            params["reply_to"] = reply_to
+        result = resend.Emails.send(params)
+        logger.info(f"Calendly confirmation email sent: id={result.get('id')}")
+    except Exception as e:
+        logger.error(f"Resend (Calendly confirm) failed: {e}")
+
+
 # ---------- Audit chat helpers ----------
 def _build_contextual_system(history: List[ChatTurn]) -> str:
     if not history:
@@ -347,6 +368,13 @@ async def audit_chat(payload: AuditChatRequest, background_tasks: BackgroundTask
     )
 
 
+@api_router.post("/calendly/poll-now")
+async def calendly_poll_now():
+    """Manual trigger for the Calendly polling job (admin/debug)."""
+    summary = await poll_calendly_once(db, send_calendly_confirmation_email)
+    return summary
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
@@ -359,6 +387,12 @@ app.add_middleware(
 )
 
 
+@app.on_event("startup")
+async def _startup_scheduler():
+    start_scheduler(db, send_calendly_confirmation_email)
+
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
+    stop_scheduler()
     client.close()
