@@ -4,7 +4,7 @@ const LOGOS = [
   { name: "MongoDB", slug: "mongodb" },
   { name: "Vercel", slug: "vercel" },
   { name: "Stripe", slug: "stripe" },
-  { name: "AWS", slug: "amazonwebservices" },
+  { name: "Hugging Face", slug: "huggingface" },
   { name: "Google Cloud", slug: "googlecloud" },
   { name: "Notion", slug: "notion" },
   { name: "Slack", slug: "slack" },
