@@ -82,7 +82,7 @@ export default function Hero({ onBookCall }) {
             </Button>
             <Button
               data-testid="hero-cta-call"
-              onClick={scrollTo("#cta")}
+              onClick={onBookCall}
               variant="outline"
               className="h-12 px-7 rounded-full border-[#0B3C5D]/25 text-[#0B3C5D] hover:bg-[#0B3C5D] hover:text-white transition-all"
             >
