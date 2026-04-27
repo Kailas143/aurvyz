@@ -121,15 +121,6 @@ export default function Footer({ onBookCall }) {
                     <ArrowUpRight className="w-3.5 h-3.5" />
                   </button>
                 </li>
-                <li>
-                  <button
-                    onClick={scrollTo("#cta")}
-                    className="inline-flex items-center gap-1 hover:text-white"
-                  >
-                    Request Demo
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </button>
-                </li>
               </ul>
             </div>
           </div>

@@ -43,8 +43,6 @@ export default function CTASection({ onBookCall }) {
       toast.success(
         lead_type === "call"
           ? "Call request received — we'll reach out within 24h."
-          : lead_type === "demo"
-          ? "Demo request captured — expect an invite shortly."
           : "Audit request received — check your inbox within 1 business day."
       );
       setForm(initialState);
@@ -186,16 +184,6 @@ export default function CTASection({ onBookCall }) {
               className="h-12 px-6 rounded-full border-[#0B3C5D]/20 text-[#0B3C5D] hover:bg-[#0B3C5D] hover:text-white flex-1"
             >
               Book a Call
-            </Button>
-            <Button
-              type="button"
-              data-testid="submit-demo"
-              onClick={(e) => submit(e, "demo")}
-              disabled={submitting}
-              variant="ghost"
-              className="h-12 px-6 rounded-full text-[#0B3C5D] hover:bg-[#2EC4B6]/15 flex-1"
-            >
-              Request Demo
             </Button>
           </div>
 
