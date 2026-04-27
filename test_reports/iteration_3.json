@@ -1,0 +1,48 @@
+{
+  "summary": "Iteration 3: Tested all 3 new additions (AI Audit Chatbot, Logos marquee, Testimonials) + regression of prior flows. Backend: 20/20 pytest passing (13 prior leads + 7 new audit-chat). LLM integration with Claude Sonnet 4.5 via emergentintegrations + EMERGENT_LLM_KEY working correctly. Multi-turn context preserved. Email auto-capture from user message creates a Lead with lead_type=audit, source=ai_audit_chat. Empty-message returns 422. Frontend: all critical flows pass — chat bubble visible, opens panel with Nexie greeting, send returns assistant reply (~3-5s), bubble re-click closes panel, logos-marquee has 24 items in correct section order (Hero→Logos→Positioning), testimonials-section renders 3 cards (testimonial-0/1/2) between CaseStudy and CTA, no Request Demo button or text anywhere, all 4 'Book a Call' entry points (hero-cta-call, nav-cta-call, submit-call, footer) open BookingModal, audit form submits successfully with toast.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/audit-chat", "issue": "Email regex uses re.search on the user's message only — won't capture emails the user typed in earlier turns of `history`. Acceptable per current UX (final lead-capture turn), but if the user emails Nexie mid-conversation it will only be captured when re-supplied at the end. Spec already allows this."},
+      {"endpoint": "POST /api/audit-chat", "issue": "captured_email is stored in audit_chats and a Lead row is inserted, but if the same email shows up in a later turn (same session), a second duplicate Lead would be inserted. No dedup on (session_id + email). Low priority."},
+      {"endpoint": "POST /api/audit-chat", "issue": "No rate limiting; LLM calls cost real $$. Public endpoint can be abused. Recommend per-IP rate limit + max history length cap before production."},
+      {"endpoint": "POST /api/leads", "issue": "Each test run still triggers real Resend emails to kailasvs94@gmail.com (carried over from iter 2). Consider TEST_MODE env flag to no-op send_lead_notification."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Logos marquee", "issues": ["simpleicons CDN returns 404 for slug 'amazonwebservices' AND 'openai' — the onError handler hides the broken <img> so the page still renders with just the text label. Two of the 12 logos therefore appear icon-less. Suggested fix: try slugs 'amazonaws' (for AWS) and verify 'openai' availability, or self-host the SVGs."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_audit_chat.py",
+    "/app/backend/tests/test_leads_api.py",
+    "/app/test_reports/pytest/audit_chat_results.xml",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "(Optional polish) Replace simpleicons slug 'amazonwebservices' with 'amazonaws' and confirm 'openai' slug — currently both return 404 from cdn.simpleicons.org/<slug>/0B3C5D. The onError handler keeps the page intact but two logos render text-only.",
+    "(Optional, prod hardening) Add a per-IP rate limit + a max history-length cap on POST /api/audit-chat so a malicious client can't drain the LLM key.",
+    "(Optional) Add a TEST_MODE env flag that no-ops send_lead_notification so the test inbox isn't spammed by CI."
+  ],
+  "critical_code_review_comments": [
+    "server.py — _build_contextual_system embeds prior history into the system_message string and starts a fresh LlmChat per request. This is correct given that emergentintegrations' LlmChat is request-scoped. Works, but slightly less efficient than passing history as messages — fine for the current 5-turn audit.",
+    "server.py — Email regex EMAIL_RE is permissive but acceptable. Captured email is .lower()'d before persistence — good.",
+    "server.py — Lead from chat uses payload.message.split('\\n')[0][:80] as the name, which can put 'jane@acme.com Im interested' as the lead name. Cosmetic — admin email shows the email-as-name. Consider parsing first non-email token instead.",
+    "AuditChatBubble.jsx — sends `history: messages` (pre-user-msg) — correct. session_id is captured from first response and reused — correct. Loading state / disabled inputs while sending — good UX.",
+    "Logos.jsx — `loop = [...LOGOS, ...LOGOS]` produces 24 items as expected. Marquee CSS animation is presumably in App.css under nx-marquee class — not verified visually but DOM count is correct.",
+    "Testimonials.jsx — 3 cards rendered with correct testid pattern testimonial-{i}. Avatar accent colours come from inline style — fine."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_audit_chat.py (NEW)"
+  ],
+  "success_rate": {"backend": "100% (20/20)", "frontend": "100% on functional flows tested (chat bubble open/send/close, logos count, testimonials, no Request Demo, 4× Book-a-Call entry points, audit form submit)"},
+  "test_credentials": "N/A (no auth in this app). EMERGENT_LLM_KEY confirmed configured.",
+  "seed_data_creation": "Test leads with TEST_ prefix created via pytest + 1 via Playwright UI submit. 1 audit-chat lead created via pytest with email test_audit_chat_<timestamp>@example.com (lead_type=audit, source=ai_audit_chat). Resend emails went to kailasvs94@gmail.com (~10 from leads tests + 1 from chat email-capture test).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All 3 new features verified working end-to-end. Backend test files: /app/backend/tests/test_leads_api.py (13 tests) + /app/backend/tests/test_audit_chat.py (7 tests, includes one real LLM call per test ~3-5s each). The audit-chat email-capture test inserts a real Lead and triggers Resend — keep this in mind if running often. The two simpleicons 404s (amazonwebservices, openai) are minor cosmetic — onError hides them. No regressions found.",
+  "rca of the issue": "N/A — no critical bugs found. The only minor issue is two simpleicons CDN slugs returning 404 (amazonwebservices, openai), which is a slug-mismatch problem (Simple Icons publishes them under different identifiers). Mitigation: switch to verified slugs (e.g., 'amazonaws') or self-host the SVGs. Page does not crash because the onError handler in Logos.jsx hides the broken <img>."
+}

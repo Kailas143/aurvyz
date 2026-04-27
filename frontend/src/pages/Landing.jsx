@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Nav from "@/components/landing/Nav";
 import Hero from "@/components/landing/Hero";
+import Logos from "@/components/landing/Logos";
 import Positioning from "@/components/landing/Positioning";
 import Problem from "@/components/landing/Problem";
 import Services from "@/components/landing/Services";
@@ -8,9 +9,11 @@ import Products from "@/components/landing/Products";
 import HowItWorks from "@/components/landing/HowItWorks";
 import Benefits from "@/components/landing/Benefits";
 import CaseStudy from "@/components/landing/CaseStudy";
+import Testimonials from "@/components/landing/Testimonials";
 import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
 import BookingModal from "@/components/landing/BookingModal";
+import AuditChatBubble from "@/components/landing/AuditChatBubble";
 
 export default function Landing() {
   const [bookingOpen, setBookingOpen] = useState(false);
@@ -23,6 +26,7 @@ export default function Landing() {
     >
       <Nav onBookCall={openBooking} />
       <Hero onBookCall={openBooking} />
+      <Logos />
       <Positioning />
       <Problem />
       <Services />
@@ -30,9 +34,11 @@ export default function Landing() {
       <HowItWorks />
       <Benefits />
       <CaseStudy />
+      <Testimonials />
       <CTASection onBookCall={openBooking} />
       <Footer onBookCall={openBooking} />
       <BookingModal open={bookingOpen} onOpenChange={setBookingOpen} />
+      <AuditChatBubble />
     </main>
   );
 }

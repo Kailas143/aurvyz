@@ -4,12 +4,14 @@ from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
+import re
 from pathlib import Path
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
-from typing import List, Optional
+from typing import List, Optional, Literal
 import uuid
 from datetime import datetime, timezone
 import resend
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 
 ROOT_DIR = Path(__file__).parent
@@ -26,6 +28,45 @@ SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
 NOTIFY_EMAIL = os.environ.get('NOTIFY_EMAIL', '')
 if RESEND_API_KEY:
     resend.api_key = RESEND_API_KEY
+
+# LLM
+EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
+LLM_PROVIDER = "anthropic"
+LLM_MODEL = "claude-sonnet-4-5-20250929"
+
+NEXORA_SYSTEM_PROMPT = """You are "Nexie", the senior AI consultant for Nexora AI — a product-driven AI automation company that builds AI products and custom software for modern businesses.
+
+Your goal: run a CONVERSATIONAL AUDIT in 5 short steps, then deliver a tailored 3-recommendation report and capture the user's email.
+
+CONVERSATION FLOW (ask ONE question per turn, never bundle):
+1) Greet briefly, then ask: what industry / what does their business do?
+2) Ask team size (rough range is fine).
+3) Ask what tools / stack they use today (CRM, ERP, manual spreadsheets, etc).
+4) Ask what their #1 operational pain or bottleneck is right now.
+5) Ask their rough budget range or timeline urgency.
+
+After step 5, you MUST output a tailored audit report with this exact structure:
+
+📊 **Your Nexora Audit**
+
+**Top 3 Opportunities:**
+1. [Specific recommendation grounded in their answers — name a product type or automation]
+2. [Specific recommendation]
+3. [Specific recommendation]
+
+**Estimated impact:** [time saved / revenue lift estimate]
+**Suggested first step:** [what to build first, in plain English]
+**Likely 7-day MVP:** [what we could ship in week 1]
+
+Then ask: "Want the full report + a free human strategy call? Drop your name and work email and our team will reach out within 1 business day."
+
+RULES:
+- Be concise, professional, confident. Never apologise unless you genuinely don't have info.
+- Don't use emojis except the 📊 in the report header.
+- Don't recommend competitors. Always frame around what Nexora can build (Website, ERP, AI Apps, Business Automation, FlowMind, ClinicOS, InsightIQ).
+- If the user gives an email mid-conversation, acknowledge but still finish the audit before final lead capture.
+- Keep replies under 120 words unless delivering the audit report.
+"""
 
 
 logging.basicConfig(
@@ -60,7 +101,7 @@ class LeadCreate(BaseModel):
     email: EmailStr
     company: Optional[str] = Field(default=None, max_length=160)
     message: Optional[str] = Field(default=None, max_length=2000)
-    lead_type: str = Field(default="audit")  # "audit" | "call" | "demo" | "contact"
+    lead_type: str = Field(default="audit")  # audit | call | demo | contact
     source: Optional[str] = Field(default="landing_page", max_length=80)
 
 
@@ -74,6 +115,27 @@ class Lead(BaseModel):
     lead_type: str = "audit"
     source: Optional[str] = "landing_page"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class ChatTurn(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str
+
+
+class AuditChatRequest(BaseModel):
+    session_id: Optional[str] = None
+    history: List[ChatTurn] = Field(default_factory=list)
+    message: str = Field(min_length=1, max_length=2000)
+
+
+class AuditChatResponse(BaseModel):
+    session_id: str
+    reply: str
+    is_complete: bool = False
+    captured_email: Optional[EmailStr] = None
+
+
+EMAIL_RE = re.compile(r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+")
 
 
 # ---------- Email helpers ----------
@@ -151,6 +213,19 @@ def send_lead_notification(lead: Lead) -> None:
         logger.error(f"Resend failed for lead {lead.email}: {e}")
 
 
+# ---------- Audit chat helpers ----------
+def _build_contextual_system(history: List[ChatTurn]) -> str:
+    if not history:
+        return NEXORA_SYSTEM_PROMPT
+    lines = [NEXORA_SYSTEM_PROMPT, "", "--- Conversation so far ---"]
+    for t in history:
+        speaker = "User" if t.role == "user" else "Nexie"
+        lines.append(f"{speaker}: {t.content}")
+    lines.append("--- End of prior conversation ---")
+    lines.append("Now produce ONLY your next reply (do not repeat prior turns).")
+    return "\n".join(lines)
+
+
 # ---------- Routes ----------
 @api_router.get("/")
 async def root():
@@ -187,7 +262,6 @@ async def create_lead(payload: LeadCreate, background_tasks: BackgroundTasks):
     await db.leads.insert_one(doc)
     logger.info(f"New lead captured: {lead.email} ({lead.lead_type})")
 
-    # Fire-and-forget email notification
     background_tasks.add_task(send_lead_notification, lead)
 
     return lead
@@ -202,6 +276,75 @@ async def list_leads(limit: int = 100):
         if isinstance(it.get('created_at'), str):
             it['created_at'] = datetime.fromisoformat(it['created_at'])
     return items
+
+
+@api_router.post("/audit-chat", response_model=AuditChatResponse)
+async def audit_chat(payload: AuditChatRequest, background_tasks: BackgroundTasks):
+    if not EMERGENT_LLM_KEY:
+        raise HTTPException(status_code=503, detail="Chat unavailable: LLM key not configured")
+
+    session_id = payload.session_id or str(uuid.uuid4())
+    system_message = _build_contextual_system(payload.history)
+
+    try:
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=session_id,
+            system_message=system_message,
+        ).with_model(LLM_PROVIDER, LLM_MODEL)
+        reply = await chat.send_message(UserMessage(text=payload.message))
+        if not isinstance(reply, str):
+            reply = str(reply)
+    except Exception as e:
+        logger.error(f"Audit chat LLM error: {e}")
+        raise HTTPException(status_code=502, detail="LLM service error")
+
+    captured_email = None
+    match = EMAIL_RE.search(payload.message)
+    if match:
+        captured_email = match.group(0).lower()
+
+    is_complete = bool(captured_email)
+
+    doc = {
+        "session_id": session_id,
+        "history": [t.model_dump() for t in payload.history]
+        + [{"role": "user", "content": payload.message},
+           {"role": "assistant", "content": reply}],
+        "captured_email": captured_email,
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.audit_chats.update_one(
+        {"session_id": session_id}, {"$set": doc}, upsert=True
+    )
+
+    if captured_email:
+        try:
+            transcript = "\n".join(
+                f"{t.role.title()}: {t.content}" for t in payload.history
+            ) + f"\nUser: {payload.message}\nNexie: {reply}"
+            lead = Lead(
+                name=(payload.message.split('\n')[0][:80] or "Audit Chat User"),
+                email=captured_email,
+                company=None,
+                message=f"[AI Audit Chat]\n\n{transcript[:1800]}",
+                lead_type="audit",
+                source="ai_audit_chat",
+            )
+            lead_doc = lead.model_dump()
+            lead_doc['created_at'] = lead_doc['created_at'].isoformat()
+            await db.leads.insert_one(lead_doc)
+            background_tasks.add_task(send_lead_notification, lead)
+            logger.info(f"AI chat captured lead: {captured_email}")
+        except Exception as e:
+            logger.error(f"Failed to persist lead from chat {session_id}: {e}")
+
+    return AuditChatResponse(
+        session_id=session_id,
+        reply=reply,
+        is_complete=is_complete,
+        captured_email=captured_email,
+    )
 
 
 # Include the router in the main app
