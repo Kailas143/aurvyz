@@ -164,20 +164,164 @@ export default function AuditChatBubble({ open: controlledOpen, onOpenChange }) 
 
 function ChatBubble({ role, content }) {
   const isUser = role === "user";
+  const isReport = !isUser && /🚨|💡\s\*\*High-Impact|🛠️|📈|⚡\s\*\*Next Step/.test(content);
+
+  if (isReport) {
+    return (
+      <div className="flex justify-start" data-testid="chat-msg-report">
+        <AuditReport content={content} />
+      </div>
+    );
+  }
+
   return (
     <div
       className={`flex ${isUser ? "justify-end" : "justify-start"}`}
       data-testid={`chat-msg-${role}`}
     >
       <div
-        className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
+        className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
           isUser
-            ? "bg-[#0B3C5D] text-white rounded-br-sm"
+            ? "bg-[#0B3C5D] text-white rounded-br-sm whitespace-pre-wrap"
             : "bg-white text-[#1F2937] border border-[#0B3C5D]/10 rounded-bl-sm"
         }`}
       >
-        {content}
+        {isUser ? content : <RichText text={content} />}
       </div>
     </div>
   );
+}
+
+/** Render plain text with **bold** markdown support and preserved newlines. */
+function RichText({ text }) {
+  const lines = text.split("\n");
+  return (
+    <div className="whitespace-pre-wrap">
+      {lines.map((line, i) => (
+        <span key={i}>
+          {renderInline(line)}
+          {i < lines.length - 1 && "\n"}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function renderInline(line) {
+  // Split by **bold** markers
+  const parts = line.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((p, i) => {
+    if (p.startsWith("**") && p.endsWith("**")) {
+      return (
+        <strong key={i} className="font-semibold text-[#0B3C5D]">
+          {p.slice(2, -2)}
+        </strong>
+      );
+    }
+    return <span key={i}>{p}</span>;
+  });
+}
+
+/** Parse and render a structured audit report as a premium card. */
+function AuditReport({ content }) {
+  const sections = parseReport(content);
+  return (
+    <div
+      data-testid="audit-report-card"
+      className="w-full max-w-[92%] rounded-2xl border border-[#2EC4B6]/40 bg-gradient-to-br from-white to-[#F7F9FB] shadow-md overflow-hidden"
+    >
+      <div className="bg-[#0B3C5D] text-white px-4 py-3">
+        <div className="text-[10px] tracking-[0.22em] uppercase text-[#2EC4B6] font-semibold">
+          Nexora · Audit Report
+        </div>
+        <div className="font-display text-base font-semibold mt-0.5">
+          Your tailored growth plan
+        </div>
+      </div>
+      <div className="p-4 space-y-4">
+        {sections.map((s, i) => (
+          <ReportSection key={i} section={s} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ReportSection({ section }) {
+  const accents = {
+    "🚨": { bg: "bg-red-50", border: "border-red-100", icon: "text-red-500" },
+    "💡": { bg: "bg-amber-50", border: "border-amber-100", icon: "text-amber-500" },
+    "🛠️": { bg: "bg-[#F7F9FB]", border: "border-[#0B3C5D]/10", icon: "text-[#0B3C5D]" },
+    "📈": { bg: "bg-[#2EC4B6]/10", border: "border-[#2EC4B6]/30", icon: "text-[#0B3C5D]" },
+    "⚡": { bg: "bg-[#0B3C5D]", border: "border-[#0B3C5D]", icon: "text-white" },
+  };
+  const a = accents[section.emoji] || accents["🛠️"];
+  const isCallout = section.emoji === "⚡";
+  return (
+    <div
+      className={`rounded-xl border ${a.border} ${a.bg} p-3.5 ${
+        isCallout ? "text-white" : ""
+      }`}
+    >
+      <div
+        className={`flex items-center gap-2 text-[11px] tracking-[0.18em] uppercase font-semibold ${
+          isCallout ? "text-[#2EC4B6]" : "text-[#0B3C5D]/80"
+        }`}
+      >
+        <span className="text-base">{section.emoji}</span>
+        {section.title}
+      </div>
+      {section.bullets.length > 0 ? (
+        <ul className="mt-2 space-y-1.5 text-[13px] leading-relaxed">
+          {section.bullets.map((b, i) => (
+            <li
+              key={i}
+              className={`flex gap-2 ${isCallout ? "text-white/90" : "text-[#1F2937]"}`}
+            >
+              <span
+                className={`mt-1.5 w-1 h-1 rounded-full shrink-0 ${
+                  isCallout ? "bg-[#2EC4B6]" : "bg-[#328CC1]"
+                }`}
+              />
+              <span>{renderInline(b)}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p
+          className={`mt-2 text-[13px] leading-relaxed ${
+            isCallout ? "text-white/90" : "text-[#1F2937]"
+          }`}
+        >
+          {renderInline(section.body)}
+        </p>
+      )}
+    </div>
+  );
+}
+
+const SECTION_RE = /^(🚨|💡|🛠️|📈|⚡)\s*\*?\*?(.+?)\*?\*?$/u;
+
+function parseReport(text) {
+  const lines = text.split(/\r?\n/);
+  const sections = [];
+  let current = null;
+  for (const raw of lines) {
+    const line = raw.trim();
+    const m = line.match(SECTION_RE);
+    if (m) {
+      if (current) sections.push(current);
+      current = { emoji: m[1], title: m[2].replace(/\*\*/g, "").trim(), bullets: [], body: "" };
+      continue;
+    }
+    if (!current) continue;
+    if (!line) continue;
+    if (line.startsWith("•") || line.startsWith("-") || line.startsWith("*")) {
+      current.bullets.push(line.replace(/^[•\-\*]\s*/, ""));
+    } else {
+      current.body = current.body ? `${current.body} ${line}` : line;
+    }
+  }
+  if (current) sections.push(current);
+  return sections;
 }
