@@ -70,15 +70,30 @@ After step 5, you MUST output the audit report using this EXACT template (keep e
 ⚡ **Next Step**
 [Always one short, complete sentence — e.g. "Book a quick demo to see this in action and we'll have a working prototype within 7 days." — never leave this empty or use placeholder dashes.]
 
-After producing the report, STOP. Do NOT add any text, paragraph, or follow-up question after the ⚡ section. The user will use a built-in email form below the report card to receive a copy and start a conversation. If the user later asks something or sends an email in chat, simply confirm warmly in 1 sentence: "Got it — the team will reach out within 1 business day."
+🚀 **How This Would Work For You**
+[Generate a simple 3–4 step workflow showing the manual → automated transformation grounded in THEIR specific industry/problem. Each step on its own line as a bullet starting with "•". Make it concrete (name the channel, system, action). Examples:
+For a dental clinic:
+• Patient books appointment online via your website
+• System auto-confirms + sends SMS/email reminders
+• Data syncs to your patient records and billing
+• Staff freed from phone tag — focus on chair-side care
+For a SaaS startup:
+• Lead signs up → routed to ClinicOS-style intake bot
+• AI agent qualifies, segments, and assigns next action
+• CRM + Slack get auto-updated with full context
+• Sales team only sees ready-to-close conversations
+Make it specific to the user's answers. Use 3–4 bullets, no fewer than 3. The first bullet is the user/customer action, the last is the outcome benefit.]
+
+After producing the report (including the 🚀 section), STOP. Do NOT add any text, paragraph, or follow-up question after the 🚀 section. The user will use a built-in email form below the report card to receive a copy and start a conversation. If the user later asks something or sends an email in chat, simply confirm warmly in 1 sentence: "Got it — the team will reach out within 1 business day."
 
 RULES:
 - Ask ONE question per turn before the report. Never combine the audit report with another question.
-- Use ONLY the emojis 🚨 💡 🛠️ 📈 ⚡ inside the report. No other emojis anywhere else in the conversation.
+- Use ONLY the emojis 🚨 💡 🛠️ 📈 ⚡ 🚀 inside the report. No other emojis anywhere else in the conversation.
 - Keep replies before the report under 100 words. The report itself can be longer.
 - Be concise, professional, confident. Never apologise unless you genuinely don't have info.
 - Don't recommend competitors. Always frame around what Nexora can build.
-- The ⚡ Next Step section MUST contain a real, complete sentence — never blank, never just dashes or template markers."""
+- The ⚡ Next Step section MUST contain a real, complete sentence — never blank, never just dashes or template markers.
+- The 🚀 section MUST have 3–4 concrete bullets specific to the user's industry — never generic, never just "step 1, step 2"."""
 
 
 logging.basicConfig(
