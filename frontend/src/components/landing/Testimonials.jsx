@@ -3,7 +3,7 @@ import { Star, Quote } from "lucide-react";
 const testimonials = [
   {
     quote:
-      "Nexora rebuilt our ops layer in under a week. We replaced three vendors and our front-desk team got eight hours of their week back — immediately.",
+      "Aurvyz rebuilt our ops layer in under a week. We replaced three vendors and our front-desk team got eight hours of their week back — immediately.",
     name: "Dr. Priya Menon",
     role: "Director, Regional Dental Group",
     initials: "PM",

@@ -2,13 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { API_BASE_URL } from "@/lib/api";
 import { Bot, X, Send, Sparkles, Loader2 } from "lucide-react";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
 const INITIAL_GREETING =
-  "Hey, I'm Nexie — Nexora's AI consultant. I'll run a quick 5-step audit of your business and send you 3 tailored recommendations. Ready? First — what industry are you in or what does your business do?";
+  "Hey, I'm Aurvie — Aurvyz's AI consultant. I'll run a quick 5-step audit of your business and send you 3 tailored recommendations. Ready? First — what industry are you in or what does your business do?";
 
 export default function AuditChatBubble({ open: controlledOpen, onOpenChange }) {
   const [internalOpen, setInternalOpen] = useState(false);
@@ -42,7 +40,7 @@ export default function AuditChatBubble({ open: controlledOpen, onOpenChange }) 
     setMessages(next);
     setSending(true);
     try {
-      const { data } = await axios.post(`${API}/audit-chat`, {
+      const { data } = await axios.post(`${API_BASE_URL}/audit-chat`, {
         session_id: sessionId,
         history: messages, // prior turns (everything before this user msg)
         message: text,
@@ -102,9 +100,9 @@ export default function AuditChatBubble({ open: controlledOpen, onOpenChange }) 
               <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#2EC4B6] ring-2 ring-[#0B3C5D]" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="font-display font-semibold text-sm">Nexie</div>
+              <div className="font-display font-semibold text-sm">Aurvie</div>
               <div className="text-[11px] text-white/60">
-                Nexora AI Consultant · online
+                Aurvyz AI Consultant · online
               </div>
             </div>
           </div>
@@ -128,7 +126,7 @@ export default function AuditChatBubble({ open: controlledOpen, onOpenChange }) 
             {sending && (
               <div className="flex items-center gap-2 text-xs text-[#4B5563]">
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                Nexie is thinking...
+                Aurvie is thinking...
               </div>
             )}
             {completed && (
@@ -240,7 +238,7 @@ function AuditReport({ content, sessionId, emailCaptured, onEmailCaptured }) {
     >
       <div className="bg-[#0B3C5D] text-white px-4 py-3">
         <div className="text-[10px] tracking-[0.22em] uppercase text-[#2EC4B6] font-semibold">
-          Nexora · Audit Report
+          Aurvyz · Audit Report
         </div>
         <div className="font-display text-base font-semibold mt-0.5">
           Your tailored growth plan
@@ -290,14 +288,16 @@ function EmailReportBlock({ sessionId, captured, onCaptured }) {
     if (!email.trim()) return;
     setSubmitting(true);
     try {
-      const { data } = await axios.post(`${API}/audit-chat/email-report`, {
+      const { data } = await axios.post(`${API_BASE_URL}/audit-chat/email-report`, {
         session_id: sessionId,
         email: email.trim(),
         name: name.trim() || null,
       });
       setNote(data?.note || "");
-      setDone(true);
-      if (onCaptured) onCaptured();
+      if (data?.email_sent) {
+        setDone(true);
+        if (onCaptured) onCaptured();
+      }
     } catch (err) {
       const detail = err?.response?.data?.detail;
       setNote(typeof detail === "string" ? detail : "Couldn't send — please try again.");
@@ -362,6 +362,7 @@ function ReportSection({ section }) {
     "🛠️": { bg: "bg-[#F7F9FB]", border: "border-[#0B3C5D]/10", icon: "text-[#0B3C5D]" },
     "📈": { bg: "bg-[#2EC4B6]/10", border: "border-[#2EC4B6]/30", icon: "text-[#0B3C5D]" },
     "⚡": { bg: "bg-[#0B3C5D]", border: "border-[#0B3C5D]", icon: "text-white" },
+    "🚀": { bg: "bg-[#EEF6FF]", border: "border-[#328CC1]/20", icon: "text-[#0B3C5D]" },
   };
   const a = accents[section.emoji] || accents["🛠️"];
   const isCallout = section.emoji === "⚡";
@@ -408,7 +409,7 @@ function ReportSection({ section }) {
   );
 }
 
-const SECTION_RE = /^(🚨|💡|🛠️|📈|⚡)\s*\*?\*?(.+?)\*?\*?$/u;
+const SECTION_RE = /^(🚨|💡|🛠️|📈|⚡|🚀)\s*\*?\*?(.+?)\*?\*?$/u;
 
 function parseReport(text) {
   const lines = text.split(/\r?\n/);

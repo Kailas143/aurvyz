@@ -41,7 +41,7 @@ export default function Positioning() {
             </span>
           </h2>
           <p className="mt-6 text-base sm:text-lg text-[#4B5563] max-w-2xl leading-relaxed">
-            Most agencies rent their expertise. We build it. Nexora is a
+            Most agencies rent their expertise. We build it. Aurvyz is a
             studio where AI products and client systems are engineered by the
             same team, with the same standard.
           </p>

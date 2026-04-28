@@ -24,7 +24,7 @@ export default function Footer({ onBookCall }) {
                 <Sparkles className="w-4 h-4 text-[#2EC4B6]" />
               </span>
               <span className="font-display font-bold text-xl">
-                Nexora<span className="text-[#2EC4B6]">.</span>AI
+                Aurvyz<span className="text-[#2EC4B6]">.</span>AI
               </span>
             </div>
             <p className="mt-6 text-sm text-white/65 max-w-md leading-relaxed">
@@ -34,12 +34,12 @@ export default function Footer({ onBookCall }) {
             </p>
             <div className="mt-8 flex gap-3">
               <a
-                href="mailto:hello@nexora.ai"
+                href="mailto:hello@aurvyz.com"
                 data-testid="footer-email"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm hover:bg-white/10 transition-colors"
               >
                 <Mail className="w-4 h-4 text-[#2EC4B6]" />
-                hello@nexora.ai
+                hello@aurvyz.com
               </a>
               <a
                 href="https://linkedin.com"
@@ -127,7 +127,7 @@ export default function Footer({ onBookCall }) {
         </div>
 
         <div className="mt-14 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/50">
-          <div>© {new Date().getFullYear()} Nexora AI. All rights reserved.</div>
+          <div>© {new Date().getFullYear()} Aurvyz AI. All rights reserved.</div>
           <div className="flex items-center gap-5">
             <span>Privacy</span>
             <span>Terms</span>

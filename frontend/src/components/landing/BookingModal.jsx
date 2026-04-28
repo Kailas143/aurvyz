@@ -9,11 +9,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { API_BASE_URL } from "@/lib/api";
 import { toast } from "sonner";
 import { ArrowRight, CalendarCheck2, Loader2, ChevronLeft } from "lucide-react";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 const CALENDLY_URL =
   process.env.REACT_APP_CALENDLY_URL ||
   "https://calendly.com/kailasvs94/30min";
@@ -67,7 +66,7 @@ export default function BookingModal({ open, onOpenChange }) {
     }
     setSubmitting(true);
     try {
-      await axios.post(`${API}/leads`, {
+      await axios.post(`${API_BASE_URL}/leads`, {
         ...form,
         lead_type: "call",
         source: "booking_modal",
@@ -76,7 +75,11 @@ export default function BookingModal({ open, onOpenChange }) {
       setStep("booking");
     } catch (err) {
       const detail = err?.response?.data?.detail;
-      toast.error(typeof detail === "string" ? detail : "Submission failed");
+      toast.error(
+        typeof detail === "string"
+          ? detail
+          : "Couldn't reach the backend. Check REACT_APP_BACKEND_URL or your local API server."
+      );
     } finally {
       setSubmitting(false);
     }

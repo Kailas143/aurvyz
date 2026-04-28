@@ -3,11 +3,9 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { API_BASE_URL } from "@/lib/api";
 import { toast } from "sonner";
 import { ArrowRight, ShieldCheck, CalendarCheck2, Sparkles } from "lucide-react";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const initialState = {
   name: "",
@@ -35,7 +33,7 @@ export default function CTASection({ onBookCall }) {
 
     setSubmitting(true);
     try {
-      await axios.post(`${API}/leads`, {
+      await axios.post(`${API_BASE_URL}/leads`, {
         ...form,
         lead_type,
         source: "landing_page",
@@ -188,7 +186,7 @@ export default function CTASection({ onBookCall }) {
           </div>
 
           <p className="mt-4 text-[11px] text-[#4B5563]">
-            By submitting you agree to be contacted by the Nexora team. We
+            By submitting you agree to be contacted by the Aurvyz team. We
             never share your details.
           </p>
         </form>

@@ -12,17 +12,18 @@ import uuid
 from datetime import datetime, timezone
 import asyncio
 import resend
-from emergentintegrations.llm.chat import LlmChat, UserMessage
 from calendly_poll import poll_calendly_once, start_scheduler, stop_scheduler
+from services.llm_service import GeminiAuditChatService
 
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection
-mongo_url = os.environ['MONGO_URL']
+mongo_url = os.environ.get('MONGO_URL', 'mongodb://127.0.0.1:27017')
 client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+db_name = os.environ.get('DB_NAME', 'aurvyz')
+db = client[db_name]
 
 # Email (Resend)
 RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
@@ -32,11 +33,14 @@ if RESEND_API_KEY:
     resend.api_key = RESEND_API_KEY
 
 # LLM
-EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
-LLM_PROVIDER = "anthropic"
-LLM_MODEL = "claude-sonnet-4-5-20250929"
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-2.5-flash')
+audit_chat_service = GeminiAuditChatService(
+    api_key=GEMINI_API_KEY,
+    model=GEMINI_MODEL,
+)
 
-NEXORA_SYSTEM_PROMPT = """You are "Nexie", the senior AI consultant for Nexora AI — a product-driven AI automation company that builds AI products and custom software for modern businesses.
+NEXORA_SYSTEM_PROMPT = """You are "Nexie", the senior AI consultant for Aurvyz — a product-driven AI automation company that builds AI products and custom software for modern businesses.
 
 Your goal: run a CONVERSATIONAL AUDIT in 5 short steps, then deliver a tailored audit report and capture the user's email.
 
@@ -60,15 +64,12 @@ After step 5, you MUST output the audit report using this EXACT template (keep e
 • [Opportunity → outcome]
 
 🛠️ **Recommended Solution**
-[1–2 sentences naming the Nexora-built solution: pick from FlowMind (workflow automation), ClinicOS (clinic SaaS), InsightIQ (analytics), or a custom Website / ERP / AI Application / Business Automation. Be specific to their industry.]
+[1–2 sentences naming the Aurvyz-built solution: pick from FlowMind (workflow automation), ClinicOS (clinic SaaS), InsightIQ (analytics), or a custom Website / ERP / AI Application / Business Automation. Be specific to their industry.]
 
 📈 **Expected Impact**
 • [Concrete metric — e.g. "Save 8+ hours/week"]
 • [Concrete metric]
 • [Concrete metric]
-
-⚡ **Next Step**
-[Always one short, complete sentence — e.g. "Book a quick demo to see this in action and we'll have a working prototype within 7 days." — never leave this empty or use placeholder dashes.]
 
 🚀 **How This Would Work For You**
 [Generate a simple 3–4 step workflow showing the manual → automated transformation grounded in THEIR specific industry/problem. Each step on its own line as a bullet starting with "•". Make it concrete (name the channel, system, action). Examples:
@@ -84,6 +85,9 @@ For a SaaS startup:
 • Sales team only sees ready-to-close conversations
 Make it specific to the user's answers. Use 3–4 bullets, no fewer than 3. The first bullet is the user/customer action, the last is the outcome benefit.]
 
+⚡ **Next Step**
+[Always exactly one short CTA sentence inviting the user to connect with Aurvyz — e.g. "Book a call with Aurvyz to review these opportunities and map out your fastest path to launch." Never use bullets in this section.]
+
 After producing the report (including the 🚀 section), STOP. Do NOT add any text, paragraph, or follow-up question after the 🚀 section. The user will use a built-in email form below the report card to receive a copy and start a conversation. If the user later asks something or sends an email in chat, simply confirm warmly in 1 sentence: "Got it — the team will reach out within 1 business day."
 
 RULES:
@@ -91,8 +95,8 @@ RULES:
 - Use ONLY the emojis 🚨 💡 🛠️ 📈 ⚡ 🚀 inside the report. No other emojis anywhere else in the conversation.
 - Keep replies before the report under 100 words. The report itself can be longer.
 - Be concise, professional, confident. Never apologise unless you genuinely don't have info.
-- Don't recommend competitors. Always frame around what Nexora can build.
-- The ⚡ Next Step section MUST contain a real, complete sentence — never blank, never just dashes or template markers.
+- Don't recommend competitors. Always frame around what Aurvyz can build.
+- The ⚡ Next Step section MUST contain exactly one real CTA sentence about booking a call or connecting with Aurvyz — never bullets, never workflow steps, never blank.
 - The 🚀 section MUST have 3–4 concrete bullets specific to the user's industry — never generic, never just "step 1, step 2"."""
 
 
@@ -104,7 +108,7 @@ logger = logging.getLogger(__name__)
 
 
 # Create the main app without a prefix
-app = FastAPI(title="Nexora AI — Landing API")
+app = FastAPI(title="Aurvyz — Landing API")
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
@@ -163,6 +167,22 @@ class AuditChatResponse(BaseModel):
 
 
 EMAIL_RE = re.compile(r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+")
+NEXT_STEP_RE = re.compile(
+    r"(⚡\s*\*\*Next Step\*\*\s*)(.*?)(?=\n\s*(?:🚨|💡|🛠️|📈|🚀)\s*\*\*|\Z)",
+    re.DOTALL,
+)
+WORKFLOW_RE = re.compile(
+    r"(🚀\s*\*\*How This Would Work For You\*\*\s*)(.*?)(?=\n\s*(?:🚨|💡|🛠️|📈|⚡)\s*\*\*|\Z)",
+    re.DOTALL,
+)
+CALL_INTENT_RE = re.compile(
+    r"\b(book|schedule|arrange|set up|want)\b.{0,24}\b(call|demo|meeting)\b|\b(book a call|schedule a call|book demo|schedule demo)\b",
+    re.IGNORECASE,
+)
+CONTACT_INTENT_RE = re.compile(
+    r"\b(contact me|reach out|talk to us|talk to me|speak to us|speak to me|connect with us|connect me)\b",
+    re.IGNORECASE,
+)
 
 
 # ---------- Email helpers ----------
@@ -188,7 +208,7 @@ def _lead_email_html(lead: Lead) -> str:
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;">
         <tr><td style="background:#0B3C5D;padding:22px 24px;color:#ffffff;">
-          <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#2EC4B6;">Nexora AI · New Lead</div>
+          <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#2EC4B6;">Aurvyz · New Lead</div>
           <div style="font-size:20px;font-weight:700;margin-top:6px;">{pretty_type}</div>
         </td></tr>
         <tr><td style="padding:8px 0;">
@@ -206,18 +226,159 @@ def _lead_email_html(lead: Lead) -> str:
           <div style="font-size:14px;color:#1F2937;line-height:1.6;padding:14px 16px;background:#F7F9FB;border:1px solid #e5e7eb;border-radius:10px;white-space:pre-wrap;">{(lead.message or "— (no message provided)")}</div>
         </td></tr>
         <tr><td style="padding:4px 20px 26px 20px;">
-          <a href="mailto:{lead.email}?subject=Re:%20Your%20Nexora%20{pretty_type}%20request"
+          <a href="mailto:{lead.email}?subject=Re:%20Your%20Aurvyz%20{pretty_type}%20request"
              style="display:inline-block;background:#0B3C5D;color:#ffffff;text-decoration:none;font-weight:600;font-size:14px;padding:11px 20px;border-radius:999px;">
             Reply to {lead.name.split(' ')[0]}
           </a>
           <div style="font-size:11px;color:#9CA3AF;margin-top:14px;">Golden-hour follow-ups convert ~3× better. This lead is fresh.</div>
         </td></tr>
       </table>
-      <div style="font-size:11px;color:#9CA3AF;margin-top:16px;">Nexora AI · Lead notification</div>
+      <div style="font-size:11px;color:#9CA3AF;margin-top:16px;">Aurvyz · Lead notification</div>
     </td></tr>
   </table>
 </body></html>
 """
+
+
+def _normalize_audit_report_next_step(text: str) -> str:
+    """Ensure the audit report CTA stays a single Aurvyz call-to-action sentence."""
+    if "⚡ **Next Step**" not in text:
+        return text
+
+    normalized_cta = (
+        "Book a call with Aurvyz to review these opportunities and map out your fastest path to launch."
+    )
+    return NEXT_STEP_RE.sub(rf"\1{normalized_cta}\n\n", text)
+
+
+def _reorder_audit_report_sections(text: str) -> str:
+    """Keep workflow before next-step CTA in the final rendered report."""
+    if "🚀 **How This Would Work For You**" not in text or "⚡ **Next Step**" not in text:
+        return text
+
+    workflow_match = WORKFLOW_RE.search(text)
+    next_step_match = NEXT_STEP_RE.search(text)
+    if not workflow_match or not next_step_match:
+        return text
+
+    if workflow_match.start() < next_step_match.start():
+        return text
+
+    workflow_block = workflow_match.group(0).strip()
+    next_step_block = next_step_match.group(0).strip()
+    prefix = text[:next_step_match.start()]
+    middle = text[next_step_match.end():workflow_match.start()]
+    suffix = text[workflow_match.end():]
+    return f"{prefix}{workflow_block}\n\n{next_step_block}{middle}{suffix}"
+
+
+def _extract_email_from_text(text: str) -> Optional[str]:
+    match = EMAIL_RE.search(text or "")
+    return match.group(0).lower() if match else None
+
+
+def _extract_email_from_history(history: List[ChatTurn]) -> Optional[str]:
+    for turn in reversed(history):
+        email = _extract_email_from_text(turn.content)
+        if email:
+            return email
+    return None
+
+
+def _classify_chat_intent(message: str) -> Optional[str]:
+    if CALL_INTENT_RE.search(message or ""):
+        return "call"
+    if CONTACT_INTENT_RE.search(message or ""):
+        return "contact"
+    return None
+
+
+def _build_missing_email_reply(intent: str) -> str:
+    if intent == "call":
+        return (
+            "Absolutely — I can help schedule a short call with the Aurvyz team. "
+            "Please share your email address and we will reach out to arrange a time."
+        )
+    return (
+        "Absolutely — please share your email address and the Aurvyz team will contact you within 1 business day."
+    )
+
+
+def _build_chat_transcript(history: List[ChatTurn], message: str, reply: str) -> str:
+    prior = "\n".join(f"{t.role.title()}: {t.content}" for t in history)
+    suffix = f"User: {message}\nNexie: {reply}"
+    return f"{prior}\n{suffix}".strip()
+
+
+def _infer_chat_lead_name(email: str, history: List[ChatTurn], message: str) -> str:
+    text = (message or "").split("\n")[0].strip()
+    if email and email in text:
+        text = text.replace(email, "").replace("—", " ").replace("-", " ").strip(" ,")
+    if text:
+        return text[:80]
+
+    for turn in history:
+        if turn.role != "user":
+            continue
+        content = turn.content.strip().split("\n")[0]
+        if content and "@" not in content:
+            return content[:80]
+    return (email.split("@")[0] if email else "Audit Chat User")[:80]
+
+
+async def _upsert_ai_audit_chat_lead(
+    db,
+    *,
+    email: str,
+    name: str,
+    transcript: str,
+    lead_type: str,
+    company: Optional[str] = None,
+) -> Lead:
+    existing = await db.leads.find_one(
+        {"email": email, "source": "ai_audit_chat"}, {"_id": 0}
+    )
+
+    message = f"[AI Audit Chat - {lead_type}]\n\n{transcript[:1800]}"
+    if existing:
+        await db.leads.update_one(
+            {"id": existing["id"]},
+            {
+                "$set": {
+                    "name": existing.get("name") or name,
+                    "company": existing.get("company") or company,
+                    "message": message,
+                    "lead_type": lead_type,
+                    "source": "ai_audit_chat",
+                }
+            },
+        )
+        created_at = existing.get("created_at")
+        if isinstance(created_at, str):
+            created_at = datetime.fromisoformat(created_at)
+        return Lead(
+            id=existing["id"],
+            name=existing.get("name") or name,
+            email=email,
+            company=existing.get("company") or company,
+            message=message,
+            lead_type=lead_type,
+            source="ai_audit_chat",
+            created_at=created_at or datetime.now(timezone.utc),
+        )
+
+    lead = Lead(
+        name=name,
+        email=email,
+        company=company,
+        message=message,
+        lead_type=lead_type,
+        source="ai_audit_chat",
+    )
+    lead_doc = lead.model_dump()
+    lead_doc["created_at"] = lead_doc["created_at"].isoformat()
+    await db.leads.insert_one(lead_doc)
+    return lead
 
 
 def send_lead_notification(lead: Lead) -> None:
@@ -226,9 +387,9 @@ def send_lead_notification(lead: Lead) -> None:
         logger.info("Resend not configured (missing RESEND_API_KEY or NOTIFY_EMAIL). Skipping email.")
         return
     try:
-        subject = f"[Nexora Lead] {lead.lead_type.title()} · {lead.name}"
+        subject = f"[Aurvyz Lead] {lead.lead_type.title()} · {lead.name}"
         params = {
-            "from": f"Nexora AI <{SENDER_EMAIL}>",
+            "from": f"Aurvyz <{SENDER_EMAIL}>",
             "to": [NOTIFY_EMAIL],
             "reply_to": lead.email,
             "subject": subject,
@@ -247,7 +408,7 @@ def send_calendly_confirmation_email(subject: str, html: str, reply_to: Optional
         return
     try:
         params = {
-            "from": f"Nexora AI <{SENDER_EMAIL}>",
+            "from": f"Aurvyz <{SENDER_EMAIL}>",
             "to": [NOTIFY_EMAIL],
             "subject": subject,
             "html": html,
@@ -260,23 +421,10 @@ def send_calendly_confirmation_email(subject: str, html: str, reply_to: Optional
         logger.error(f"Resend (Calendly confirm) failed: {e}")
 
 
-# ---------- Audit chat helpers ----------
-def _build_contextual_system(history: List[ChatTurn]) -> str:
-    if not history:
-        return NEXORA_SYSTEM_PROMPT
-    lines = [NEXORA_SYSTEM_PROMPT, "", "--- Conversation so far ---"]
-    for t in history:
-        speaker = "User" if t.role == "user" else "Nexie"
-        lines.append(f"{speaker}: {t.content}")
-    lines.append("--- End of prior conversation ---")
-    lines.append("Now produce ONLY your next reply (do not repeat prior turns).")
-    return "\n".join(lines)
-
-
 # ---------- Routes ----------
 @api_router.get("/")
 async def root():
-    return {"message": "Nexora AI API", "status": "ok"}
+    return {"message": "Aurvyz API", "status": "ok"}
 
 
 @api_router.post("/status", response_model=StatusCheck)
@@ -327,29 +475,33 @@ async def list_leads(limit: int = 100):
 
 @api_router.post("/audit-chat", response_model=AuditChatResponse)
 async def audit_chat(payload: AuditChatRequest, background_tasks: BackgroundTasks):
-    if not EMERGENT_LLM_KEY:
-        raise HTTPException(status_code=503, detail="Chat unavailable: LLM key not configured")
+    if not audit_chat_service.configured:
+        raise HTTPException(status_code=503, detail="Chat unavailable: GEMINI_API_KEY not configured")
 
     session_id = payload.session_id or str(uuid.uuid4())
-    system_message = _build_contextual_system(payload.history)
+    existing_chat = await db.audit_chats.find_one({"session_id": session_id}, {"_id": 0})
 
     try:
-        chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=session_id,
-            system_message=system_message,
-        ).with_model(LLM_PROVIDER, LLM_MODEL)
-        reply = await chat.send_message(UserMessage(text=payload.message))
-        if not isinstance(reply, str):
-            reply = str(reply)
+        reply = await audit_chat_service.generate_reply(
+            system_prompt=NEXORA_SYSTEM_PROMPT,
+            history=payload.history,
+            message=payload.message,
+        )
+        reply = _normalize_audit_report_next_step(reply)
+        reply = _reorder_audit_report_sections(reply)
     except Exception as e:
-        logger.error(f"Audit chat LLM error: {e}")
+        logger.error(f"Audit chat Gemini error: {e}")
         raise HTTPException(status_code=502, detail="LLM service error")
 
-    captured_email = None
-    match = EMAIL_RE.search(payload.message)
-    if match:
-        captured_email = match.group(0).lower()
+    captured_email = (
+        _extract_email_from_text(payload.message)
+        or (existing_chat or {}).get("captured_email")
+        or _extract_email_from_history(payload.history)
+    )
+    chat_intent = _classify_chat_intent(payload.message)
+    if chat_intent and not captured_email:
+        reply = _build_missing_email_reply(chat_intent)
+    transcript = _build_chat_transcript(payload.history, payload.message, reply)
 
     is_complete = bool(captured_email)
 
@@ -359,6 +511,7 @@ async def audit_chat(payload: AuditChatRequest, background_tasks: BackgroundTask
         + [{"role": "user", "content": payload.message},
            {"role": "assistant", "content": reply}],
         "captured_email": captured_email,
+        "latest_intent": chat_intent,
         "updated_at": datetime.now(timezone.utc).isoformat(),
     }
     await db.audit_chats.update_one(
@@ -367,22 +520,17 @@ async def audit_chat(payload: AuditChatRequest, background_tasks: BackgroundTask
 
     if captured_email:
         try:
-            transcript = "\n".join(
-                f"{t.role.title()}: {t.content}" for t in payload.history
-            ) + f"\nUser: {payload.message}\nNexie: {reply}"
-            lead = Lead(
-                name=(payload.message.split('\n')[0][:80] or "Audit Chat User"),
+            lead_type = chat_intent or "audit"
+            lead = await _upsert_ai_audit_chat_lead(
+                db,
                 email=captured_email,
-                company=None,
-                message=f"[AI Audit Chat]\n\n{transcript[:1800]}",
-                lead_type="audit",
-                source="ai_audit_chat",
+                name=_infer_chat_lead_name(captured_email, payload.history, payload.message),
+                transcript=transcript,
+                lead_type=lead_type,
             )
-            lead_doc = lead.model_dump()
-            lead_doc['created_at'] = lead_doc['created_at'].isoformat()
-            await db.leads.insert_one(lead_doc)
-            background_tasks.add_task(send_lead_notification, lead)
-            logger.info(f"AI chat captured lead: {captured_email}")
+            if chat_intent or not (existing_chat or {}).get("captured_email"):
+                background_tasks.add_task(send_lead_notification, lead)
+                logger.info("AI chat lead notified: %s (%s)", captured_email, lead_type)
         except Exception as e:
             logger.error(f"Failed to persist lead from chat {session_id}: {e}")
 
@@ -409,12 +557,12 @@ class EmailReportRequest(BaseModel):
     company: Optional[str] = Field(default=None, max_length=160)
 
 
-REPORT_MARKER_RE = re.compile(r"🚨|💡\s*\*\*High-Impact|🛠️|📈|⚡\s*\*\*Next Step")
+REPORT_MARKER_RE = re.compile(r"🚨|💡\s*\*\*High-Impact|🛠️|📈|⚡\s*\*\*Next Step|🚀\s*\*\*How This Would Work For You\*\*")
 
 
 def _parse_audit_report(text: str) -> List[dict]:
     """Parse a report body into [{emoji, title, bullets, body}, ...]."""
-    section_re = re.compile(r"^(🚨|💡|🛠️|📈|⚡)\s*\*?\*?(.+?)\*?\*?$", re.UNICODE)
+    section_re = re.compile(r"^(🚨|💡|🛠️|📈|⚡|🚀)\s*\*?\*?(.+?)\*?\*?$", re.UNICODE)
     sections: List[dict] = []
     current: Optional[dict] = None
     for raw in text.split("\n"):
@@ -454,6 +602,7 @@ def _audit_report_email_html(name: str, sections: List[dict]) -> str:
         "🛠️": ("#F7F9FB", "#0B3C5D33", "#0B3C5D"),
         "📈": ("#ECFDF5", "#2EC4B666", "#0B3C5D"),
         "⚡": ("#0B3C5D", "#0B3C5D", "#FFFFFF"),
+        "🚀": ("#EEF6FF", "#328CC144", "#0B3C5D"),
     }
     blocks = []
     for s in sections:
@@ -480,21 +629,21 @@ def _audit_report_email_html(name: str, sections: List[dict]) -> str:
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;">
         <tr><td style="background:#0B3C5D;padding:24px 26px;color:#ffffff;">
-          <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#2EC4B6;font-weight:700;">Nexora · Audit Report</div>
+          <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#2EC4B6;font-weight:700;">Aurvyz · Audit Report</div>
           <div style="font-size:22px;font-weight:700;margin-top:6px;">Hi {name or "there"} — your tailored growth plan</div>
-          <div style="font-size:13px;color:#ffffffaa;margin-top:6px;">Generated by Nexie, Nexora's AI consultant. Our team will reach out within 1 business day.</div>
+          <div style="font-size:13px;color:#ffffffaa;margin-top:6px;">Generated by Nexie, Aurvyz's AI consultant. Our team will reach out within 1 business day.</div>
         </td></tr>
         <tr><td style="padding:18px 22px;">
           {body}
         </td></tr>
         <tr><td style="padding:0 22px 22px 22px;">
-          <a href="mailto:hello@nexora.ai?subject=Re:%20My%20Nexora%20Audit%20Report"
+          <a href="mailto:{SENDER_EMAIL}?subject=Re:%20My%20Aurvyz%20Audit%20Report"
              style="display:inline-block;background:#2EC4B6;color:#0B3C5D;text-decoration:none;font-weight:700;font-size:14px;padding:12px 22px;border-radius:999px;">
             Reply to start your 7-day MVP
           </a>
         </td></tr>
       </table>
-      <div style="font-size:11px;color:#9CA3AF;margin-top:16px;">Nexora AI · hello@nexora.ai</div>
+      <div style="font-size:11px;color:#9CA3AF;margin-top:16px;">Aurvyz · {SENDER_EMAIL}</div>
     </td></tr>
   </table>
 </body></html>
@@ -507,9 +656,9 @@ def send_audit_report_email(to_email: str, name: str, html: str) -> dict:
         return {"ok": False, "error": "Resend not configured"}
     try:
         params = {
-            "from": f"Nexora AI <{SENDER_EMAIL}>",
+            "from": f"Aurvyz <{SENDER_EMAIL}>",
             "to": [to_email],
-            "subject": "Your Nexora AI audit report",
+            "subject": "Your Aurvyz audit report",
             "html": html,
         }
         if NOTIFY_EMAIL:
@@ -517,6 +666,7 @@ def send_audit_report_email(to_email: str, name: str, html: str) -> dict:
         result = resend.Emails.send(params)
         return {"ok": True, "id": result.get("id")}
     except Exception as e:
+        logger.error("Audit report email failed for %s: %s", to_email, e)
         return {"ok": False, "error": str(e)}
 
 
@@ -575,10 +725,11 @@ async def audit_chat_email_report(payload: EmailReportRequest, background_tasks:
         "ok": True,
         "email_sent": send_result.get("ok", False),
         "email_id": send_result.get("id"),
+        "error": send_result.get("error"),
         "note": (
             "Report emailed successfully."
             if send_result.get("ok")
-            else "Saved your details — our team will email the report shortly."
+            else (send_result.get("error") or "Saved your details — our team will email the report shortly.")
         ),
     }
 

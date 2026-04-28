@@ -43,8 +43,13 @@ export default function Nav({ onBookCall }) {
             <Sparkles className="w-4 h-4 text-[#2EC4B6]" />
             <span className="absolute inset-0 rounded-[10px] ring-1 ring-[#2EC4B6]/40" />
           </span>
-          <span className="font-display font-bold text-[#0B3C5D] text-lg tracking-tight">
-            Nexora<span className="text-[#2EC4B6]">.</span>AI
+          <span className="flex flex-col leading-none">
+            <span className="font-display font-bold text-[#0B3C5D] text-lg tracking-tight">
+              Aurvyz<span className="text-[#2EC4B6]">.</span>AI
+            </span>
+            <span className="mt-1 text-[10px] font-medium tracking-[0.18em] uppercase text-[#0B3C5D]/55">
+              Intelligence, Engineered
+            </span>
           </span>
         </a>
 

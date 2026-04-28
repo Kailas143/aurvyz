@@ -67,6 +67,23 @@ class TestAuditChatMultiTurn:
             f"Expected continuation, not restart. Got: {d['reply']!r}"
         assert d["is_complete"] is False
 
+    def test_audit_chat_book_call_without_email_requests_email(self, api_client):
+        history = [
+            {"role": "assistant", "content": "Here is your audit report."},
+            {"role": "user", "content": "I run a textile business."},
+        ]
+        r = api_client.post(f"{API}/audit-chat", json={
+            "message": "Can I schedule a short call with your team?",
+            "history": history,
+        }, timeout=60)
+        assert r.status_code == 200, r.text
+        d = r.json()
+        reply = d["reply"].lower()
+        assert "email" in reply, f"Expected reply to request email. Got: {d['reply']!r}"
+        assert "call" in reply or "schedule" in reply, f"Expected call CTA context. Got: {d['reply']!r}"
+        assert d["is_complete"] is False
+        assert d.get("captured_email") is None
+
 
 class TestAuditChatEmailCapture:
     """When user message contains an email, lead is captured + is_complete=true."""
@@ -131,6 +148,64 @@ class TestAuditChatEmailCapture:
         }, timeout=60)
         assert r2.status_code == 200
         assert r2.json()["session_id"] == sid
+
+    def test_audit_chat_book_call_after_email_updates_lead_type(self, api_client):
+        unique_email = f"test_book_call_{int(time.time())}@example.com"
+
+        r1 = api_client.post(f"{API}/audit-chat", json={
+            "message": f"Jane Cooper {unique_email}",
+            "history": [],
+        }, timeout=60)
+        assert r1.status_code == 200, r1.text
+        sid = r1.json()["session_id"]
+
+        history = [
+            {"role": "user", "content": f"Jane Cooper {unique_email}"},
+            {"role": "assistant", "content": r1.json()["reply"]},
+        ]
+        r2 = api_client.post(f"{API}/audit-chat", json={
+            "session_id": sid,
+            "message": "Book a call with your team.",
+            "history": history,
+        }, timeout=60)
+        assert r2.status_code == 200, r2.text
+        assert r2.json()["captured_email"] == unique_email
+
+        time.sleep(1.0)
+        r3 = api_client.get(f"{API}/leads?limit=500")
+        assert r3.status_code == 200
+        matched = [l for l in r3.json() if l.get("email") == unique_email]
+        assert matched, f"Expected lead with email {unique_email}"
+        assert matched[0]["lead_type"] == "call"
+
+    def test_audit_chat_contact_intent_uses_prior_session_email(self, api_client):
+        unique_email = f"test_contact_intent_{int(time.time())}@example.com"
+
+        r1 = api_client.post(f"{API}/audit-chat", json={
+            "message": f"Contact details: {unique_email}",
+            "history": [],
+        }, timeout=60)
+        assert r1.status_code == 200, r1.text
+        sid = r1.json()["session_id"]
+
+        history = [
+            {"role": "user", "content": f"Contact details: {unique_email}"},
+            {"role": "assistant", "content": r1.json()["reply"]},
+        ]
+        r2 = api_client.post(f"{API}/audit-chat", json={
+            "session_id": sid,
+            "message": "Please contact me tomorrow.",
+            "history": history,
+        }, timeout=60)
+        assert r2.status_code == 200, r2.text
+        assert r2.json()["captured_email"] == unique_email
+
+        time.sleep(1.0)
+        r3 = api_client.get(f"{API}/leads?limit=500")
+        assert r3.status_code == 200
+        matched = [l for l in r3.json() if l.get("email") == unique_email]
+        assert matched, f"Expected lead with email {unique_email}"
+        assert matched[0]["lead_type"] == "contact"
 
 
 # ---- Regression: ensure prior leads tests behavior is unaffected ----

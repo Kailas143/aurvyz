@@ -8,30 +8,30 @@ const products = [
     icon: Bot,
     tag: "AI Workflow Automation",
     name: "FlowMind",
-    desc: "An AI agent layer that plugs into your existing tools and automates multi-step workflows — intake, ops, follow-ups, reporting.",
+    desc: "We can build a system that plugs into your existing tools and automates multi-step workflows across intake, operations, follow-ups, and reporting.",
     metrics: [
-      { k: "70%", v: "manual work removed" },
-      { k: "24/7", v: "autonomous ops" },
+      { k: "24/7", v: "workflow orchestration" },
+      { k: "Multi-step", v: "process automation" },
     ],
   },
   {
     icon: Stethoscope,
     tag: "Smart Business System",
     name: "ClinicOS",
-    desc: "A vertical SaaS for clinics: bookings, reminders, records, billing — unified with AI front-desk support out of the box.",
+    desc: "A solution designed to unify bookings, reminders, records, billing, and AI-assisted front-desk support for clinic teams.",
     metrics: [
-      { k: "+60%", v: "booking efficiency" },
-      { k: "−45%", v: "no-shows" },
+      { k: "Unified", v: "clinic operations" },
+      { k: "AI-assisted", v: "front-desk support" },
     ],
   },
   {
     icon: BarChart3,
     tag: "Analytics SaaS",
     name: "InsightIQ",
-    desc: "A metrics workspace that turns raw business data into narrative dashboards, anomaly alerts and weekly AI briefings.",
+    desc: "We can build a metrics workspace that turns raw business data into dashboards, anomaly alerts, and clear AI-generated weekly summaries.",
     metrics: [
-      { k: "1-click", v: "data sync" },
-      { k: "Real-time", v: "anomaly alerts" },
+      { k: "Real-time", v: "performance visibility" },
+      { k: "Connected", v: "data reporting" },
     ],
   },
 ];
@@ -47,17 +47,17 @@ export default function Products() {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
           <div className="max-w-2xl">
             <div className="text-xs tracking-[0.22em] uppercase text-[#328CC1] font-semibold">
-              / Our Products
+              / Solutions
             </div>
             <h2
               data-testid="products-headline"
               className="font-display mt-4 text-3xl sm:text-5xl font-bold text-[#0B3C5D] leading-[1.08] tracking-tight"
             >
-              We ship our own software.
+              Solutions We Can Build for You
             </h2>
             <p className="mt-5 text-sm sm:text-base text-[#4B5563] max-w-xl leading-relaxed">
-              A portfolio of AI tools and SaaS products built, deployed and
-              battle-tested by the same team that builds for you.
+              These are examples of AI systems we design and build based on your
+              business needs.
             </p>
           </div>
         </div>
@@ -69,28 +69,28 @@ export default function Products() {
         >
           <div className="md:col-span-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2EC4B6]/15 text-[#2EC4B6] text-[11px] tracking-widest uppercase">
-              Flagship · Live
+              Example Solution
             </div>
             <h3 className="font-display mt-5 text-3xl sm:text-4xl font-bold leading-tight">
-              FlowMind — your business on <span className="text-[#2EC4B6]">autopilot</span>.
+              FlowMind-style automation for <span className="text-[#2EC4B6]">high-volume workflows</span>.
             </h3>
             <p className="mt-4 text-white/70 text-sm sm:text-base leading-relaxed max-w-lg">
-              Connect your stack, describe the workflow, and FlowMind's agents
-              handle the rest — intake, routing, follow-ups, reports. Built on
-              the same infrastructure we deploy for enterprise clients.
+              We can build a system that connects your stack and automates
+              routing, intake, follow-ups, and reporting around the workflows
+              that matter most to your team.
             </p>
             <div className="mt-7 flex flex-wrap gap-6 text-xs text-white/60">
               <div>
-                <div className="font-display text-2xl text-white font-bold">12+</div>
-                orgs deployed
+                <div className="font-display text-2xl text-white font-bold">CRM</div>
+                connected systems
               </div>
               <div>
-                <div className="font-display text-2xl text-white font-bold">70%</div>
-                manual work removed
+                <div className="font-display text-2xl text-white font-bold">Ops</div>
+                workflow automation
               </div>
               <div>
-                <div className="font-display text-2xl text-white font-bold">99.9%</div>
-                uptime SLA
+                <div className="font-display text-2xl text-white font-bold">AI</div>
+                assisted decisioning
               </div>
             </div>
           </div>
@@ -140,7 +140,7 @@ export default function Products() {
                 ))}
               </div>
               <div className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-[#0B3C5D] group-hover:text-[#2EC4B6] transition-colors">
-                Learn more
+                Explore the capability
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </div>
             </div>

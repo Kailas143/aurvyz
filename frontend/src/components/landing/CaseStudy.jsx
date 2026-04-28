@@ -78,7 +78,7 @@ export default function CaseStudy() {
             <figure className="mt-9 relative pl-6 border-l-2 border-[#2EC4B6]">
               <Quote className="absolute -left-3 -top-2 w-5 h-5 text-[#2EC4B6] bg-[#F7F9FB]" />
               <blockquote className="text-[#1F2937] italic leading-relaxed">
-                “Nexora didn't just give us software — they gave us a system.
+                “Aurvyz didn't just give us software — they gave us a system.
                 Our ops team finally has time to focus on patients again.”
               </blockquote>
               <figcaption className="mt-3 text-xs text-[#4B5563]">
