@@ -49,7 +49,8 @@ export default function AuditChatBubble({ open: controlledOpen, onOpenChange }) 
       });
       if (data.session_id && !sessionId) setSessionId(data.session_id);
       setMessages((m) => [...m, { role: "assistant", content: data.reply }]);
-      if (data.captured_email) setCompleted(true);
+      // NOTE: do NOT set `completed` from data.captured_email — the report-email
+      // form below the audit card is the one source of truth for completion.
     } catch (err) {
       const msg =
         err?.response?.data?.detail ||
@@ -132,7 +133,7 @@ export default function AuditChatBubble({ open: controlledOpen, onOpenChange }) 
             )}
             {completed && (
               <div className="text-[11px] text-center text-[#0B3C5D]/60 pt-2">
-                ✓ Lead captured. The team will reach out shortly.
+                ✓ Report sent. The team will reach out shortly.
               </div>
             )}
           </div>
@@ -424,11 +425,17 @@ function parseReport(text) {
     if (!current) continue;
     if (!line) continue;
     if (line.startsWith("•") || line.startsWith("-") || line.startsWith("*")) {
-      current.bullets.push(line.replace(/^[•\-\*]\s*/, ""));
+      const cleaned = line.replace(/^[•\-\*]\s*/, "").trim();
+      // Skip empty placeholders, dashes, or template markers
+      if (!cleaned || /^[-–—.]+$/.test(cleaned) || /^\[.*\]$/.test(cleaned)) continue;
+      current.bullets.push(cleaned);
     } else {
+      // Skip template placeholder lines
+      if (/^\[.*\]$/.test(line)) continue;
       current.body = current.body ? `${current.body} ${line}` : line;
     }
   }
   if (current) sections.push(current);
-  return sections;
+  // If a section has zero content, drop it so the card doesn't render an empty tile
+  return sections.filter((s) => s.bullets.length > 0 || s.body.trim().length > 0);
 }
