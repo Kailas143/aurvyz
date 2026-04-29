@@ -1,28 +1,34 @@
-import { Search, Lightbulb, Hammer, Trophy, Zap } from "lucide-react";
+import { Search, Lightbulb, Hammer, Rocket, Zap, Monitor } from "lucide-react";
 
 const steps = [
   {
     icon: Search,
-    title: "Analyze your business",
-    desc: "We audit your current stack, workflows and bottlenecks — grounded in your actual data, not generic templates.",
+    title: "Analyze Your Business",
+    desc: "We audit your workflows, tools, and bottlenecks based on your real operations — not generic templates.",
     when: "Day 1",
   },
   {
     icon: Lightbulb,
-    title: "Identify opportunities",
-    desc: "We isolate the 20% of workflows driving 80% of the leverage — and design the automation + product layer around them.",
+    title: "Define Solution & Modules",
+    desc: "We break your system into clear modules and features so you know exactly what will be built.",
+    when: "Day 1",
+  },
+  {
+    icon: Monitor,
+    title: "Build 24-Hour Prototype",
+    desc: "We create a working prototype with real UI and demo data so you can validate everything before development.",
     when: "Day 2",
   },
   {
     icon: Hammer,
-    title: "Build the solution",
-    desc: "Our product + engineering team ships end-to-end: architecture, UX, AI integration, QA and deployment.",
+    title: "Approve & Develop",
+    desc: "Once approved, we build the full system — backend, integrations, and automation — fast and reliably.",
     when: "Day 3–6",
   },
   {
-    icon: Trophy,
-    title: "Deliver measurable results",
-    desc: "You track real outcomes on a shared dashboard — hours saved, revenue lifted, errors reduced. No vague deliverables.",
+    icon: Rocket,
+    title: "Deploy & Go Live",
+    desc: "We deploy your system, connect real data, and ensure everything runs smoothly.",
     when: "Day 7",
   },
 ];
@@ -47,7 +53,7 @@ export default function HowItWorks() {
             <span className="nx-gradient-text"> 7 days</span>.
           </h2>
           <p className="mt-5 text-base sm:text-lg text-[#4B5563] leading-relaxed">
-            Four steps from first call to compounding results. Rapid MVP
+            Five steps from first call to compounding results. Rapid MVP
             delivery — no mystery, no scope creep, no vague timelines.
           </p>
 
@@ -93,7 +99,7 @@ export default function HowItWorks() {
             />
           </svg>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-6">
             {steps.map((s, i) => (
               <div
                 key={i}
