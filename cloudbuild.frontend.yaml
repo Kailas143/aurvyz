@@ -4,7 +4,7 @@ steps:
     args:
       - 'build'
       - '-t'
-      - 'gcr.io/$PROJECT_ID/aurvyz-frontend:$SHORT_SHA'
+      - 'gcr.io/$PROJECT_ID/aurvyz-frontend:${SHORT_SHA}'
       - '-t'
       - 'gcr.io/$PROJECT_ID/aurvyz-frontend:latest'
       - '-f'
@@ -15,7 +15,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'gcr.io/$PROJECT_ID/aurvyz-frontend:$SHORT_SHA'
+      - 'gcr.io/$PROJECT_ID/aurvyz-frontend:${SHORT_SHA}'
 
   # Deploy to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -23,7 +23,7 @@ steps:
       - 'run'
       - 'deploy'
       - 'aurvyz-frontend'
-      - '--image=gcr.io/$PROJECT_ID/aurvyz-frontend:$SHORT_SHA'
+      - '--image=gcr.io/$PROJECT_ID/aurvyz-frontend:${SHORT_SHA}'
       - '--region=europe-west1'
       - '--platform=managed'
       - '--allow-unauthenticated'
@@ -33,7 +33,7 @@ steps:
       - '--max-instances=10'
 
 images:
-  - 'gcr.io/$PROJECT_ID/aurvyz-frontend:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/aurvyz-frontend:${SHORT_SHA}'
   - 'gcr.io/$PROJECT_ID/aurvyz-frontend:latest'
 
 timeout: '3600s'
