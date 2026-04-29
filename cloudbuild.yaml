@@ -84,7 +84,10 @@ steps:
       - '--cpu=1'
       - '--timeout=300'
       - '--max-instances=10'
-
+#ADD THIS SECTION BELOW
+options:
+  logging: CLOUD_LOGGING_ONLY
+  
 images:
   - 'europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/aurvyz/backend:${SHORT_SHA}'
   - 'europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/aurvyz/backend:latest'
