@@ -1,29 +1,32 @@
 steps:
-  # Build the frontend Docker image
+  # Build the frontend Docker image using Dockerfile.frontend
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
       - '-t'
-      - 'gcr.io/$PROJECT_ID/aurvyz-frontend:${SHORT_SHA}'
+      - 'europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/aurvyz-frontend/aurvyz-frontend:${SHORT_SHA}'
       - '-t'
-      - 'gcr.io/$PROJECT_ID/aurvyz-frontend:latest'
+      - 'europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/aurvyz-frontend/aurvyz-frontend:latest'
       - '-f'
       - 'Dockerfile.frontend'
       - '.'
+    id: 'Build'
 
-  # Push the image to Container Registry
+  # Push the image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'gcr.io/$PROJECT_ID/aurvyz-frontend:${SHORT_SHA}'
+      - 'europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/aurvyz-frontend/aurvyz-frontend:${SHORT_SHA}'
+    id: 'Push'
 
   # Deploy to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: gcloud
     args:
       - 'run'
       - 'deploy'
       - 'aurvyz-frontend'
-      - '--image=gcr.io/$PROJECT_ID/aurvyz-frontend:${SHORT_SHA}'
+      - '--image=europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/aurvyz-frontend/aurvyz-frontend:${SHORT_SHA}'
       - '--region=europe-west1'
       - '--platform=managed'
       - '--allow-unauthenticated'
@@ -31,9 +34,11 @@ steps:
       - '--cpu=1'
       - '--timeout=300'
       - '--max-instances=10'
+      - '--quiet'
+    id: 'Deploy'
 
 images:
-  - 'gcr.io/$PROJECT_ID/aurvyz-frontend:${SHORT_SHA}'
-  - 'gcr.io/$PROJECT_ID/aurvyz-frontend:latest'
+  - 'europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/aurvyz-frontend/aurvyz-frontend:${SHORT_SHA}'
+  - 'europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/aurvyz-frontend/aurvyz-frontend:latest'
 
 timeout: '3600s'
