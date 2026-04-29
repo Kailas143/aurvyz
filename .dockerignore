@@ -23,3 +23,8 @@ test_reports/
 .codex/
 tests/
 memory/
+
+# Node
+**/node_modules/
+npm-debug.log*
+build/
