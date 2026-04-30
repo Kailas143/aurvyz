@@ -66,7 +66,7 @@ export default function Hero({ onBookCall, onStartAudit }) {
             <span className="text-[15px] leading-snug text-[#1F2937] relative z-10">
               <span className="font-bold text-[#0B3C5D]">Your vision is our investment.</span>
               <br className="sm:hidden" />
-              <span className="text-[#4B5563] sm:ml-1">Don’t pay for your own vision - only for the working prototype that proves them.</span>
+              <span className="text-[#4B5563] sm:ml-1">Pay only for a working system that proves it..</span>
             </span>
           </div>
 
