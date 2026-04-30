@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
 
 const links = [
   { href: "#positioning", label: "Company" },
@@ -39,9 +38,9 @@ export default function Nav({ onBookCall }) {
           data-testid="nav-logo"
           className="flex items-center gap-2 group"
         >
-          <span className="relative grid place-items-center w-9 h-9 rounded-[10px] bg-[#0B3C5D] text-white">
-            <Sparkles className="w-4 h-4 text-[#2EC4B6]" />
-            <span className="absolute inset-0 rounded-[10px] ring-1 ring-[#2EC4B6]/40" />
+          <span className="relative grid place-items-center w-9 h-9 rounded-[10px] bg-white overflow-hidden text-white">
+            <img src="/assets/logo.png" alt="Aurvyz AI Logo" className="w-full h-full object-cover" />
+            <span className="absolute inset-0 rounded-[10px] ring-1 ring-[#2EC4B6]/40 pointer-events-none" />
           </span>
           <span className="flex flex-col leading-none">
             <span className="font-display font-bold text-[#0B3C5D] text-lg tracking-tight">

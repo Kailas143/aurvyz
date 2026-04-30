@@ -59,14 +59,14 @@ export default function Hero({ onBookCall, onStartAudit }) {
             data-testid="hero-pricing-guarantee"
             className="mt-6 inline-flex flex-col sm:flex-row items-start sm:items-center gap-3 p-2 pr-5 rounded-2xl sm:rounded-full bg-gradient-to-r from-white to-[#F7F9FB] border border-[#0B3C5D]/10 shadow-[0_4px_20px_-4px_rgba(11,60,93,0.08)] hover:shadow-[0_8px_30px_-4px_rgba(11,60,93,0.12)] hover:border-[#2EC4B6]/50 transition-all duration-300 relative overflow-hidden group"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-[#2EC4B6]/0 via-[#2EC4B6]/10 to-[#2EC4B6]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#2EC4B6]/0 via-[#2EC4B6]1/10 to-[#2EC4B6]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
             <span className="inline-flex shrink-0 items-center justify-center w-10 h-10 rounded-full bg-[#0B3C5D] text-[#2EC4B6] shadow-inner relative z-10">
               <Gift className="w-5 h-5" strokeWidth={2} />
             </span>
             <span className="text-[15px] leading-snug text-[#1F2937] relative z-10">
-              <span className="font-bold text-[#0B3C5D]">We don’t charge upfront for ideas.</span>
+              <span className="font-bold text-[#0B3C5D]">Your vision is our investment.</span>
               <br className="sm:hidden" />
-              <span className="text-[#4B5563] sm:ml-1">We only charge once you see a working prototype.</span>
+              <span className="text-[#4B5563] sm:ml-1">Don’t pay for your own vision - only for the working prototype that proves them.</span>
             </span>
           </div>
 

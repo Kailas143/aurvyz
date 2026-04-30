@@ -20,8 +20,8 @@ export default function Footer({ onBookCall }) {
           {/* Brand */}
           <div className="lg:col-span-5">
             <div className="flex items-center gap-2">
-              <span className="grid place-items-center w-10 h-10 rounded-xl bg-white/10 border border-white/15">
-                <Sparkles className="w-4 h-4 text-[#2EC4B6]" />
+              <span className="grid place-items-center w-10 h-10 rounded-xl bg-white overflow-hidden border border-white/15">
+                <img src="/assets/logo.png" alt="Aurvyz AI Logo" className="w-full h-full object-cover" />
               </span>
               <span className="font-display font-bold text-xl">
                 Aurvyz<span className="text-[#2EC4B6]">.</span>AI
