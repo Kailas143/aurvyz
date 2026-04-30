@@ -52,7 +52,7 @@ export default function Hero({ onBookCall, onStartAudit }) {
             data-testid="hero-subheadline"
             className="mt-6 text-base sm:text-lg text-[#4B5563] max-w-2xl leading-relaxed"
           >
-            We design and build AI-powered systems that automate your workflows, reduce manual effort, and help your business scale faster.
+            We’re here to help you to build AI-powered systems that automate your workflows, reduce manual effort, and help your business scale faster.
           </p>
 
           <div
@@ -110,8 +110,7 @@ export default function Hero({ onBookCall, onStartAudit }) {
               ))}
             </div>
             <div>
-              <span className="font-semibold text-[#0B3C5D]">40+ teams</span>{" "}
-              automated & scaled with Aurvyz systems.
+              We’re here to help you build what matters — and scale it with confidence.
             </div>
           </div>
         </div>
