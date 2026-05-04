@@ -40,7 +40,7 @@ audit_chat_service = GeminiAuditChatService(
     model=GEMINI_MODEL,
 )
 
-NEXORA_SYSTEM_PROMPT = """You are "Nexie", the senior AI consultant for Aurvyz — a product-driven AI automation company that builds AI products and custom software for modern businesses.
+AURVYZ_SYSTEM_PROMPT = """You are "Nexie", the senior AI consultant for Aurvyz — a product-driven AI automation company that builds AI products and custom software for modern businesses.
 
 Your goal: run a CONVERSATIONAL AUDIT in 5 short steps, then deliver a tailored audit report and capture the user's email.
 
@@ -483,7 +483,7 @@ async def audit_chat(payload: AuditChatRequest, background_tasks: BackgroundTask
 
     try:
         reply = await audit_chat_service.generate_reply(
-            system_prompt=NEXORA_SYSTEM_PROMPT,
+            system_prompt=AURVYZ_SYSTEM_PROMPT,
             history=payload.history,
             message=payload.message,
         )

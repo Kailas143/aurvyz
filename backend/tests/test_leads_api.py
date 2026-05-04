@@ -1,4 +1,4 @@
-"""Backend tests for Nexora AI landing page API (leads endpoint)."""
+"""Backend tests for Aurvyz landing page API (leads endpoint)."""
 import os
 import pytest
 import requests

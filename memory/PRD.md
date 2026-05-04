@@ -1,4 +1,4 @@
-# Nexora AI — Landing Page PRD
+# Aurvyz — Landing Page PRD
 
 ## Original Problem Statement
 High-converting landing page for an AI Automation & Product Development Company. Positioning: "A product-driven AI automation company that builds scalable solutions and also delivers custom software for businesses" — NOT a typical service agency. Build own AI products + help businesses automate.
@@ -31,7 +31,7 @@ User-specified palette: Deep Blue #0B3C5D, Soft Blue #328CC1, Teal #2EC4B6, BG #
   - Cabinet Grotesk (Fontshare) display + Inter body
   - Custom CSS animations: beam pulse, dash flow, rise-in, gradient text
   - Shadcn Button/Input/Textarea + sonner toasts
-- **Placeholders**: brand "Nexora.AI", products FlowMind / ClinicOS / InsightIQ, email hello@nexora.ai, LinkedIn placeholder
+- **Placeholders**: brand "Aurvyz", products FlowMind / ClinicOS / InsightIQ, email hello@aurvyz.com, LinkedIn placeholder
 
 ## Test Status
 - Backend: 11/11 pytest cases passing
