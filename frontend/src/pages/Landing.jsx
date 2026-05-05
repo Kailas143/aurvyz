@@ -5,7 +5,9 @@ import Logos from "@/components/landing/Logos";
 import Positioning from "@/components/landing/Positioning";
 import Problem from "@/components/landing/Problem";
 import Services from "@/components/landing/Services";
+import PrototypeBanner from "@/components/landing/PrototypeBanner";
 import Products from "@/components/landing/Products";
+import UseCases from "@/components/landing/UseCases";
 import HowItWorks from "@/components/landing/HowItWorks";
 import Benefits from "@/components/landing/Benefits";
 import CaseStudy from "@/components/landing/CaseStudy";
@@ -32,7 +34,9 @@ export default function Landing() {
       <Positioning />
       <Problem />
       <Services />
+      <PrototypeBanner onStartAudit={openAuditChat} />
       <Products />
+      <UseCases />
       <HowItWorks />
       <Benefits />
       <CaseStudy />

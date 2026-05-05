@@ -36,7 +36,7 @@ export default function Hero({ onBookCall, onStartAudit }) {
             <span className="w-1.5 h-1.5 rounded-full bg-[#2EC4B6] animate-pulse" />
             <span>From idea to working solution in days - not months.</span>
             <span className="text-[#0B3C5D]/35">|</span>
-            <span>A Complete AI Driven Studio</span>
+            <span><b>24-Hour</b> Prototype</span>
           </div>
 
           <h1
