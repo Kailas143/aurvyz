@@ -48,10 +48,10 @@ export default function UseCases() {
             data-testid="use-cases-headline"
             className="font-display mt-4 text-3xl sm:text-5xl font-bold text-[#0B3C5D] leading-[1.08] tracking-tight"
           >
-            We've Will Built Systems For...
+            Systems Engineered for Scale.
           </h2>
           <p className="mt-5 text-sm sm:text-base text-[#4B5563] max-w-xl leading-relaxed">
-            Industry-specific solutions engineered for scale. We don't just build software; we build the operating systems of modern businesses.
+            Industry-specific operational systems. We don't just build software; we build the infrastructure of modern businesses.
           </p>
         </div>
 

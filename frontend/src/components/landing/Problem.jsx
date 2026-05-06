@@ -19,7 +19,7 @@ const issues = [
   {
     icon: AlertTriangle,
     title: "No automation, no scalability",
-    body: "Growth breaks your ops. Every new customer adds friction instead of compounding leverage.",
+    body: "Growth breaks your ops. Every new customer adds friction instead of helping you scale faster.",
   },
 ];
 

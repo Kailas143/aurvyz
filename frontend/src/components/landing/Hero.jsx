@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, PhoneCall, Sparkles, Gift } from "lucide-react";
+import { ArrowRight, Sparkles, Gift, ShieldCheck } from "lucide-react";
 
-const HERO_IMG =
-  "/assets/hero-aurvyz-ai-studio.png";
+const HERO_IMG = "/assets/hero-aurvyz-ai-studio.png";
 
 export default function Hero({ onBookCall, onStartAudit }) {
   const scrollTo = (id) => () => {
@@ -14,121 +13,114 @@ export default function Hero({ onBookCall, onStartAudit }) {
     <section
       id="top"
       data-testid="hero-section"
-      className="relative pt-32 pb-24 sm:pt-40 sm:pb-32 overflow-hidden"
+      className="relative pt-32 pb-24 sm:pt-48 sm:pb-40 overflow-hidden"
     >
-      {/* Subtle grid background */}
-      <div
-        aria-hidden
-        className="absolute inset-0 opacity-[0.35]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(11,60,93,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(11,60,93,0.07) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-          maskImage:
-            "radial-gradient(ellipse at 30% 20%, #000 40%, transparent 75%)",
-        }}
-      />
+      {/* Subtle grid & ambient glow */}
+      <div aria-hidden className="absolute inset-0 pointer-events-none">
+        <div 
+          className="absolute inset-0 opacity-[0.25]"
+          style={{
+            backgroundImage: "linear-gradient(rgba(11,60,93,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(11,60,93,0.07) 1px, transparent 1px)",
+            backgroundSize: "64px 64px",
+            maskImage: "radial-gradient(ellipse at 30% 20%, #000 40%, transparent 80%)",
+          }}
+        />
+        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[800px] h-[800px] bg-[#328CC1]/10 rounded-full blur-[140px]" />
+        <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/4 w-[600px] h-[600px] bg-[#2EC4B6]/10 rounded-full blur-[120px]" />
+      </div>
 
-      <div className="relative max-w-7xl mx-auto px-5 sm:px-8 grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-        {/* Left: content */}
-        <div className="lg:col-span-7 nx-rise">
-          <div className="inline-flex flex-wrap items-center gap-2 px-3 py-1.5 rounded-full border border-[#0B3C5D]/15 bg-white/70 backdrop-blur-sm text-xs font-semibold text-[#0B3C5D]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#2EC4B6] animate-pulse" />
-            <span>From idea to working solution in days - not months.</span>
-            <span className="text-[#0B3C5D]/35">|</span>
-            <span><b>24-Hour</b> Prototype</span>
+      <div className="relative max-w-7xl mx-auto px-5 sm:px-8">
+        <div className="flex flex-col lg:items-center lg:text-center max-w-4xl mx-auto">
+          
+          {/* Badge */}
+          <div className="nx-rise inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#0B3C5D]/10 bg-white/50 backdrop-blur-md text-[11px] font-bold text-[#0B3C5D] uppercase tracking-widest mb-8">
+            <span className="flex h-2 w-2 rounded-full bg-[#2EC4B6] shadow-[0_0_8px_#2EC4B6]" />
+            Engineering Operational Systems
           </div>
 
           <h1
             data-testid="hero-headline"
-            className="font-display mt-6 text-4xl sm:text-5xl lg:text-6xl font-bold text-[#0B3C5D] leading-[1.05] tracking-tight"
+            className="nx-rise font-display text-4xl sm:text-6xl lg:text-7xl font-bold text-[#0B3C5D] leading-[1.05] tracking-tight"
+            style={{ animationDelay: '0.1s' }}
           >
-            Future-Ready Systems.
-            <br className="hidden sm:block" />{" "}
+            Future-Ready Operational Systems. <br />
             <span className="nx-gradient-text">Built on Trust.</span>
           </h1>
 
           <p
             data-testid="hero-subheadline"
-            className="mt-6 text-base sm:text-lg text-[#4B5563] max-w-2xl leading-relaxed"
+            className="nx-rise mt-8 text-base sm:text-xl text-[#4B5563] max-w-2xl leading-relaxed"
+            style={{ animationDelay: '0.2s' }}
           >
-            We’re here to help you to build AI-powered systems that automate your workflows, reduce manual effort, and help your business scale faster.
+            We design and engineer AI-powered operational systems that automate workflows, reduce manual work, and help growing businesses scale faster.
           </p>
 
+          {/* Pricing Highlight */}
           <div
             data-testid="hero-pricing-guarantee"
-            className="mt-6 inline-flex flex-col sm:flex-row items-start sm:items-center gap-3 p-2 pr-5 rounded-2xl sm:rounded-full bg-gradient-to-r from-white to-[#F7F9FB] border border-[#0B3C5D]/10 shadow-[0_4px_20px_-4px_rgba(11,60,93,0.08)] hover:shadow-[0_8px_30px_-4px_rgba(11,60,93,0.12)] hover:border-[#2EC4B6]/50 transition-all duration-300 relative overflow-hidden group"
+            className="nx-rise mt-10 inline-flex items-center gap-4 p-1.5 pr-6 rounded-full bg-white border border-[#0B3C5D]/5 shadow-xl shadow-[#0B3C5D]/5 group hover:border-[#2EC4B6]/30 transition-all duration-500"
+            style={{ animationDelay: '0.3s' }}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-[#2EC4B6]/0 via-[#2EC4B6]1/10 to-[#2EC4B6]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-            <span className="inline-flex shrink-0 items-center justify-center w-10 h-10 rounded-full bg-[#0B3C5D] text-[#2EC4B6] shadow-inner relative z-10">
-              <Gift className="w-5 h-5" strokeWidth={2} />
-            </span>
-            <span className="text-[15px] leading-snug text-[#1F2937] relative z-10">
-              <span className="font-bold text-[#0B3C5D]">Your vision is our investment.</span>
-              <br className="sm:hidden" />
-              <span className="text-[#4B5563] sm:ml-1">Pay only for a working system that proves it..</span>
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#0B3C5D] text-[#2EC4B6]">
+              <Gift className="w-5 h-5" />
+            </div>
+            <span className="text-sm font-medium text-[#1F2937]">
+              Your vision is our investment. <span className="font-bold text-[#0B3C5D]">Pay only after validating a working prototype.</span>
             </span>
           </div>
 
-          <div className="mt-9 flex flex-col sm:flex-row gap-3">
-            <Button
-              data-testid="hero-cta-audit"
-              onClick={scrollTo("#cta")}
-              className="h-12 px-7 rounded-full bg-[#0B3C5D] hover:bg-[#08304a] text-white shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all"
-            >
-              Get Free Business Audit
-              <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
+          {/* CTAs */}
+          <div className="nx-rise mt-10 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto" style={{ animationDelay: '0.4s' }}>
             <Button
               data-testid="hero-cta-start-audit"
               onClick={onStartAudit}
-              className="h-12 px-7 rounded-full bg-[#2EC4B6] text-[#0B3C5D] hover:bg-[#26b0a4] shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all font-semibold"
+              className="h-14 px-8 rounded-full bg-[#0B3C5D] text-white hover:bg-[#08304a] shadow-xl shadow-[#0B3C5D]/10 hover:shadow-2xl hover:-translate-y-0.5 transition-all w-full sm:w-auto font-bold text-base"
             >
-              <Sparkles className="w-4 h-4" />
-              Start AI Audit
+              <Sparkles className="w-4 h-4 mr-2" />
+              Start Free AI Audit
             </Button>
             <Button
               data-testid="hero-cta-call"
               onClick={onBookCall}
               variant="outline"
-              className="h-12 px-7 rounded-full border-[#0B3C5D]/25 text-[#0B3C5D] hover:bg-[#0B3C5D] hover:text-white transition-all"
+              className="h-14 px-8 rounded-full border-[#0B3C5D]/15 text-[#0B3C5D] hover:bg-[#F7F9FB] transition-all w-full sm:w-auto font-bold text-base bg-white/50 backdrop-blur-sm"
             >
-              <PhoneCall className="w-4 h-4" />
-              Book a Call
+              Book Strategy Call
+              <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
 
           {/* Trust bar */}
-          <div className="mt-12 flex items-center gap-6 text-xs text-[#4B5563]">
-            <div className="flex -space-x-2">
-              {["#0B3C5D", "#328CC1", "#2EC4B6"].map((c, i) => (
-                <span
-                  key={i}
-                  className="w-8 h-8 rounded-full border-2 border-[#F7F9FB]"
-                  style={{ background: c }}
-                />
-              ))}
+          <div className="nx-rise mt-16 flex items-center gap-6 text-xs text-[#4B5563] font-medium" style={{ animationDelay: '0.5s' }}>
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-[#2EC4B6]" />
+              7-Day Rapid Prototype
             </div>
-            <div>
-              We’re here to help you build what matters — and scale it with confidence.
+            <div className="w-px h-4 bg-[#0B3C5D]/10" />
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-[#2EC4B6]" />
+              Zero Upfront Risk
+            </div>
+            <div className="w-px h-4 bg-[#0B3C5D]/10" />
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-[#2EC4B6]" />
+              Built for Real Operations
             </div>
           </div>
+
         </div>
 
-        {/* Right: floating visual */}
-        <div className="lg:col-span-5 relative nx-rise" style={{ animationDelay: "0.15s" }}>
-          <div className="relative">
-            <div className="absolute -inset-6 rounded-[32px] bg-gradient-to-br from-[#328CC1]/20 via-transparent to-[#2EC4B6]/25 blur-2xl" />
-            <div className="absolute inset-x-8 -bottom-5 h-10 rounded-full bg-[#0B3C5D]/15 blur-2xl" />
-            <div className="relative rounded-[28px] overflow-hidden border border-[#0B3C5D]/10 bg-[#071120] shadow-[0_30px_90px_rgba(11,60,93,0.22)]">
-              <img
-                src={HERO_IMG}
-                alt="Aurvyz AI systems dashboard and automation showcase"
-                className="w-full h-[360px] sm:h-[500px] object-cover object-center"
-                loading="eager"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#020817]/10 via-transparent to-white/5 pointer-events-none" />
-            </div>
+        {/* Dashboard Preview */}
+        <div className="nx-rise mt-20 relative max-w-5xl mx-auto" style={{ animationDelay: '0.6s' }}>
+          <div className="absolute -inset-4 rounded-[40px] bg-gradient-to-br from-[#328CC1]/10 via-transparent to-[#2EC4B6]/10 blur-2xl" />
+          <div className="relative rounded-[32px] overflow-hidden border border-[#0B3C5D]/10 bg-[#0B3C5D] shadow-[0_40px_100px_-20px_rgba(11,60,93,0.3)] group">
+            <img
+              src={HERO_IMG}
+              alt="Aurvyz AI systems dashboard"
+              className="w-full object-cover transition-transform duration-1000 group-hover:scale-[1.02]"
+              loading="eager"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0B3C5D]/40 to-transparent pointer-events-none" />
           </div>
         </div>
       </div>

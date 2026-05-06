@@ -28,9 +28,9 @@ export default function Footer({ onBookCall }) {
               </span>
             </div>
             <p className="mt-6 text-sm text-white/65 max-w-md leading-relaxed">
-              A product-driven AI automation company. We build AI products and
-              custom software that help businesses grow faster and operate
-              smarter.
+              A product-driven **Operational Systems Company**. We engineer the 
+              infrastructure that helps growing businesses scale faster with 
+              future-ready operational systems.
             </p>
             <div className="mt-8 flex gap-3">
               <a
@@ -63,7 +63,7 @@ export default function Footer({ onBookCall }) {
               <ul className="mt-4 space-y-3 text-sm text-white/75">
                 <li>
                   <button
-                    onClick={scrollTo("#positioning")}
+                    onClick={scrollTo("#why-aurvyz")}
                     className="hover:text-white"
                   >
                     About
@@ -79,23 +79,23 @@ export default function Footer({ onBookCall }) {
                 </li>
                 <li>
                   <button
-                    onClick={scrollTo("#products")}
+                    onClick={scrollTo("#capabilities")}
                     className="hover:text-white"
                   >
-                    Products
+                    Capabilities
                   </button>
                 </li>
               </ul>
             </div>
             <div>
               <div className="text-[11px] tracking-widest uppercase text-[#2EC4B6] font-semibold">
-                Services
+                What We Engineer
               </div>
               <ul className="mt-4 space-y-3 text-sm text-white/75">
-                <li>Website Development</li>
-                <li>ERP Systems</li>
-                <li>AI Applications</li>
-                <li>Business Automation</li>
+                <li>Operational Workflows</li>
+                <li>Custom ERP Systems</li>
+                <li>AI Operating Modules</li>
+                <li>Scale Infrastructure</li>
               </ul>
             </div>
             <div>
@@ -108,7 +108,7 @@ export default function Footer({ onBookCall }) {
                     onClick={scrollTo("#cta")}
                     className="inline-flex items-center gap-1 hover:text-white"
                   >
-                    Free Audit
+                    Free Systems Audit
                     <ArrowUpRight className="w-3.5 h-3.5" />
                   </button>
                 </li>

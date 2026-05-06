@@ -2,16 +2,13 @@ import { useState } from "react";
 import Nav from "@/components/landing/Nav";
 import Hero from "@/components/landing/Hero";
 import Logos from "@/components/landing/Logos";
-import Positioning from "@/components/landing/Positioning";
-import Problem from "@/components/landing/Problem";
-import Services from "@/components/landing/Services";
-import PrototypeBanner from "@/components/landing/PrototypeBanner";
-import Products from "@/components/landing/Products";
+import ProblemSolution from "@/components/landing/ProblemSolution";
+import Capabilities from "@/components/landing/Capabilities";
 import UseCases from "@/components/landing/UseCases";
 import HowItWorks from "@/components/landing/HowItWorks";
+import PrototypeBanner from "@/components/landing/PrototypeBanner";
 import Benefits from "@/components/landing/Benefits";
 import CaseStudy from "@/components/landing/CaseStudy";
-import Testimonials from "@/components/landing/Testimonials";
 import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
 import BookingModal from "@/components/landing/BookingModal";
@@ -31,16 +28,13 @@ export default function Landing() {
       <Nav onBookCall={openBooking} onStartAudit={openAuditChat} />
       <Hero onBookCall={openBooking} onStartAudit={openAuditChat} />
       <Logos />
-      <Positioning />
-      <Problem />
-      <Services />
-      <PrototypeBanner onStartAudit={openAuditChat} />
-      <Products />
+      <ProblemSolution />
+      <Capabilities />
       <UseCases />
       <HowItWorks />
+      <PrototypeBanner onStartAudit={openAuditChat} />
       <Benefits />
       <CaseStudy />
-      <Testimonials />
       <CTASection onBookCall={openBooking} onStartAudit={openAuditChat} />
       <Footer onBookCall={openBooking} onStartAudit={openAuditChat} />
       <BookingModal open={bookingOpen} onOpenChange={setBookingOpen} />

@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const links = [
-  { href: "#positioning", label: "Company" },
-  { href: "#services", label: "Services" },
-  { href: "#products", label: "Products" },
-  { href: "#use-cases", label: "Use Cases" },
-  { href: "#how", label: "Process" },
-  { href: "#case-study", label: "Work" },
+  { href: "/#why-aurvyz", label: "Why Aurvyz" },
+  { href: "/#capabilities", label: "Capabilities" },
+  { href: "/demo-lab", label: "Demo Lab" },
+  { href: "/#use-cases", label: "Use Cases" },
+  { href: "/#how", label: "Process" },
+  { href: "/#case-study", label: "Work" },
 ];
 
 export default function Nav({ onBookCall }) {
@@ -19,9 +19,21 @@ export default function Nav({ onBookCall }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const scrollTo = (id) => () => {
-    const el = document.querySelector(id);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  const navigate = (href) => (e) => {
+    if (href.startsWith("/#")) {
+      const id = href.replace("/", "");
+      const el = document.querySelector(id);
+      if (el) {
+        e.preventDefault();
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    } else if (href.startsWith("#")) {
+       const el = document.querySelector(href);
+       if (el) {
+         e.preventDefault();
+         el.scrollIntoView({ behavior: "smooth", block: "start" });
+       }
+    }
   };
 
   return (
@@ -35,7 +47,7 @@ export default function Nav({ onBookCall }) {
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8 py-4 flex items-center justify-between">
         <a
-          href="#top"
+          href="/"
           data-testid="nav-logo"
           className="flex items-center gap-2 group"
         >
@@ -48,22 +60,23 @@ export default function Nav({ onBookCall }) {
               Aurvyz<span className="text-[#2EC4B6]">.</span>AI
             </span>
             <span className="mt-1 text-[10px] font-medium tracking-[0.18em] uppercase text-[#0B3C5D]/55">
-              Intelligence, Engineered
+              Operational Systems Company
             </span>
           </span>
         </a>
 
         <nav className="hidden md:flex items-center gap-8">
           {links.map((l) => (
-            <button
+            <a
               key={l.href}
-              onClick={scrollTo(l.href)}
+              href={l.href}
+              onClick={navigate(l.href)}
               data-testid={`nav-link-${l.label.toLowerCase()}`}
-              className="text-sm text-[#1F2937]/80 hover:text-[#0B3C5D] transition-colors relative group"
+              className="text-sm font-medium text-[#1F2937]/80 hover:text-[#0B3C5D] transition-colors relative group"
             >
               {l.label}
               <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-[#2EC4B6] group-hover:w-full transition-all duration-300" />
-            </button>
+            </a>
           ))}
         </nav>
 
@@ -77,10 +90,10 @@ export default function Nav({ onBookCall }) {
           </button>
           <Button
             data-testid="nav-cta-audit"
-            onClick={scrollTo("#cta")}
+            asChild
             className="bg-[#0B3C5D] hover:bg-[#08304a] text-white rounded-full px-5 h-10 shadow-sm"
           >
-            Free Audit
+            <a href="/#cta" onClick={navigate("/#cta")}>Free Audit</a>
           </Button>
         </div>
       </div>
