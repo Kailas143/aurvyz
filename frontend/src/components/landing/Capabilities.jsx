@@ -1,4 +1,4 @@
-import { Globe, Database, BrainCircuit, Workflow, ArrowRight, Bot, Stethoscope, BarChart3, Clock } from "lucide-react";
+import { Globe, Database, BrainCircuit, Workflow, ArrowRight, Bot, Stethoscope, BarChart3, Clock, ReceiptText } from "lucide-react";
 
 const capabilities = [
   {
@@ -25,22 +25,16 @@ const capabilities = [
 
 const solutions = [
   {
-    icon: Bot,
-    name: "FlowMind",
-    desc: "Automates multi-step workflows across intake and reporting.",
-    tag: "Workflow AI",
-  },
-  {
     icon: Stethoscope,
     name: "ClinicOS",
     desc: "Unifies bookings, records, and AI front-desk for clinic teams.",
     tag: "Business OS",
   },
   {
-    icon: BarChart3,
-    name: "InsightIQ",
-    desc: "Turns raw business data into AI-generated weekly summaries.",
-    tag: "Analytics",
+    icon: ReceiptText,
+    name: "BillFlow AI",
+    desc: "AI-powered invoice analysis and approval workflow system.",
+    tag: "Finance AI",
   },
 ];
 
@@ -101,7 +95,7 @@ export default function Capabilities() {
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white/90 text-[10px] font-bold uppercase tracking-widest border border-white/10">
                     <Clock className="w-3 h-3 text-[#2EC4B6]" />
-                    Built in 18 hours
+                    Delivered in 18 hours
                 </span>
             </div>
             <h4 className="font-display text-3xl sm:text-4xl font-bold leading-tight">
@@ -137,7 +131,7 @@ export default function Capabilities() {
         </div>
 
         {/* Solutions Grid */}
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {solutions.map((s, i) => (
             <div key={i} className="group relative p-8 rounded-3xl bg-white border border-[#0B3C5D]/10 hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden">
                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">

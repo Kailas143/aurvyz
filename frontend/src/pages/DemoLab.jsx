@@ -36,7 +36,7 @@ export default function DemoLab() {
                 <span className="nx-gradient-text">build for your business.</span>
             </h1>
             <p className="nx-rise mt-8 text-lg sm:text-xl text-[#4B5563] max-w-2xl mx-auto leading-relaxed" style={{ animationDelay: '0.1s' }}>
-                Explore live interactive prototypes of custom operational systems we've engineered to automate workflows and reduce manual overhead.
+                Explore live interactive prototypes of custom operational systems we've engineered. <span className="font-bold text-[#0B3C5D]">We deliver working prototypes in under 24 hours</span> to validate your vision instantly.
             </p>
         </div>
       </section>
@@ -75,7 +75,7 @@ export default function DemoLab() {
                             </div>
                             <div className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-[#0B3C5D]/5 border border-[#0B3C5D]/10 text-[#0B3C5D] text-xs font-bold uppercase tracking-wider">
                                 <Clock className="w-4 h-4 text-[#2EC4B6]" />
-                                Built in 18 hours
+                                Delivered in 18 hours
                             </div>
                         </div>
                         
@@ -102,8 +102,64 @@ export default function DemoLab() {
                     </div>
                 </div>
 
+                {/* BillFlow AI System */}
+                <div className="nx-rise group relative rounded-[40px] bg-white border border-[#0B3C5D]/10 p-4 shadow-2xl shadow-[#0B3C5D]/5 hover:shadow-3xl hover:border-[#2EC4B6]/30 transition-all duration-500 overflow-hidden" style={{ animationDelay: '0.3s' }}>
+                    <div className="relative rounded-[32px] overflow-hidden aspect-video border border-[#0B3C5D]/5 bg-[#0B3C5D]">
+                        <img 
+                            src="/assets/billflow-demo.png" 
+                            alt="BillFlow AI System Demo" 
+                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0B3C5D]/90 via-[#0B3C5D]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-8">
+                             <a 
+                                href="https://billflow-ai-invoice-approval-46587032761.asia-southeast1.run.app/" 
+                                target="_blank" 
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#2EC4B6] text-[#0B3C5D] font-bold text-base shadow-2xl hover:scale-105 active:scale-95 transition-all"
+                             >
+                                Open Live Demo <ExternalLink className="w-4 h-4" />
+                             </a>
+                        </div>
+                    </div>
+                    
+                    <div className="p-8 sm:p-10">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
+                            <div>
+                                <div className="text-[10px] tracking-widest uppercase text-[#328CC1] font-bold mb-2">Finance Automation</div>
+                                <h3 className="font-display text-3xl font-bold text-[#0B3C5D]">BillFlow AI</h3>
+                                <p className="text-lg text-[#2EC4B6] font-semibold mt-1">Automated Invoice Approval</p>
+                            </div>
+                            <div className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-[#0B3C5D]/5 border border-[#0B3C5D]/10 text-[#0B3C5D] text-xs font-bold uppercase tracking-wider">
+                                <Clock className="w-4 h-4 text-[#2EC4B6]" />
+                                Delivered in 12 hours
+                            </div>
+                        </div>
+                        
+                        <p className="text-[#4B5563] leading-relaxed mb-10 text-base">
+                            An AI-powered invoice management system that automates document extraction and approval workflows. Features Gemini AI analysis, side-by-side review mode, and instant dashboard synchronization.
+                        </p>
+                        
+                        <div className="grid grid-cols-2 gap-6 pt-8 border-t border-[#0B3C5D]/5">
+                            <div>
+                                <div className="text-[10px] uppercase tracking-widest text-[#4B5563]/60 font-bold mb-2">Core Tech</div>
+                                <div className="flex flex-wrap gap-2">
+                                    <span className="text-xs font-semibold text-[#0B3C5D]">Gemini AI</span>
+                                    <span className="text-xs text-[#4B5563]/40">•</span>
+                                    <span className="text-xs font-semibold text-[#0B3C5D]">Next.js</span>
+                                    <span className="text-xs text-[#4B5563]/40">•</span>
+                                    <span className="text-xs font-semibold text-[#0B3C5D]">Intelligent OCR</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-[10px] uppercase tracking-widest text-[#4B5563]/60 font-bold mb-2">Outcome</div>
+                                <div className="text-xs font-semibold text-[#0B3C5D]">98% Extraction Accuracy</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Placeholder / CTA Card */}
-                <div className="nx-rise relative rounded-[40px] border-2 border-dashed border-[#0B3C5D]/15 bg-[#0B3C5D]/[0.02] p-12 lg:p-16 flex flex-col items-center justify-center text-center group" style={{ animationDelay: '0.3s' }}>
+                <div className="nx-rise relative rounded-[40px] border-2 border-dashed border-[#0B3C5D]/15 bg-[#0B3C5D]/[0.02] p-12 lg:p-16 flex flex-col items-center justify-center text-center group" style={{ animationDelay: '0.4s' }}>
                     <div className="absolute inset-0 bg-gradient-to-br from-[#328CC1]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-[40px]" />
                     <div className="relative z-10 flex flex-col items-center">
                         <div className="w-20 h-20 rounded-3xl bg-white shadow-xl flex items-center justify-center mb-8 text-[#0B3C5D] group-hover:scale-110 transition-transform duration-500">

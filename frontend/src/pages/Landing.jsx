@@ -38,7 +38,7 @@ export default function Landing() {
       <CTASection onBookCall={openBooking} onStartAudit={openAuditChat} />
       <Footer onBookCall={openBooking} onStartAudit={openAuditChat} />
       <BookingModal open={bookingOpen} onOpenChange={setBookingOpen} />
-      <AuditChatBubble open={chatOpen} onOpenChange={setChatOpen} />
+      <AuditChatBubble open={chatOpen} onOpenChange={setChatOpen} onBookCall={openBooking} />
     </main>
   );
 }

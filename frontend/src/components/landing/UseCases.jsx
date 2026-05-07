@@ -1,4 +1,4 @@
-import { Stethoscope, ShoppingBag, Truck, Users, Rocket, CheckCircle2 } from "lucide-react";
+import { Stethoscope, ShoppingBag, Truck, Users, Rocket, CheckCircle2, Briefcase } from "lucide-react";
 
 const useCases = [
   {
@@ -25,6 +25,11 @@ const useCases = [
     industry: "Startups",
     icon: Rocket,
     features: ["MVPs", "Internal dashboards", "AI assistants"],
+  },
+  {
+    industry: "Consultancies",
+    icon: Briefcase,
+    features: ["Client portal", "Resource planning", "Automated reporting"],
   },
 ];
 

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Gift, ShieldCheck } from "lucide-react";
+import { ArrowRight, Sparkles, Gift, ShieldCheck, Zap } from "lucide-react";
 
 const HERO_IMG = "/assets/hero-aurvyz-ai-studio.png";
 
@@ -52,7 +52,7 @@ export default function Hero({ onBookCall, onStartAudit }) {
             className="nx-rise mt-8 text-base sm:text-xl text-[#4B5563] max-w-2xl leading-relaxed"
             style={{ animationDelay: '0.2s' }}
           >
-            We design and engineer AI-powered operational systems that automate workflows, reduce manual work, and help growing businesses scale faster.
+            We design and engineer AI-powered operational systems that automate workflows, reduce manual work, and <span className="font-bold text-[#0B3C5D]">deliver interactive prototypes in under 24 hours.</span>
           </p>
 
           {/* Pricing Highlight */}
@@ -93,8 +93,8 @@ export default function Hero({ onBookCall, onStartAudit }) {
           {/* Trust bar */}
           <div className="nx-rise mt-16 flex items-center gap-6 text-xs text-[#4B5563] font-medium" style={{ animationDelay: '0.5s' }}>
             <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-[#2EC4B6]" />
-              7-Day Rapid Prototype
+              <Zap className="w-4 h-4 text-[#2EC4B6]" />
+              24-Hour Prototype Delivery
             </div>
             <div className="w-px h-4 bg-[#0B3C5D]/10" />
             <div className="flex items-center gap-2">
@@ -114,6 +114,12 @@ export default function Hero({ onBookCall, onStartAudit }) {
         <div className="nx-rise mt-20 relative max-w-5xl mx-auto" style={{ animationDelay: '0.6s' }}>
           <div className="absolute -inset-4 rounded-[40px] bg-gradient-to-br from-[#328CC1]/10 via-transparent to-[#2EC4B6]/10 blur-2xl" />
           <div className="relative rounded-[32px] overflow-hidden border border-[#0B3C5D]/10 bg-[#0B3C5D] shadow-[0_40px_100px_-20px_rgba(11,60,93,0.3)] group">
+            <div className="absolute top-6 right-6 z-20 hidden sm:flex flex-col items-center gap-2 px-5 py-4 rounded-3xl bg-[#0B3C5D]/80 backdrop-blur-xl border border-white/10 shadow-2xl animate-pulse">
+              <Zap className="w-6 h-6 text-[#2EC4B6] fill-[#2EC4B6]" />
+              <div className="text-[10px] font-bold text-white uppercase tracking-[0.2em] text-center leading-tight">
+                24 Hour<br />Delivery
+              </div>
+            </div>
             <img
               src={HERO_IMG}
               alt="Aurvyz AI systems dashboard"
