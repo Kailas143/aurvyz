@@ -46,7 +46,62 @@ export default function DemoLab() {
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
             <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
                 
-                {/* Clinic AI System */}
+                {/* Global Admissions OS */}
+                <div className="nx-rise group relative rounded-[40px] bg-white border border-[#0B3C5D]/10 p-4 shadow-2xl shadow-[#0B3C5D]/5 hover:shadow-3xl hover:border-[#2EC4B6]/30 transition-all duration-500 overflow-hidden" style={{ animationDelay: '0.1s' }}>
+                    <div className="relative rounded-[32px] overflow-hidden aspect-video border border-[#0B3C5D]/5 bg-[#0B3C5D]">
+                        <img 
+                            src="/assets/global-admissions-demo.png" 
+                            alt="Global Admissions OS Demo" 
+                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0B3C5D]/90 via-[#0B3C5D]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-8">
+                             <a 
+                                href="https://aurvyz-global-admissions-os-20080430338.asia-southeast1.run.app" 
+                                target="_blank" 
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#2EC4B6] text-[#0B3C5D] font-bold text-base shadow-2xl hover:scale-105 active:scale-95 transition-all"
+                             >
+                                Open Live Demo <ExternalLink className="w-4 h-4" />
+                             </a>
+                        </div>
+                    </div>
+                    
+                    <div className="p-8 sm:p-10">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
+                            <div>
+                                <div className="text-[10px] tracking-widest uppercase text-[#328CC1] font-bold mb-2">Education Consultancy OS</div>
+                                <h3 className="font-display text-3xl font-bold text-[#0B3C5D]">Global Admissions OS</h3>
+                                <p className="text-lg text-[#2EC4B6] font-semibold mt-1">AI-driven Study Abroad Ops</p>
+                            </div>
+                            <div className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-[#0B3C5D]/5 border border-[#0B3C5D]/10 text-[#0B3C5D] text-xs font-bold uppercase tracking-wider">
+                                <Clock className="w-4 h-4 text-[#2EC4B6]" />
+                                Built in 24 hours
+                            </div>
+                        </div>
+                        
+                        <p className="text-[#4B5563] leading-relaxed mb-10 text-base">
+                            A comprehensive system that transforms study abroad operations. Featuring a real Gemini-powered Eligibility Analyzer, visual University Pipeline, proactive AI Counselor Assistant, and a WhatsApp Automation portal for seamless lead management.
+                        </p>
+                        
+                        <div className="grid grid-cols-2 gap-6 pt-8 border-t border-[#0B3C5D]/5">
+                            <div>
+                                <div className="text-[10px] uppercase tracking-widest text-[#4B5563]/60 font-bold mb-2">Core Tech</div>
+                                <div className="flex flex-wrap gap-2">
+                                    <span className="text-xs font-semibold text-[#0B3C5D]">Gemini AI</span>
+                                    <span className="text-xs text-[#4B5563]/40">•</span>
+                                    <span className="text-xs font-semibold text-[#0B3C5D]">Pipeline UI</span>
+                                    <span className="text-xs text-[#4B5563]/40">•</span>
+                                    <span className="text-xs font-semibold text-[#0B3C5D]">WhatsApp API</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-[10px] uppercase tracking-widest text-[#4B5563]/60 font-bold mb-2">Outcome</div>
+                                <div className="text-xs font-semibold text-[#0B3C5D]">10x Faster Eligibility Checks</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div className="nx-rise group relative rounded-[40px] bg-white border border-[#0B3C5D]/10 p-4 shadow-2xl shadow-[#0B3C5D]/5 hover:shadow-3xl hover:border-[#2EC4B6]/30 transition-all duration-500 overflow-hidden" style={{ animationDelay: '0.2s' }}>
                     <div className="relative rounded-[32px] overflow-hidden aspect-video border border-[#0B3C5D]/5 bg-[#0B3C5D]">
                         <img 
