@@ -13,10 +13,12 @@
    MONGO_URL=<your-mongodb-connection-string>
    DB_NAME=aurvyz
    GEMINI_API_KEY=<your-gemini-api-key>
-   GEMINI_MODEL=gemini-2.5-flash
-   RESEND_API_KEY=<your-resend-api-key>
-   SENDER_EMAIL=<your-sender-email>
-   NOTIFY_EMAIL=<email-to-receive-lead-notifications>
+   GEMINI_MODEL=gemini-1.5-flash
+   NOTIFY_EMAIL=hello@aurvyz.com
+   SMTP_HOST=smtp.zoho.in
+   SMTP_PORT=465
+   SMTP_USER=hello@aurvyz.com
+   SMTP_PASS=JnNbDhY7HEyr
    ```
 
 ## Deployment Steps

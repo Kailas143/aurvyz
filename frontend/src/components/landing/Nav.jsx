@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 const links = [
   { href: "/#why-aurvyz", label: "Why Aurvyz" },
@@ -51,9 +52,22 @@ export default function Nav({ onBookCall }) {
           data-testid="nav-logo"
           className="flex items-center gap-2 group"
         >
-          <span className="relative grid place-items-center w-9 h-9 rounded-[10px] bg-white overflow-hidden text-white">
-            <img src="/assets/logo.png" alt="Aurvyz AI Logo" className="w-full h-full object-cover" />
-            <span className="absolute inset-0 rounded-[10px] ring-1 ring-[#2EC4B6]/40 pointer-events-none" />
+          <span className="relative grid place-items-center w-10 h-10 rounded-[12px] bg-[#0B3C5D] overflow-hidden">
+            <svg viewBox="0 0 100 100" className="w-7 h-7">
+              <path 
+                d="M50,20 L30,80 M50,20 L70,80 M38,60 L62,60" 
+                fill="none" 
+                stroke="#2EC4B6" 
+                strokeWidth="10" 
+                strokeLinecap="round" 
+              />
+              <motion.circle 
+                cx="50" cy="50" r="2" fill="#2EC4B6"
+                animate={{ opacity: [0.2, 1, 0.2], scale: [1, 1.5, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+            </svg>
+            <span className="absolute inset-0 rounded-[12px] ring-1 ring-white/10 pointer-events-none" />
           </span>
           <span className="flex flex-col leading-none">
             <span className="font-display font-bold text-[#0B3C5D] text-lg tracking-tight">

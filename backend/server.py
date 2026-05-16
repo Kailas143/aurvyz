@@ -11,7 +11,9 @@ from typing import List, Optional, Literal
 import uuid
 from datetime import datetime, timezone
 import asyncio
-import resend
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from calendly_poll import poll_calendly_once, start_scheduler, stop_scheduler
 from services.llm_service import GeminiAuditChatService
 
@@ -25,12 +27,9 @@ client = AsyncIOMotorClient(mongo_url)
 db_name = os.environ.get('DB_NAME', 'aurvyz')
 db = client[db_name]
 
-# Email (Resend)
-RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
-SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
-NOTIFY_EMAIL = os.environ.get('NOTIFY_EMAIL', '')
-if RESEND_API_KEY:
-    resend.api_key = RESEND_API_KEY
+# Configuration (from env)
+SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'hello@aurvyz.com')
+NOTIFY_EMAIL = os.environ.get('NOTIFY_EMAIL', 'hello@aurvyz.com')
 
 # LLM
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
@@ -40,7 +39,7 @@ audit_chat_service = GeminiAuditChatService(
     model=GEMINI_MODEL,
 )
 
-AURVYZ_SYSTEM_PROMPT = """You are "Nexie", the senior AI consultant for Aurvyz — a product-driven AI automation company that builds AI products and custom software for modern businesses.
+AURVYZ_SYSTEM_PROMPT = """You are "Aurvie", the senior AI consultant for Aurvyz — a product-driven AI automation company that builds AI products and custom software for modern businesses.
 
 Your goal: run a CONVERSATIONAL AUDIT in 5 short steps, then deliver a tailored audit report and capture the user's email.
 
@@ -306,7 +305,7 @@ def _build_missing_email_reply(intent: str) -> str:
 
 def _build_chat_transcript(history: List[ChatTurn], message: str, reply: str) -> str:
     prior = "\n".join(f"{t.role.title()}: {t.content}" for t in history)
-    suffix = f"User: {message}\nNexie: {reply}"
+    suffix = f"User: {message}\nAurvie: {reply}"
     return f"{prior}\n{suffix}".strip()
 
 
@@ -341,18 +340,18 @@ async def _upsert_ai_audit_chat_lead(
 
     message = f"[AI Audit Chat - {lead_type}]\n\n{transcript[:1800]}"
     if existing:
-        await db.leads.update_one(
-            {"id": existing["id"]},
-            {
-                "$set": {
-                    "name": existing.get("name") or name,
-                    "company": existing.get("company") or company,
-                    "message": message,
-                    "lead_type": lead_type,
-                    "source": "ai_audit_chat",
-                }
-            },
-        )
+        update_data = {
+            "message": message,
+            "lead_type": lead_type,
+            "source": "ai_audit_chat",
+        }
+        # Only update name/company if the new values are not placeholders or empty
+        if name and name not in ["AI Audit Lead", "Audit Chat User"]:
+            update_data["name"] = name
+        if company:
+            update_data["company"] = company
+
+        await db.leads.update_one({"id": existing["id"]}, {"$set": update_data})
         created_at = existing.get("created_at")
         if isinstance(created_at, str):
             created_at = datetime.fromisoformat(created_at)
@@ -381,44 +380,58 @@ async def _upsert_ai_audit_chat_lead(
     return lead
 
 
-def send_lead_notification(lead: Lead) -> None:
-    """Synchronous send; invoked via FastAPI BackgroundTasks so it never blocks the response."""
-    if not RESEND_API_KEY or not NOTIFY_EMAIL:
-        logger.info("Resend not configured (missing RESEND_API_KEY or NOTIFY_EMAIL). Skipping email.")
-        return
+def _send_smtp_email(to_email: str, subject: str, html_content: str, reply_to: Optional[str] = None) -> bool:
+    """Send an email via SMTP (Zoho, Gmail, etc.) using environment credentials."""
+    smtp_host = os.environ.get("SMTP_HOST")
+    smtp_port = int(os.environ.get("SMTP_PORT", "465"))
+    smtp_user = os.environ.get("SMTP_USER")
+    smtp_pass = os.environ.get("SMTP_PASS")
+
+    if not all([smtp_host, smtp_user, smtp_pass]):
+        logger.warning("SMTP not configured. Check SMTP_HOST, SMTP_USER, SMTP_PASS in .env. Skipping email.")
+        return False
+
     try:
-        subject = f"[Aurvyz Lead] {lead.lead_type.title()} · {lead.name}"
-        params = {
-            "from": f"Aurvyz <{SENDER_EMAIL}>",
-            "to": [NOTIFY_EMAIL],
-            "reply_to": lead.email,
-            "subject": subject,
-            "html": _lead_email_html(lead),
-        }
-        result = resend.Emails.send(params)
-        logger.info(f"Lead notification sent: id={result.get('id')} to={NOTIFY_EMAIL}")
+        msg = MIMEMultipart()
+        msg["From"] = f"Aurvyz <{smtp_user}>"
+        msg["To"] = to_email
+        msg["Subject"] = subject
+        if reply_to:
+            msg["Reply-To"] = reply_to
+        
+        msg.attach(MIMEText(html_content, "html"))
+
+        # Port 465 uses SMTP_SSL; 587 would use STARTTLS
+        if smtp_port == 465:
+            with smtplib.SMTP_SSL(smtp_host, smtp_port) as server:
+                server.login(smtp_user, smtp_pass)
+                server.send_message(msg)
+        else:
+            with smtplib.SMTP(smtp_host, smtp_port) as server:
+                server.starttls()
+                server.login(smtp_user, smtp_pass)
+                server.send_message(msg)
+        return True
     except Exception as e:
-        logger.error(f"Resend failed for lead {lead.email}: {e}")
+        logger.error(f"SMTP error sending to {to_email}: {e}")
+        return False
+
+
+def send_lead_notification(lead: Lead) -> None:
+    """Send an email notification to the team for every new lead captured."""
+    html = _lead_email_html(lead)
+    subject = f"New Lead: {lead.name} ({lead.lead_type.title()})"
+    success = _send_smtp_email(NOTIFY_EMAIL, subject, html, reply_to=lead.email)
+    if success:
+        logger.info(f"Lead notification sent to {NOTIFY_EMAIL} for {lead.email}")
+    else:
+        logger.info(f"Lead capture logged (notification failed): {lead.email}")
 
 
 def send_calendly_confirmation_email(subject: str, html: str, reply_to: Optional[str] = None) -> None:
-    """Sync send used by the Calendly polling scheduler."""
-    if not RESEND_API_KEY or not NOTIFY_EMAIL:
-        logger.info("Resend not configured. Skipping Calendly confirmation email.")
-        return
-    try:
-        params = {
-            "from": f"Aurvyz <{SENDER_EMAIL}>",
-            "to": [NOTIFY_EMAIL],
-            "subject": subject,
-            "html": html,
-        }
-        if reply_to:
-            params["reply_to"] = reply_to
-        result = resend.Emails.send(params)
-        logger.info(f"Calendly confirmation email sent: id={result.get('id')}")
-    except Exception as e:
-        logger.error(f"Resend (Calendly confirm) failed: {e}")
+    """Relay Calendly booking confirmations to the team email."""
+    _send_smtp_email(NOTIFY_EMAIL, subject, html, reply_to=reply_to)
+    logger.info(f"Calendly confirmation relayed to {NOTIFY_EMAIL}: {subject}")
 
 
 # ---------- Routes ----------
@@ -631,7 +644,7 @@ def _audit_report_email_html(name: str, sections: List[dict]) -> str:
         <tr><td style="background:#0B3C5D;padding:24px 26px;color:#ffffff;">
           <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#2EC4B6;font-weight:700;">Aurvyz · Audit Report</div>
           <div style="font-size:22px;font-weight:700;margin-top:6px;">Hi {name or "there"} — your tailored growth plan</div>
-          <div style="font-size:13px;color:#ffffffaa;margin-top:6px;">Generated by Nexie, Aurvyz's AI consultant. Our team will reach out within 1 business day.</div>
+          <div style="font-size:13px;color:#ffffffaa;margin-top:6px;">Generated by Aurvie, Aurvyz's AI consultant. Our team will reach out within 1 business day.</div>
         </td></tr>
         <tr><td style="padding:18px 22px;">
           {body}
@@ -651,23 +664,11 @@ def _audit_report_email_html(name: str, sections: List[dict]) -> str:
 
 
 def send_audit_report_email(to_email: str, name: str, html: str) -> dict:
-    """Send the audit report to the user. Returns {ok, id?, error?}."""
-    if not RESEND_API_KEY:
-        return {"ok": False, "error": "Resend not configured"}
-    try:
-        params = {
-            "from": f"Aurvyz <{SENDER_EMAIL}>",
-            "to": [to_email],
-            "subject": "Your Aurvyz audit report",
-            "html": html,
-        }
-        if NOTIFY_EMAIL:
-            params["bcc"] = [NOTIFY_EMAIL]
-        result = resend.Emails.send(params)
-        return {"ok": True, "id": result.get("id")}
-    except Exception as e:
-        logger.error("Audit report email failed for %s: %s", to_email, e)
-        return {"ok": False, "error": str(e)}
+    """Send the generated audit report to the user's email."""
+    success = _send_smtp_email(to_email, f"Your Aurvyz Audit Report — {name}", html)
+    if success:
+        return {"ok": True, "id": f"smtp_{int(datetime.now().timestamp())}"}
+    return {"ok": False, "error": "SMTP delivery failed. Check server logs."}
 
 
 @api_router.post("/audit-chat/email-report")
@@ -696,24 +697,21 @@ async def audit_chat_email_report(payload: EmailReportRequest, background_tasks:
         send_audit_report_email, payload.email, name, html
     )
 
-    # Persist as a Lead (idempotent on session+email — update if exists)
-    existing = await db.leads.find_one(
-        {"email": payload.email, "source": "ai_audit_chat"}, {"_id": 0}
+    # Reconstruct the full chat transcript for the team notification
+    full_transcript = "\n".join([f"{t.get('role', '').title()}: {t.get('content', '')}" for t in history])
+    
+    # Always update/create the Lead with the latest full transcript and notify the team
+    lead = await _upsert_ai_audit_chat_lead(
+        db,
+        email=payload.email,
+        name=payload.name or "AI Audit Lead",
+        company=payload.company,
+        transcript=full_transcript,
+        lead_type="audit",
     )
-    if not existing:
-        lead = Lead(
-            name=payload.name or "AI Audit Lead",
-            email=payload.email,
-            company=payload.company,
-            message=f"[AI Audit Chat — emailed report]\n\n{report_text[:1800]}",
-            lead_type="audit",
-            source="ai_audit_chat",
-        )
-        lead_doc = lead.model_dump()
-        lead_doc["created_at"] = lead_doc["created_at"].isoformat()
-        await db.leads.insert_one(lead_doc)
-        background_tasks.add_task(send_lead_notification, lead)
-        logger.info(f"Audit report emailed: lead={payload.email}")
+    
+    background_tasks.add_task(send_lead_notification, lead)
+    logger.info(f"Audit report emailed and team notified: lead={payload.email}")
 
     # Update audit_chat with captured email for traceability
     await db.audit_chats.update_one(

@@ -38,7 +38,7 @@ export default function HowItWorks() {
     <section
       id="how"
       data-testid="how-section"
-      className="relative py-24 sm:py-32"
+      className="relative py-16 sm:py-20"
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
         <div className="max-w-3xl">
@@ -76,7 +76,7 @@ export default function HowItWorks() {
         </div>
 
         {/* Steps with connecting line */}
-        <div className="relative mt-16">
+        <div className="relative mt-10">
           {/* animated dashed line - desktop only */}
           <svg
             aria-hidden

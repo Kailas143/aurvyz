@@ -13,7 +13,7 @@ export default function Benefits() {
     <section
       id="benefits"
       data-testid="benefits-section"
-      className="relative py-24 sm:py-32 bg-white border-y border-[#0B3C5D]/10"
+      className="relative py-16 sm:py-20 bg-white border-y border-[#0B3C5D]/10"
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
         <div className="grid lg:grid-cols-12 gap-10 items-start">

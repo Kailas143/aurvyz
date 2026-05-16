@@ -28,7 +28,7 @@ export default function Footer({ onBookCall }) {
               </span>
             </div>
             <p className="mt-6 text-sm text-white/65 max-w-md leading-relaxed">
-              A product-driven **Operational Systems Company**. We engineer the 
+              A product-driven Operational Systems Company. We engineer the 
               infrastructure that helps growing businesses scale faster with 
               future-ready operational systems.
             </p>

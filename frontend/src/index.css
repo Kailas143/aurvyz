@@ -26,8 +26,9 @@ body {
 }
 
 .font-display {
-    font-family: "Cabinet Grotesk", "Inter", sans-serif;
-    letter-spacing: -0.015em;
+    font-family: "Satoshi", "Cabinet Grotesk", "Inter", sans-serif;
+    letter-spacing: -0.03em;
+    font-weight: 900;
 }
 
 code {
@@ -158,4 +159,26 @@ code {
 ::selection {
     background: #2ec4b6;
     color: #0b3c5d;
+}
+
+/* Custom Minimalist Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(11, 60, 93, 0.1);
+    border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(11, 60, 93, 0.2);
+}
+
+/* Glassmorphism Panel */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(11, 60, 93, 0.05);
 }

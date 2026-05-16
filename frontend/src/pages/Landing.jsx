@@ -9,7 +9,6 @@ import UseCases from "@/components/landing/UseCases";
 import HowItWorks from "@/components/landing/HowItWorks";
 import PrototypeBanner from "@/components/landing/PrototypeBanner";
 import Benefits from "@/components/landing/Benefits";
-import Testimonials from "@/components/landing/Testimonials";
 import CaseStudy from "@/components/landing/CaseStudy";
 import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
@@ -36,7 +35,6 @@ export default function Landing() {
       <HowItWorks />
       <PrototypeBanner onStartAudit={openAuditChat} />
       <Benefits />
-      <Testimonials />
       <CaseStudy />
       <AurvyzShowcase />
       <CTASection onBookCall={openBooking} onStartAudit={openAuditChat} />

@@ -1,4 +1,5 @@
 import { AlertTriangle, Clock, TrendingDown, Unplug, CheckCircle2, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 const problems = [
   {
@@ -24,6 +25,23 @@ const pillars = [
   },
 ];
 
+const fadeInUp = {
+  initial: { opacity: 0, y: 30 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-100px" },
+  transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
+};
+
+const staggerContainer = {
+  initial: {},
+  whileInView: {
+    transition: {
+      staggerChildren: 0.2
+    }
+  },
+  viewport: { once: true }
+};
+
 export default function ProblemSolution() {
   return (
     <section id="why-aurvyz" className="relative pt-16 pb-24 sm:pt-24 sm:pb-32 overflow-hidden bg-white">
@@ -31,20 +49,31 @@ export default function ProblemSolution() {
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           
           {/* Left: The Problem */}
-          <div className="relative">
-            <div className="text-xs tracking-[0.22em] uppercase text-[#328CC1] font-semibold mb-4">
+          <motion.div 
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="whileInView"
+            viewport={{ once: true, margin: "-100px" }}
+            className="relative"
+          >
+            <motion.div variants={fadeInUp} className="text-xs tracking-[0.22em] uppercase text-[#328CC1] font-semibold mb-4">
               / The Challenge
-            </div>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#0B3C5D] leading-tight">
+            </motion.div>
+            <motion.h2 variants={fadeInUp} className="font-display text-3xl sm:text-4xl lg:text-5xl font-black text-[#0B3C5D] leading-[1.1] tracking-tight">
               Legacy software is the <span className="text-[#4B5563]">ceiling</span> on your growth.
-            </h2>
-            <p className="mt-6 text-base text-[#4B5563] leading-relaxed">
+            </motion.h2>
+            <motion.p variants={fadeInUp} className="mt-6 text-base text-[#4B5563] leading-relaxed">
               Most businesses are held back by legacy tools that require manual management instead of driving automatic growth.
-            </p>
+            </motion.p>
 
-            <div className="mt-10 space-y-6">
+            <motion.div variants={staggerContainer} className="mt-10 space-y-6">
               {problems.map((p, i) => (
-                <div key={i} className="flex gap-4 p-5 rounded-2xl bg-[#F7F9FB] border border-[#0B3C5D]/5">
+                <motion.div 
+                  key={i} 
+                  variants={fadeInUp}
+                  whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+                  className="flex gap-4 p-5 rounded-2xl bg-[#F7F9FB] border border-[#0B3C5D]/5 transition-colors hover:border-[#328CC1]/30 hover:bg-white hover:shadow-xl hover:shadow-[#0B3C5D]/5"
+                >
                   <div className="shrink-0 w-10 h-10 rounded-lg bg-red-50 text-red-600 flex items-center justify-center">
                     <p.icon className="w-5 h-5" />
                   </div>
@@ -52,41 +81,62 @@ export default function ProblemSolution() {
                     <h4 className="font-bold text-[#0B3C5D]">{p.title}</h4>
                     <p className="text-sm text-[#4B5563] mt-1">{p.body}</p>
                   </div>
-                </div>
+                </motion.div>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Right: The Solution / Positioning */}
-          <div className="relative p-8 sm:p-12 rounded-[2rem] bg-[#0B3C5D] text-white shadow-2xl overflow-hidden">
+          <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            className="relative p-8 sm:p-12 rounded-[2rem] bg-[#0B3C5D] text-white shadow-2xl overflow-hidden"
+          >
             <div aria-hidden className="absolute -top-24 -right-24 w-64 h-64 bg-[#2EC4B6]/20 rounded-full blur-3xl" />
             
             <div className="relative z-10">
               <div className="text-xs tracking-[0.22em] uppercase text-[#2EC4B6] font-semibold mb-4">
                 / Our Approach
               </div>
-              <h3 className="font-display text-3xl font-bold leading-tight">
+              <h3 className="font-display text-3xl lg:text-4xl font-black leading-tight">
                 Engineering <span className="text-[#2EC4B6]">AI systems of leverage</span>.
               </h3>
-              <p className="mt-6 text-white/70 leading-relaxed">
+              <p className="mt-6 text-white/70 leading-relaxed text-base">
                 We don't just build software; we engineer the operational infrastructure that becomes the foundation of your growth. Strategic assets designed to gain value as you scale.
               </p>
 
               <div className="mt-10 space-y-8">
                 {pillars.map((item, i) => (
-                  <div key={i} className="group">
+                  <motion.div 
+                    key={i} 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.3 + i * 0.2 }}
+                    className="group"
+                  >
                     <div className="flex items-center gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-[#2EC4B6]" />
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#2EC4B6]/10 text-[#2EC4B6]">
+                        <CheckCircle2 className="w-4 h-4" />
+                      </div>
                       <h4 className="font-bold text-lg">{item.title}</h4>
                     </div>
-                    <p className="mt-2 text-sm text-white/60 ml-8 leading-relaxed">
+                    <p className="mt-2 text-sm text-white/60 ml-9 leading-relaxed">
                       {item.body}
                     </p>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
 
-              <div className="mt-12 pt-8 border-t border-white/10 flex items-center gap-4">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 1 }}
+                className="mt-12 pt-8 border-t border-white/10 flex items-center gap-4"
+              >
                 <div className="flex -space-x-2">
                    {[1,2,3].map(i => (
                      <div key={i} className="w-8 h-8 rounded-full border-2 border-[#0B3C5D] bg-white/10" />
@@ -95,9 +145,9 @@ export default function ProblemSolution() {
                 <div className="text-xs text-white/40">
                   Trusted by forward-thinking teams.
                 </div>
-              </div>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
 
         </div>
       </div>

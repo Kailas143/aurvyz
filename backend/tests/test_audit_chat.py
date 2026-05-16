@@ -1,4 +1,4 @@
-"""Backend tests for /api/audit-chat (Nexie LLM-powered audit chatbot)."""
+"""Backend tests for /api/audit-chat (Aurvie LLM-powered audit chatbot)."""
 import os
 import re
 import time
@@ -52,7 +52,7 @@ class TestAuditChatMultiTurn:
 
     def test_audit_chat_multi_turn_continues(self, api_client):
         history = [
-            {"role": "assistant", "content": "Hey, I'm Nexie. What industry are you in?"},
+            {"role": "assistant", "content": "Hey, I'm Aurvie. What industry are you in?"},
             {"role": "user", "content": "I run a dental clinic."},
         ]
         r = api_client.post(f"{API}/audit-chat", json={
@@ -62,7 +62,7 @@ class TestAuditChatMultiTurn:
         assert r.status_code == 200, r.text
         d = r.json()
         reply = d["reply"].lower()
-        # After team size, Nexie should ask about tools/stack — should NOT restart by asking industry again.
+        # After team size, Aurvie should ask about tools/stack — should NOT restart by asking industry again.
         assert "industry" not in reply or "tool" in reply or "stack" in reply or "use" in reply or "?" in reply, \
             f"Expected continuation, not restart. Got: {d['reply']!r}"
         assert d["is_complete"] is False

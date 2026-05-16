@@ -1,4 +1,5 @@
 import { Globe, Database, BrainCircuit, Workflow, ArrowRight, Bot, Stethoscope, BarChart3, Clock, ReceiptText } from "lucide-react";
+import { motion } from "framer-motion";
 
 const capabilities = [
   {
@@ -38,84 +39,155 @@ const solutions = [
   },
 ];
 
+const fadeInUp = {
+  initial: { opacity: 0, y: 30 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-50px" },
+  transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
+};
+
+const staggerContainer = {
+  initial: {},
+  whileInView: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  },
+  viewport: { once: true }
+};
+
+const floatingAnimation = {
+  animate: {
+    y: [0, -8, 0],
+    transition: {
+      duration: 4,
+      repeat: Infinity,
+      ease: "easeInOut"
+    }
+  }
+};
+
 export default function Capabilities() {
   return (
-    <section id="capabilities" className="py-24 sm:py-32 bg-[#F7F9FB]">
+    <section id="capabilities" className="py-16 sm:py-20 bg-[#F7F9FB] overflow-hidden">
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
         
         {/* Header */}
-        <div className="max-w-3xl mb-16">
+        <motion.div 
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="max-w-3xl mb-10"
+        >
           <div className="text-xs tracking-[0.22em] uppercase text-[#328CC1] font-semibold mb-4">
             / Capabilities & Solutions
           </div>
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#0B3C5D] leading-tight tracking-tight">
-            Engineered **AI systems** for <br className="hidden sm:block" />
+          <h2 className="font-display text-3xl sm:text-5xl font-black text-[#0B3C5D] leading-[1.1] tracking-tight">
+            Engineered AI systems for <br className="hidden sm:block" />
             <span className="nx-gradient-text">growing businesses.</span>
           </h2>
           <p className="mt-6 text-base sm:text-lg text-[#4B5563] leading-relaxed">
             We don't just build apps. We build the operating systems of modern, performance-driven organizations.
           </p>
-        </div>
+        </motion.div>
 
         {/* Capabilities Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
+        <motion.div 
+          variants={staggerContainer}
+          initial="initial"
+          whileInView="whileInView"
+          viewport={{ once: true }}
+          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12"
+        >
           {capabilities.map((c, i) => (
-            <div key={i} className="p-8 rounded-2xl bg-white border border-[#0B3C5D]/5 hover:border-[#2EC4B6]/30 transition-all group">
+            <motion.div 
+              key={i} 
+              variants={fadeInUp}
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+              className="p-8 rounded-2xl bg-white border border-[#0B3C5D]/5 hover:border-[#2EC4B6]/30 hover:shadow-xl hover:shadow-[#0B3C5D]/5 transition-all group"
+            >
               <div className="w-12 h-12 rounded-xl bg-[#0B3C5D]/5 text-[#0B3C5D] flex items-center justify-center mb-6 group-hover:bg-[#0B3C5D] group-hover:text-white transition-colors">
                 <c.icon className="w-6 h-6" strokeWidth={1.5} />
               </div>
               <h4 className="font-bold text-[#0B3C5D] text-lg mb-2">{c.title}</h4>
               <p className="text-sm text-[#4B5563] leading-relaxed">{c.desc}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Examples / Solutions Heading */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
-          <div>
-            <h3 className="font-display text-2xl sm:text-3xl font-bold text-[#0B3C5D]">The Aurvyz Demo Lab</h3>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h3 className="font-display text-2xl sm:text-3xl font-black text-[#0B3C5D]">The Aurvyz Demo Lab</h3>
             <p className="text-sm text-[#4B5563] mt-2">Explore live interactive prototypes of systems we've engineered.</p>
-          </div>
+          </motion.div>
           <div className="hidden md:block h-[1px] flex-1 mx-8 bg-[#0B3C5D]/10" />
-          <a 
+          <motion.a 
+            whileHover={{ x: 5 }}
             href="/demo-lab" 
             className="inline-flex items-center gap-2 text-sm font-bold text-[#0B3C5D] hover:text-[#2EC4B6] transition-colors"
           >
             Visit Demo Lab <ArrowRight className="w-4 h-4" />
-          </a>
+          </motion.a>
         </div>
 
         {/* Flagship solution / Image */}
-        <div className="mb-8 relative rounded-3xl overflow-hidden bg-[#0B3C5D] text-white p-8 sm:p-12 grid lg:grid-cols-2 gap-12 items-center">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-8 relative rounded-3xl overflow-hidden bg-[#0B3C5D] text-white p-8 sm:p-12 grid lg:grid-cols-2 gap-12 items-center"
+        >
           <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#2EC4B6]/10 to-transparent pointer-events-none" />
           <div>
             <div className="flex items-center gap-3 mb-6">
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2EC4B6]/15 text-[#2EC4B6] text-[10px] font-bold uppercase tracking-widest">
+                <motion.span 
+                  variants={floatingAnimation}
+                  animate="animate"
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2EC4B6]/15 text-[#2EC4B6] text-[10px] font-bold uppercase tracking-widest"
+                >
                 Flagship Prototype
-                </span>
+                </motion.span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white/90 text-[10px] font-bold uppercase tracking-widest border border-white/10">
                     <Clock className="w-3 h-3 text-[#2EC4B6]" />
                     Delivered in 18 hours
                 </span>
             </div>
-            <h4 className="font-display text-3xl sm:text-4xl font-bold leading-tight">
+            <h4 className="font-display text-3xl sm:text-4xl font-black leading-tight">
               Clinic AI <span className="text-[#2EC4B6]">Operations System</span>.
             </h4>
-            <p className="mt-6 text-white/70 leading-relaxed max-w-lg">
+            <p className="mt-6 text-white/70 leading-relaxed max-w-lg text-base">
               A comprehensive operational OS for medical clinics. We unified patient intake, AI-driven records, and scheduling into a single high-performance interface.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-medium">AI Front-desk</div>
-              <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-medium">Patient Intake</div>
-              <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-medium">Real-time Pulse</div>
+              {["AI Front-desk", "Patient Intake", "Real-time Pulse"].map((tag, i) => (
+                <motion.div 
+                  key={tag}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.5 + i * 0.1 }}
+                  className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-medium"
+                >
+                  {tag}
+                </motion.div>
+              ))}
             </div>
             <div className="mt-10">
-                <a 
+                <motion.a 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     href="/demo-lab" 
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#2EC4B6] text-[#0B3C5D] font-bold text-sm hover:scale-105 transition-transform"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#2EC4B6] text-[#0B3C5D] font-bold text-sm hover:shadow-lg transition-all shadow-[#2EC4B6]/20"
                 >
                     View in Demo Lab <ArrowRight className="w-4 h-4" />
-                </a>
+                </motion.a>
             </div>
           </div>
           <div className="relative group">
@@ -128,7 +200,7 @@ export default function Capabilities() {
               />
             </div>
           </div>
-        </div>
+        </motion.div>
         
         {/* Transition Divider */}
         <div className="flex items-center gap-4 mb-8">
@@ -138,7 +210,13 @@ export default function Capabilities() {
         </div>
         
         {/* Flagship solution 2 / Global Admissions OS */}
-        <div className="mb-12 relative rounded-3xl overflow-hidden bg-white border border-[#0B3C5D]/10 p-8 sm:p-12 grid lg:grid-cols-2 gap-12 items-center">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-12 relative rounded-3xl overflow-hidden bg-white border border-[#0B3C5D]/10 p-8 sm:p-12 grid lg:grid-cols-2 gap-12 items-center"
+        >
           <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#328CC1]/5 to-transparent pointer-events-none" />
           <div className="order-2 lg:order-1 relative group">
             <div className="absolute -inset-4 bg-[#328CC1]/10 blur-2xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity" />
@@ -160,33 +238,55 @@ export default function Capabilities() {
                     Delivered in 24 hours
                 </span>
             </div>
-            <h4 className="font-display text-3xl sm:text-4xl font-bold text-[#0B3C5D] leading-tight">
+            <h4 className="font-display text-3xl sm:text-4xl font-black text-[#0B3C5D] leading-tight">
               Global Admissions <span className="nx-gradient-text">AI Application</span>.
             </h4>
-            <p className="mt-6 text-[#4B5563] leading-relaxed max-w-lg">
+            <p className="mt-6 text-[#4B5563] leading-relaxed max-w-lg text-base">
               A comprehensive system for education consultancies. We automated eligibility checks with Gemini AI and built a proactive counselor assistant to drive enrollment growth.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <div className="px-4 py-2 rounded-xl bg-[#0B3C5D]/5 border border-[#0B3C5D]/10 text-xs font-semibold text-[#0B3C5D]">AI Counselor</div>
-              <div className="px-4 py-2 rounded-xl bg-[#0B3C5D]/5 border border-[#0B3C5D]/10 text-xs font-semibold text-[#0B3C5D]">University Pipeline</div>
-              <div className="px-4 py-2 rounded-xl bg-[#0B3C5D]/5 border border-[#0B3C5D]/10 text-xs font-semibold text-[#0B3C5D]">WhatsApp Automations</div>
+              {["AI Counselor", "University Pipeline", "WhatsApp Automations"].map((tag, i) => (
+                <motion.div 
+                  key={tag}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.5 + i * 0.1 }}
+                  className="px-4 py-2 rounded-xl bg-[#0B3C5D]/5 border border-[#0B3C5D]/10 text-xs font-semibold text-[#0B3C5D]"
+                >
+                  {tag}
+                </motion.div>
+              ))}
             </div>
             <div className="mt-10">
-                <a 
+                <motion.a 
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
                     href="/demo-lab" 
-                    className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#0B3C5D] text-white font-bold text-base hover:shadow-xl hover:-translate-y-1 transition-all"
+                    className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#0B3C5D] text-white font-bold text-base hover:shadow-xl transition-all"
                 >
                     View in Demo Lab <ArrowRight className="w-4 h-4" />
-                </a>
+                </motion.a>
             </div>
           </div>
-        </div>
+        </motion.div>
 
 
         {/* Solutions Grid */}
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <motion.div 
+          variants={staggerContainer}
+          initial="initial"
+          whileInView="whileInView"
+          viewport={{ once: true }}
+          className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto"
+        >
           {solutions.map((s, i) => (
-            <div key={i} className="group relative p-8 rounded-3xl bg-white border border-[#0B3C5D]/10 hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden">
+            <motion.div 
+              key={i} 
+              variants={fadeInUp}
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+              className="group relative p-8 rounded-3xl bg-white border border-[#0B3C5D]/10 hover:shadow-xl transition-all overflow-hidden"
+            >
                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                  <s.icon className="w-24 h-24" />
                </div>
@@ -200,9 +300,9 @@ export default function Capabilities() {
                   Explore Capability <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>
                </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
       </div>
     </section>
