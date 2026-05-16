@@ -49,7 +49,7 @@ export default function Capabilities() {
             / Capabilities & Solutions
           </div>
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#0B3C5D] leading-tight tracking-tight">
-            Engineered architectures for <br className="hidden sm:block" />
+            Engineered **AI systems** for <br className="hidden sm:block" />
             <span className="nx-gradient-text">growing businesses.</span>
           </h2>
           <p className="mt-6 text-base sm:text-lg text-[#4B5563] leading-relaxed">
@@ -99,7 +99,7 @@ export default function Capabilities() {
                 </span>
             </div>
             <h4 className="font-display text-3xl sm:text-4xl font-bold leading-tight">
-              Clinic AI <span className="text-[#2EC4B6]">Operating Stack</span>.
+              Clinic AI <span className="text-[#2EC4B6]">Operations System</span>.
             </h4>
             <p className="mt-6 text-white/70 leading-relaxed max-w-lg">
               A comprehensive operational OS for medical clinics. We unified patient intake, AI-driven records, and scheduling into a single high-performance interface.
@@ -161,7 +161,7 @@ export default function Capabilities() {
                 </span>
             </div>
             <h4 className="font-display text-3xl sm:text-4xl font-bold text-[#0B3C5D] leading-tight">
-              Global Admissions <span className="nx-gradient-text">Infrastructure</span>.
+              Global Admissions <span className="nx-gradient-text">AI Application</span>.
             </h4>
             <p className="mt-6 text-[#4B5563] leading-relaxed max-w-lg">
               A comprehensive system for education consultancies. We automated eligibility checks with Gemini AI and built a proactive counselor assistant to drive enrollment growth.

@@ -52,6 +52,8 @@ The **Aurvyz Outreach Automation Platform** is a production-ready system designe
     ```bash
     npm start
     ```
+dell@Ubuntu:~$ sudo docker run -d --name mongodb -p 27017:27017 -v mongodb_data:/data/db mongo:latest
+
 
 ---
 

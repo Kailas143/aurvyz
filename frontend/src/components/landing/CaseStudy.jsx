@@ -50,7 +50,7 @@ export default function CaseStudy() {
               data-testid="case-headline"
               className="font-display mt-4 text-3xl sm:text-4xl font-bold text-[#0B3C5D] leading-[1.1] tracking-tight"
             >
-              How an AI-powered architecture can automate bookings and improve efficiency.
+              How an **AI system** can automate bookings and improve efficiency.
             </h2>
             <p className="mt-5 text-sm sm:text-base text-[#4B5563] leading-relaxed max-w-2xl">
               Many businesses lose hours to manual processes, scattered data, and inefficient workflows. We design AI-powered systems that streamline operations, automate repetitive tasks, and bring everything into one intelligent workflow.
@@ -79,7 +79,7 @@ export default function CaseStudy() {
                 <Zap className="w-32 h-32" />
               </div>
               <h3 className="font-display text-lg font-semibold text-[#0B3C5D]">
-                Example: AI Booking & Workflow Infrastructure
+                Example: AI Booking & **AI Application**
               </h3>
               <p className="mt-2 text-sm text-[#4B5563] mb-5">
                 We can build a system that:

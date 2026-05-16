@@ -66,7 +66,7 @@ export default function ProblemSolution() {
                 / Our Approach
               </div>
               <h3 className="font-display text-3xl font-bold leading-tight">
-                Engineering <span className="text-[#2EC4B6]">architectures of leverage</span>.
+                Engineering <span className="text-[#2EC4B6]">AI systems of leverage</span>.
               </h3>
               <p className="mt-6 text-white/70 leading-relaxed">
                 We don't just build software; we engineer the operational infrastructure that becomes the foundation of your growth. Strategic assets designed to gain value as you scale.

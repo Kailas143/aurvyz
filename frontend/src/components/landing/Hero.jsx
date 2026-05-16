@@ -35,7 +35,7 @@ export default function Hero({ onBookCall, onStartAudit }) {
           {/* Badge */}
           <div className="nx-rise inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#0B3C5D]/10 bg-white/50 backdrop-blur-md text-[11px] font-bold text-[#0B3C5D] uppercase tracking-widest mb-8">
             <span className="flex h-2 w-2 rounded-full bg-[#2EC4B6] shadow-[0_0_8px_#2EC4B6]" />
-            AI-Driven Automation Architecture
+            AI-Powered Operational Systems
           </div>
 
           <h1
@@ -44,7 +44,7 @@ export default function Hero({ onBookCall, onStartAudit }) {
             style={{ animationDelay: '0.1s' }}
           >
             Future-Ready AI <br className="hidden sm:block" />
-            <span className="nx-gradient-text">Operational Architecture.</span>
+            <span className="nx-gradient-text">Operational Systems.</span>
           </h1>
 
           <p
@@ -52,7 +52,7 @@ export default function Hero({ onBookCall, onStartAudit }) {
             className="nx-rise mt-8 text-base sm:text-xl text-[#4B5563] max-w-2xl leading-relaxed"
             style={{ animationDelay: '0.2s' }}
           >
-            We design and engineer high-performance AI workflows that automate operations, reduce manual work, and <span className="font-bold text-[#0B3C5D]">deliver interactive prototypes in under 24 hours.</span>
+            We design and engineer high-performance **AI systems** that automate operations, reduce manual work, and <span className="font-bold text-[#0B3C5D]">deliver interactive prototypes in under 24 hours.</span>
           </p>
 
           {/* Pricing Highlight */}
