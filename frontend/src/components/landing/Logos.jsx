@@ -20,7 +20,7 @@ export default function Logos() {
   return (
     <section
       data-testid="logos-section"
-      className="relative pt-4 pb-16 sm:pb-24 bg-[#F7F9FB]"
+      className="relative pt-4 pb-12 sm:pb-16 bg-[#F7F9FB]"
     >
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
         <div className="text-center mb-8">

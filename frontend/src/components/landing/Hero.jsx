@@ -35,7 +35,7 @@ export default function Hero({ onBookCall, onStartAudit }) {
           {/* Badge */}
           <div className="nx-rise inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#0B3C5D]/10 bg-white/50 backdrop-blur-md text-[11px] font-bold text-[#0B3C5D] uppercase tracking-widest mb-8">
             <span className="flex h-2 w-2 rounded-full bg-[#2EC4B6] shadow-[0_0_8px_#2EC4B6]" />
-            Engineering Operational Systems
+            AI-Driven Automation Architecture
           </div>
 
           <h1
@@ -43,8 +43,8 @@ export default function Hero({ onBookCall, onStartAudit }) {
             className="nx-rise font-display text-4xl sm:text-6xl lg:text-7xl font-bold text-[#0B3C5D] leading-[1.05] tracking-tight"
             style={{ animationDelay: '0.1s' }}
           >
-            Future-Ready Operational Systems. <br />
-            <span className="nx-gradient-text">Built on Trust.</span>
+            Future-Ready AI <br className="hidden sm:block" />
+            <span className="nx-gradient-text">Operational Architecture.</span>
           </h1>
 
           <p
@@ -52,7 +52,7 @@ export default function Hero({ onBookCall, onStartAudit }) {
             className="nx-rise mt-8 text-base sm:text-xl text-[#4B5563] max-w-2xl leading-relaxed"
             style={{ animationDelay: '0.2s' }}
           >
-            We design and engineer AI-powered operational systems that automate workflows, reduce manual work, and <span className="font-bold text-[#0B3C5D]">deliver interactive prototypes in under 24 hours.</span>
+            We design and engineer high-performance AI workflows that automate operations, reduce manual work, and <span className="font-bold text-[#0B3C5D]">deliver interactive prototypes in under 24 hours.</span>
           </p>
 
           {/* Pricing Highlight */}
@@ -122,7 +122,7 @@ export default function Hero({ onBookCall, onStartAudit }) {
             </div>
             <img
               src={HERO_IMG}
-              alt="Aurvyz AI systems dashboard"
+              alt="Aurvyz AI-powered operational architecture dashboard showing real-time automation metrics"
               className="w-full object-cover transition-transform duration-1000 group-hover:scale-[1.02]"
               loading="eager"
             />

@@ -1,4 +1,4 @@
-import { Mail, Linkedin, Sparkles, ArrowUpRight } from "lucide-react";
+import { Mail, Linkedin, Sparkles, ArrowUpRight, Phone } from "lucide-react";
 
 export default function Footer({ onBookCall }) {
   const scrollTo = (id) => () => {
@@ -32,7 +32,7 @@ export default function Footer({ onBookCall }) {
               infrastructure that helps growing businesses scale faster with 
               future-ready operational systems.
             </p>
-            <div className="mt-8 flex gap-3">
+            <div className="mt-8 flex flex-wrap gap-3">
               <a
                 href="mailto:hello@aurvyz.com"
                 data-testid="footer-email"
@@ -40,6 +40,13 @@ export default function Footer({ onBookCall }) {
               >
                 <Mail className="w-4 h-4 text-[#2EC4B6]" />
                 hello@aurvyz.com
+              </a>
+              <a
+                href="tel:+918281066965"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm hover:bg-white/10 transition-colors"
+              >
+                <Phone className="w-4 h-4 text-[#2EC4B6]" />
+                +91 82810 66965
               </a>
               <a
                 href="https://linkedin.com"

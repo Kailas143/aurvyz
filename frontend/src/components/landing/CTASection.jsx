@@ -79,7 +79,7 @@ export default function CTASection({ onBookCall }) {
             data-testid="cta-headline"
             className="font-display mt-4 text-3xl sm:text-5xl font-bold leading-[1.05] tracking-tight"
           >
-            Get a free audit of your business systems.
+            Get a free audit of your operational architecture.
           </h2>
           <p className="mt-5 text-white/70 text-base leading-relaxed max-w-md">
             Share a few details and our product team will return a tailored

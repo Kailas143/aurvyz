@@ -1,67 +1,66 @@
-import { Zap, Eye, CheckCircle } from "lucide-react";
+import { Quote, Star } from "lucide-react";
 
-const cards = [
+const testimonials = [
   {
-    title: "Built in days, not months",
-    description: "We move fast so you can validate and launch quickly.",
-    icon: Zap,
+    quote: "Aurvyz didn't just build an app; they engineered an operating system that unified our entire clinic. We saw a 40% reduction in manual admin work within the first month.",
+    author: "Dr. Sarah Chen",
+    role: "Director, Metro Health Group",
+    stars: 5,
   },
   {
-    title: "You see before you pay",
-    description: "We create a working prototype first — so there are no surprises.",
-    icon: Eye,
+    quote: "The speed of execution was incredible. We had a fully functional AI-driven admissions pipeline in 24 hours. It's now the backbone of our student outreach.",
+    author: "James Miller",
+    role: "Head of Operations, Global Admissions",
+    stars: 5,
   },
   {
-    title: "Systems that actually work",
-    description: "We design solutions around real workflows, not generic tools.",
-    icon: CheckCircle,
+    quote: "They have a 'Builder DNA' that is rare to find. They treat your business problems like their own and engineer architectures that scale.",
+    author: "Elena Rodriguez",
+    role: "Founder, Fintech Frontier",
+    stars: 5,
   },
 ];
 
 export default function Testimonials() {
   return (
-    <section
-      id="testimonials"
-      data-testid="testimonials-section"
-      className="relative py-24 sm:py-32 bg-white border-y border-[#0B3C5D]/10"
-    >
+    <section className="py-24 sm:py-32 bg-[#F7F9FB] overflow-hidden">
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
-          <div className="max-w-2xl">
-            <h2
-              data-testid="testimonials-headline"
-              className="font-display text-3xl sm:text-5xl font-bold text-[#0B3C5D] leading-[1.08] tracking-tight"
-            >
-              Built for teams ready to move faster.
-            </h2>
-            <p className="mt-6 text-lg text-[#4B5563] leading-relaxed">
-              We design and build intelligent systems that automate workflows, reduce manual effort, and help businesses scale with confidence.
-            </p>
-            <p className="mt-3 text-lg font-semibold text-[#0B3C5D]">
-              Every solution is custom-built — no templates, no shortcuts.
-            </p>
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="text-xs tracking-[0.22em] uppercase text-[#328CC1] font-semibold mb-4">
+            / Social Proof
           </div>
-          <div className="flex items-center gap-2 text-sm text-[#4B5563] max-w-xs md:text-right md:justify-end">
-            <span className="font-medium text-[#0B3C5D]">
-              Focused on real outcomes — speed, clarity, and reliability.
-            </span>
-          </div>
+          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#0B3C5D] leading-tight">
+            Trusted by the leaders <br />
+            <span className="nx-gradient-text">building the future.</span>
+          </h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-5">
-          {cards.map((c, i) => (
-            <div
-              key={i}
-              data-testid={`card-${i}`}
-              className="group relative bg-[#F7F9FB] rounded-2xl p-7 border border-[#0B3C5D]/10 hover:-translate-y-1 hover:shadow-xl hover:border-[#2EC4B6]/40 transition-all duration-300 flex flex-col"
+        <div className="grid md:grid-cols-3 gap-8">
+          {testimonials.map((t, i) => (
+            <div 
+              key={i} 
+              className="relative p-8 rounded-3xl bg-white border border-[#0B3C5D]/5 shadow-sm hover:shadow-xl transition-all hover:-translate-y-1"
             >
-              <c.icon className="w-7 h-7 text-[#2EC4B6] mb-4" strokeWidth={1.5} />
-              <h3 className="font-display font-semibold text-lg text-[#0B3C5D] mb-3">
-                {c.title}
-              </h3>
-              <p className="text-[#4B5563] leading-relaxed text-[15px] flex-1">
-                {c.description}
+              <div className="absolute top-6 right-8 opacity-5">
+                <Quote className="w-12 h-12 text-[#0B3C5D]" />
+              </div>
+              <div className="flex gap-1 mb-6">
+                {[...Array(t.stars)].map((_, i) => (
+                  <Star key={i} className="w-4 h-4 fill-[#2EC4B6] text-[#2EC4B6]" />
+                ))}
+              </div>
+              <p className="text-[#4B5563] leading-relaxed italic mb-8">
+                "{t.quote}"
               </p>
+              <div className="flex items-center gap-4 pt-6 border-t border-[#0B3C5D]/5">
+                <div className="w-10 h-10 rounded-full bg-[#0B3C5D]/10 flex items-center justify-center font-bold text-[#0B3C5D] text-xs">
+                  {t.author.split(' ').map(n => n[0]).join('')}
+                </div>
+                <div>
+                  <h4 className="font-bold text-[#0B3C5D] text-sm">{t.author}</h4>
+                  <p className="text-[11px] text-[#4B5563] uppercase tracking-wider font-medium">{t.role}</p>
+                </div>
+              </div>
             </div>
           ))}
         </div>

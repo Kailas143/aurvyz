@@ -10,7 +10,7 @@ const steps = [
   {
     icon: Lightbulb,
     title: "Define Solution & Modules",
-    desc: "We break your system into clear modules and features so you know exactly what will be built.",
+    desc: "We break your architecture into clear modules and features so you know exactly what will be built.",
     when: "Day 1",
   },
   {
@@ -22,7 +22,7 @@ const steps = [
   {
     icon: Hammer,
     title: "Approve & Develop",
-    desc: "Once approved, we build the full system — backend, integrations, and automation — fast and reliably.",
+    desc: "Once approved, we build the full solution — backend, integrations, and automation — fast and reliably.",
     when: "Day 3–6",
   },
   {

@@ -2,12 +2,14 @@ import { useState } from "react";
 import Nav from "@/components/landing/Nav";
 import Hero from "@/components/landing/Hero";
 import Logos from "@/components/landing/Logos";
+import AurvyzShowcase from "@/components/landing/AurvyzShowcase";
 import ProblemSolution from "@/components/landing/ProblemSolution";
 import Capabilities from "@/components/landing/Capabilities";
 import UseCases from "@/components/landing/UseCases";
 import HowItWorks from "@/components/landing/HowItWorks";
 import PrototypeBanner from "@/components/landing/PrototypeBanner";
 import Benefits from "@/components/landing/Benefits";
+import Testimonials from "@/components/landing/Testimonials";
 import CaseStudy from "@/components/landing/CaseStudy";
 import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
@@ -34,7 +36,9 @@ export default function Landing() {
       <HowItWorks />
       <PrototypeBanner onStartAudit={openAuditChat} />
       <Benefits />
+      <Testimonials />
       <CaseStudy />
+      <AurvyzShowcase />
       <CTASection onBookCall={openBooking} onStartAudit={openAuditChat} />
       <Footer onBookCall={openBooking} onStartAudit={openAuditChat} />
       <BookingModal open={bookingOpen} onOpenChange={setBookingOpen} />

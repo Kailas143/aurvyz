@@ -26,7 +26,7 @@ const pillars = [
 
 export default function ProblemSolution() {
   return (
-    <section id="why-aurvyz" className="relative py-24 sm:py-32 overflow-hidden bg-white">
+    <section id="why-aurvyz" className="relative pt-16 pb-24 sm:pt-24 sm:pb-32 overflow-hidden bg-white">
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           
@@ -39,7 +39,7 @@ export default function ProblemSolution() {
               Legacy software is the <span className="text-[#4B5563]">ceiling</span> on your growth.
             </h2>
             <p className="mt-6 text-base text-[#4B5563] leading-relaxed">
-              Most businesses are held back by systems that require manual management instead of driving automatic growth.
+              Most businesses are held back by legacy tools that require manual management instead of driving automatic growth.
             </p>
 
             <div className="mt-10 space-y-6">
@@ -66,10 +66,10 @@ export default function ProblemSolution() {
                 / Our Approach
               </div>
               <h3 className="font-display text-3xl font-bold leading-tight">
-                Engineering <span className="text-[#2EC4B6]">systems of leverage</span>.
+                Engineering <span className="text-[#2EC4B6]">architectures of leverage</span>.
               </h3>
               <p className="mt-6 text-white/70 leading-relaxed">
-                We don't just build software; we engineer the operational systems that become the foundation of your growth. Strategic infrastructure designed to gain value as you scale.
+                We don't just build software; we engineer the operational infrastructure that becomes the foundation of your growth. Strategic assets designed to gain value as you scale.
               </p>
 
               <div className="mt-10 space-y-8">

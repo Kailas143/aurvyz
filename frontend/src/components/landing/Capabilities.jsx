@@ -49,7 +49,7 @@ export default function Capabilities() {
             / Capabilities & Solutions
           </div>
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#0B3C5D] leading-tight tracking-tight">
-            Engineered systems for <br className="hidden sm:block" />
+            Engineered architectures for <br className="hidden sm:block" />
             <span className="nx-gradient-text">growing businesses.</span>
           </h2>
           <p className="mt-6 text-base sm:text-lg text-[#4B5563] leading-relaxed">
@@ -99,7 +99,7 @@ export default function Capabilities() {
                 </span>
             </div>
             <h4 className="font-display text-3xl sm:text-4xl font-bold leading-tight">
-              Clinic AI <span className="text-[#2EC4B6]">Operations System</span>.
+              Clinic AI <span className="text-[#2EC4B6]">Operating Stack</span>.
             </h4>
             <p className="mt-6 text-white/70 leading-relaxed max-w-lg">
               A comprehensive operational OS for medical clinics. We unified patient intake, AI-driven records, and scheduling into a single high-performance interface.
@@ -123,11 +123,18 @@ export default function Capabilities() {
             <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
               <img 
                 src="/assets/clinic-demo.png" 
-                alt="Clinic AI Demo Screenshot" 
+                alt="Interface of ClinicOS, a medical operations stack with AI front-desk and patient records" 
                 className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>
           </div>
+        </div>
+        
+        {/* Transition Divider */}
+        <div className="flex items-center gap-4 mb-8">
+            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#0B3C5D]/10 to-transparent" />
+            <BrainCircuit className="w-5 h-5 text-[#328CC1] opacity-30" />
+            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#0B3C5D]/10 to-transparent" />
         </div>
         
         {/* Flagship solution 2 / Global Admissions OS */}
@@ -138,7 +145,7 @@ export default function Capabilities() {
             <div className="relative rounded-2xl overflow-hidden border border-[#0B3C5D]/5 shadow-2xl">
               <img 
                 src="/assets/global-admissions-demo.png" 
-                alt="Global Admissions OS Demo Screenshot" 
+                alt="Global Admissions Infrastructure showing AI-driven student eligibility pipeline" 
                 className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>
@@ -154,7 +161,7 @@ export default function Capabilities() {
                 </span>
             </div>
             <h4 className="font-display text-3xl sm:text-4xl font-bold text-[#0B3C5D] leading-tight">
-              Global Admissions <span className="nx-gradient-text">OS</span>.
+              Global Admissions <span className="nx-gradient-text">Infrastructure</span>.
             </h4>
             <p className="mt-6 text-[#4B5563] leading-relaxed max-w-lg">
               A comprehensive system for education consultancies. We automated eligibility checks with Gemini AI and built a proactive counselor assistant to drive enrollment growth.
