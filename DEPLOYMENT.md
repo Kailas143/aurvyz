@@ -18,7 +18,7 @@
    SMTP_HOST=smtp.zoho.in
    SMTP_PORT=465
    SMTP_USER=hello@aurvyz.com
-   SMTP_PASS=JnNbDhY7HEyr
+   SMTP_PASS=<your-smtp-password>
    ```
 
 ## Deployment Steps
