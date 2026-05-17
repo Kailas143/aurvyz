@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 export default function PrototypeBanner({ onStartAudit }) {
   return (
-    <section 
+    <section
       data-testid="prototype-banner"
       className="py-12 bg-white"
     >
@@ -12,7 +12,7 @@ export default function PrototypeBanner({ onStartAudit }) {
           {/* Animated decorative elements */}
           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#2EC4B6]/15 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 group-hover:bg-[#2EC4B6]/25 transition-colors duration-700" />
           <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[#328CC1]/10 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2" />
-          
+
           <div className="relative flex flex-col lg:flex-row items-center justify-between gap-8">
             <div className="max-w-xl text-center lg:text-left">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2EC4B6]/15 text-[#2EC4B6] text-[10px] font-bold uppercase tracking-widest mb-6">
@@ -30,7 +30,7 @@ export default function PrototypeBanner({ onStartAudit }) {
 
             <div className="flex flex-col sm:flex-row items-center gap-6 w-full lg:w-auto">
               <div className="flex flex-col items-center sm:items-end gap-2">
-                <Button 
+                <Button
                   onClick={onStartAudit}
                   data-testid="claim-prototype-btn"
                   className="h-14 px-8 rounded-full bg-[#2EC4B6] text-[#0B3C5D] hover:bg-[#26b0a4] text-base font-bold shadow-[0_10px_30px_-10px_rgba(46,196,182,0.5)] hover:-translate-y-1 transition-all w-full sm:w-auto"
@@ -39,8 +39,6 @@ export default function PrototypeBanner({ onStartAudit }) {
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
                 <div className="flex items-center gap-2 text-white/50 text-[10px] font-bold uppercase tracking-wider">
-                  <Clock className="w-3.5 h-3.5" />
-                  Next Slot: Tomorrow morning
                 </div>
               </div>
             </div>
