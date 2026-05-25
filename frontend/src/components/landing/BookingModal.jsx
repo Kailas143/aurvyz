@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { ArrowRight, CalendarCheck2, Loader2, ChevronLeft } from "lucide-react";
 
 const CALENDLY_URL =
-  process.env.REACT_APP_CALENDLY_URL ||
+  process.env.NEXT_PUBLIC_CALENDLY_URL ||
   "https://calendly.com/kailasvs94/30min";
 
 /**
@@ -78,7 +78,7 @@ export default function BookingModal({ open, onOpenChange }) {
       toast.error(
         typeof detail === "string"
           ? detail
-          : "Couldn't reach the backend. Check REACT_APP_BACKEND_URL or your local API server."
+          : "Couldn't reach the backend. Check NEXT_PUBLIC_BACKEND_URL or your local API server."
       );
     } finally {
       setSubmitting(false);

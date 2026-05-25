@@ -1,0 +1,32 @@
+
+> frontend@0.1.0 build
+> next build
+
+   ▲ Next.js 15.1.7
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/5) ...
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+   Generating static pages (1/5) 
+   Generating static pages (2/5) 
+   Generating static pages (3/5) 
+ ✓ Generating static pages (5/5)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    21.3 kB         222 kB
+├ ○ /_not-found                          979 B           106 kB
+└ ○ /demo-lab                            2.95 kB         203 kB
++ First Load JS shared by all            105 kB
+  ├ chunks/4bd1b696-0b1c8b1c7805d23c.js  52.9 kB
+  ├ chunks/517-471f31079b881d50.js       50.5 kB
+  └ other shared chunks (total)          1.89 kB
+
+
+○  (Static)  prerendered as static content
+

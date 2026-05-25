@@ -1,7 +1,7 @@
 const LOCAL_BACKEND_URL = "http://localhost:8000";
 
 export function getBackendBaseUrl() {
-  const configured = process.env.REACT_APP_BACKEND_URL?.trim();
+  const configured = process.env.NEXT_PUBLIC_BACKEND_URL?.trim();
   if (configured) {
     return configured.replace(/\/$/, "");
   }
