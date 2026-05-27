@@ -67,7 +67,8 @@ export default function Hero({ onBookCall, onStartAudit }) {
         {/* UPPER GRID: Headline Only */}
         <div className="grid lg:grid-cols-12 gap-10 items-start mb-12 lg:mb-16">
           <div className="lg:col-span-12">
-            <h1
+            <h1 className="sr-only">Aurvyz AI — Future-Ready AI Operational Systems</h1>
+            <h2
               data-testid="hero-headline"
               className="font-display text-5xl sm:text-7xl lg:text-[7.5rem] font-black text-[#0B3C5D] leading-[1] tracking-tight mb-2"
             >
@@ -81,7 +82,7 @@ export default function Hero({ onBookCall, onStartAudit }) {
               >
                 Operational Systems.
               </motion.span>
-            </h1>
+            </h2>
           </div>
         </div>
 

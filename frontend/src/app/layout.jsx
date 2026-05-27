@@ -32,9 +32,12 @@ export const metadata = {
   },
 };
 
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { CommandMenu } from "@/components/ui/CommandMenu";
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -68,9 +71,17 @@ export default function RootLayout({ children }) {
         </Script>
         <Script src="https://assets.emergent.sh/scripts/emergent-main.js" strategy="afterInteractive" />
       </head>
-      <body>
-        <div id="root">{children}</div>
-        <Toaster position="top-right" />
+      <body className="antialiased">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <div id="root">{children}</div>
+          <CommandMenu />
+          <Toaster position="top-right" />
+        </ThemeProvider>
         
         <Script id="posthog" strategy="afterInteractive">
           {`

@@ -1,3 +1,5 @@
+"use client";
+
 import { Mail, Linkedin, Sparkles, ArrowUpRight, Phone } from "lucide-react";
 
 export default function Footer({ onBookCall }) {
