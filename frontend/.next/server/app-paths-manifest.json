@@ -1,7 +1,0 @@
-{
-  "/insights/[slug]/page": "app/insights/[slug]/page.js",
-  "/page": "app/page.js",
-  "/admin/page": "app/admin/page.js",
-  "/admin/editor/page": "app/admin/editor/page.js",
-  "/admin/scheduler/page": "app/admin/scheduler/page.js"
-}

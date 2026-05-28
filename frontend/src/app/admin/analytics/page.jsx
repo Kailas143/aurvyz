@@ -75,7 +75,7 @@ export default function AdminAnalytics() {
                   <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2">
                     <div 
                       className="bg-blue-600 h-2 rounded-full" 
-                      style={{ width: \`\${(category.views / analyticsData.topCategories[0].views) * 100}%\` }}
+                      style={{ width: `${(category.views / analyticsData.topCategories[0].views) * 100}%` }}
                     ></div>
                   </div>
                 </div>
