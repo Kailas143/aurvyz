@@ -14,8 +14,8 @@ import { Sparkles, Save, Send, Bold, Italic, Heading1, Heading2, List, Quote, Co
 import { Badge } from "@/components/ui/badge";
 
 // Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "http://placeholder.supabase.co";
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "placeholder_key";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://okbmujshtcgwicsrowgy.supabase.co";
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "sb_publishable_xZRDudSaUqshCxW0_GcbuQ_V1kvAcC4";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export const dynamic = 'force-dynamic';
