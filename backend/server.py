@@ -910,12 +910,23 @@ async def audit_chat_email_report(payload: EmailReportRequest, background_tasks:
 # Include the router in the main app
 app.include_router(api_router)
 
-cors_origins_str = os.environ.get('CORS_ORIGINS', 'http://localhost:3000,http://127.0.0.1:3000,https://aurvyz.com,https://www.aurvyz.com')
+env_cors = os.environ.get('CORS_ORIGINS', '')
+allowed_origins = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'https://aurvyz.com',
+    'https://www.aurvyz.com'
+]
+if env_cors:
+    allowed_origins.extend([origin.strip() for origin in env_cors.split(',') if origin.strip()])
+
+# Remove duplicates
+allowed_origins = list(set(allowed_origins))
 
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=cors_origins_str.split(','),
+    allow_origins=allowed_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
