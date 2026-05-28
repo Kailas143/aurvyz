@@ -2,12 +2,48 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Clock, TrendingUp, Users } from "lucide-react";
+import { Plus, Clock, TrendingUp, Users, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { analyticsData, scheduledArticles } from "@/lib/mockData";
 import { Badge } from "@/components/ui/badge";
+import { useState, useEffect } from "react";
 
 export default function AdminOverview() {
+  const [analyticsData, setAnalyticsData] = useState(null);
+  const [scheduledArticles, setScheduledArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/analytics`).then(r => r.json()),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/scheduled-articles`).then(r => r.json())
+    ])
+    .then(([analytics, articles]) => {
+      setAnalyticsData(analytics);
+      setScheduledArticles(articles);
+      setLoading(false);
+    })
+    .catch(err => {
+      console.error("Error fetching admin data:", err);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-96">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
+
+  if (!analyticsData) {
+    return (
+      <div className="text-center text-red-500 mt-10">
+        Failed to load admin overview data.
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -25,47 +61,43 @@ export default function AdminOverview() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Total Views</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-500">Published Articles</CardTitle>
             <TrendingUp className="w-4 h-4 text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analyticsData.views.toLocaleString()}</div>
-            <p className="text-xs text-green-500 font-medium mt-1">{analyticsData.viewsChange} from last month</p>
+            <div className="text-2xl font-bold">{analyticsData.articlesCount}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Avg. Reading Time</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-500">Active Categories</CardTitle>
             <Clock className="w-4 h-4 text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analyticsData.readingTimeAvg}</div>
-            <p className="text-xs text-green-500 font-medium mt-1">{analyticsData.readingTimeChange} from last month</p>
+            <div className="text-2xl font-bold">{analyticsData.categoriesCount}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Subscribers</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-500">Live Prototypes</CardTitle>
             <Users className="w-4 h-4 text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analyticsData.subscribers.toLocaleString()}</div>
-            <p className="text-xs text-green-500 font-medium mt-1">{analyticsData.subscribersChange} from last month</p>
+            <div className="text-2xl font-bold">{analyticsData.prototypesCount}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">Conversion Rate</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-500">Scheduled Drafts</CardTitle>
             <TrendingUp className="w-4 h-4 text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analyticsData.conversionRate}</div>
-            <p className="text-xs text-green-500 font-medium mt-1">{analyticsData.conversionChange} from last month</p>
+            <div className="text-2xl font-bold">{analyticsData.scheduledCount}</div>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8">
         <Card className="col-span-1">
           <CardHeader>
             <CardTitle>Recent Queue</CardTitle>
@@ -94,31 +126,6 @@ export default function AdminOverview() {
             <Button variant="outline" className="w-full mt-4" asChild>
               <Link href="/admin/scheduler">View Full Calendar</Link>
             </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="col-span-1 bg-gradient-to-br from-blue-900 to-indigo-900 border-none text-white">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-              AI Insights Panel
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-4">
-              <li className="flex gap-3 bg-white/10 p-4 rounded-lg backdrop-blur-sm">
-                <TrendingUp className="w-5 h-5 text-blue-300 shrink-0" />
-                <p className="text-sm">"AI workflow" articles are performing 34% better than the baseline this month.</p>
-              </li>
-              <li className="flex gap-3 bg-white/10 p-4 rounded-lg backdrop-blur-sm">
-                <Users className="w-5 h-5 text-blue-300 shrink-0" />
-                <p className="text-sm">Case studies generate the highest conversion rate (4.8%) for strategy calls.</p>
-              </li>
-              <li className="flex gap-3 bg-white/10 p-4 rounded-lg backdrop-blur-sm">
-                <Clock className="w-5 h-5 text-blue-300 shrink-0" />
-                <p className="text-sm">Suggested action: Publish more deep-dive architecture content to increase avg. reading time.</p>
-              </li>
-            </ul>
           </CardContent>
         </Card>
       </div>

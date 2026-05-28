@@ -1,5 +1,4 @@
 import { PrototypeCard } from "@/components/prototypes/PrototypeCard";
-import { prototypes } from "@/lib/mockData";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import Nav from "@/components/landing/Nav";
@@ -10,7 +9,17 @@ export const metadata = {
   description: "Explore our interactive prototypes, workflow demos, and operational systems.",
 };
 
-export default function PrototypesPage() {
+export default async function PrototypesPage() {
+  let prototypes = [];
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}/api/prototypes`);
+    if (res.ok) {
+      prototypes = await res.json();
+    }
+  } catch (error) {
+    console.error("Error fetching prototypes", error);
+  }
+
   return (
     <div className="min-h-screen bg-[#F7F9FB] dark:bg-gray-950 flex flex-col">
       <Nav />

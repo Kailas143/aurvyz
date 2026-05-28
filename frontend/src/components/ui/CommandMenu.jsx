@@ -10,11 +10,25 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { articles, prototypes } from "@/lib/mockData";
 
 export function CommandMenu() {
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
+  
+  const [articles, setArticles] = React.useState([]);
+  const [prototypes, setPrototypes] = React.useState([]);
+
+  React.useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/articles`)
+      .then(res => res.json())
+      .then(data => setArticles(data))
+      .catch(console.error);
+      
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/prototypes`)
+      .then(res => res.json())
+      .then(data => setPrototypes(data))
+      .catch(console.error);
+  }, []);
 
   React.useEffect(() => {
     const down = (e) => {

@@ -1,19 +1,34 @@
 "use client";
 import { marked } from "marked";
+import { createClient } from "@supabase/supabase-js";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Save, Send, Bold, Italic, Heading1, Heading2, List, Quote, Code, Link as LinkIcon } from "lucide-react";
+import { Sparkles, Save, Send, Bold, Italic, Heading1, Heading2, List, Quote, Code, Link as LinkIcon, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
+// Initialize Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "";
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 export default function AdminEditor() {
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const [mode, setMode] = useState("write");
   const [content, setContent] = useState("");
+  const [category, setCategory] = useState("AI Systems");
+  const [slug, setSlug] = useState("");
+  const [excerpt, setExcerpt] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   
   const insertFormatting = (prefix, suffix = "") => {
     const textarea = document.getElementById("content");
@@ -33,6 +48,86 @@ export default function AdminEditor() {
     }, 0);
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingImage(true);
+
+    try {
+      if (!supabaseUrl || !supabaseKey) {
+        throw new Error("Supabase credentials are not configured.");
+      }
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+      const filePath = `covers/${fileName}`;
+
+      const { data, error } = await supabase.storage
+        .from('article-images')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('article-images')
+        .getPublicUrl(filePath);
+
+      setImageUrl(publicUrl);
+      toast.success("Image uploaded securely to Supabase!");
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || "An error occurred during upload.");
+    } finally {
+      setIsUploadingImage(false);
+      e.target.value = "";
+    }
+  };
+
+  const handlePublish = async () => {
+    if (!title || !content) {
+      toast.error("Please provide a title and content before publishing.");
+      return;
+    }
+    
+    setIsPublishing(true);
+    const finalSlug = slug || title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/articles`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          title,
+          content,
+          category,
+          slug: finalSlug,
+          excerpt,
+          imageUrl: imageUrl || undefined
+        })
+      });
+
+      if (res.ok) {
+        toast.success("Article published successfully!");
+        router.push("/insights");
+      } else {
+        toast.error("Failed to publish the article.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("An error occurred while publishing.");
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8">
       <div className="flex-1 space-y-6">
@@ -40,7 +135,14 @@ export default function AdminEditor() {
           <h1 className="text-3xl font-bold tracking-tight">Create Article</h1>
           <div className="flex gap-3">
             <Button variant="outline"><Save className="w-4 h-4 mr-2" /> Save Draft</Button>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white"><Send className="w-4 h-4 mr-2" /> Publish</Button>
+            <Button 
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={handlePublish}
+              disabled={isPublishing}
+            >
+              {isPublishing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Send className="w-4 h-4 mr-2" />} 
+              Publish
+            </Button>
           </div>
         </div>
 
@@ -161,7 +263,11 @@ export default function AdminEditor() {
           <CardContent className="space-y-4">
              <div className="space-y-2">
               <Label>Category</Label>
-              <select className="w-full p-2 border border-gray-200 dark:border-gray-800 rounded-md bg-transparent">
+              <select 
+                className="w-full p-2 border border-gray-200 dark:border-gray-800 rounded-md bg-transparent"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
                 <option>AI Systems</option>
                 <option>Workflow Automation</option>
                 <option>Engineering</option>
@@ -174,11 +280,45 @@ export default function AdminEditor() {
             </div>
             <div className="space-y-2">
               <Label>URL Slug</Label>
-              <Input placeholder="my-article-slug" defaultValue={title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '')} />
+              <Input 
+                placeholder="my-article-slug" 
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+              />
+              <p className="text-xs text-gray-500">Auto-generated from title if left blank.</p>
+            </div>
+            <div className="space-y-2">
+              <Label>Cover Image</Label>
+              {imageUrl && (
+                <div className="relative w-full h-32 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 mb-2 group">
+                  <img src={imageUrl} alt="Cover Preview" className="w-full h-full object-cover" />
+                  <button 
+                    onClick={() => setImageUrl("")}
+                    className="absolute top-2 right-2 bg-black/50 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                  </button>
+                </div>
+              )}
+              <div className="flex items-center gap-2">
+                <Input 
+                  type="file" 
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  disabled={isUploadingImage}
+                  className="file:bg-blue-50 file:text-blue-700 file:border-0 file:rounded-md file:px-4 file:py-1 file:mr-4 file:font-semibold hover:file:bg-blue-100 cursor-pointer"
+                />
+                {isUploadingImage && <Loader2 className="w-5 h-5 animate-spin text-blue-600" />}
+              </div>
             </div>
             <div className="space-y-2">
               <Label>Meta Description</Label>
-              <Textarea placeholder="Short summary for search engines..." className="resize-none h-24" />
+              <Textarea 
+                placeholder="Short summary for search engines..." 
+                className="resize-none h-24" 
+                value={excerpt}
+                onChange={(e) => setExcerpt(e.target.value)}
+              />
             </div>
           </CardContent>
         </Card>

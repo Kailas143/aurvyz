@@ -3,10 +3,34 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { scheduledArticles } from "@/lib/mockData";
-import { Calendar as CalendarIcon, Clock, MoreVertical, Plus } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, MoreVertical, Plus, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function AdminScheduler() {
+  const [scheduledArticles, setScheduledArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/scheduled-articles`)
+      .then(res => res.json())
+      .then(data => {
+        setScheduledArticles(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error fetching scheduled articles:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-96">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       <div className="flex items-center justify-between">

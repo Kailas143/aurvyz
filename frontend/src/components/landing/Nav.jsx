@@ -11,6 +11,7 @@ const links = [
   { href: "/#use-cases", label: "Use Cases" },
   { href: "/#how", label: "Process" },
   { href: "/#case-study", label: "Work" },
+  { href: "/insights", label: "Insights" },
 ];
 
 export default function Nav({ onBookCall }) {

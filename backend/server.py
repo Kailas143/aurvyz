@@ -1,4 +1,5 @@
-from fastapi import FastAPI, APIRouter, HTTPException, BackgroundTasks
+from fastapi import FastAPI, APIRouter, HTTPException, BackgroundTasks, File, UploadFile
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -12,6 +13,7 @@ import uuid
 from datetime import datetime, timezone
 import asyncio
 import smtplib
+import shutil
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from calendly_poll import poll_calendly_once, start_scheduler, stop_scheduler
@@ -108,6 +110,11 @@ logger = logging.getLogger(__name__)
 
 # Create the main app without a prefix
 app = FastAPI(title="Aurvyz — Landing API")
+
+# Mount uploads directory for static serving
+uploads_dir = ROOT_DIR / "uploads"
+uploads_dir.mkdir(exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
@@ -438,6 +445,160 @@ def send_calendly_confirmation_email(subject: str, html: str, reply_to: Optional
 @api_router.get("/")
 async def root():
     return {"message": "Aurvyz API", "status": "ok"}
+
+
+@api_router.get("/analytics")
+async def get_analytics():
+    articles_count = await db.articles.count_documents({})
+    categories_count = await db.categories.count_documents({})
+    prototypes_count = await db.prototypes.count_documents({})
+    scheduled_count = await db.scheduled_articles.count_documents({})
+
+    # Aggregate categories by article count
+    pipeline = [
+        {"$group": {"_id": "$category", "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}}
+    ]
+    cursor = db.articles.aggregate(pipeline)
+    top_categories = [{"name": doc["_id"] or "Uncategorized", "count": doc["count"]} async for doc in cursor]
+
+    return {
+        "articlesCount": articles_count,
+        "categoriesCount": categories_count,
+        "prototypesCount": prototypes_count,
+        "scheduledCount": scheduled_count,
+        "topCategories": top_categories
+    }
+
+
+class Author(BaseModel):
+    name: str
+    role: str
+    avatar: str
+
+class ArticleModel(BaseModel):
+    id: str
+    slug: str
+    title: str
+    excerpt: str
+    content: str
+    category: str
+    author: Author
+    publishedAt: str
+    readingTime: str
+    imageUrl: str
+    tags: List[str]
+    featured: bool
+
+class PrototypeModel(BaseModel):
+    id: str
+    title: str
+    industry: str
+    buildTime: str
+    techStack: List[str]
+    summary: str
+    thumbnailUrl: str
+    demoUrl: str
+    walkthroughUrl: str
+
+class ScheduledArticleModel(BaseModel):
+    id: str
+    title: str
+    status: str
+    publishDate: Optional[str] = None
+    author: str
+    category: str
+
+class ArticleCreate(BaseModel):
+    title: str
+    content: str
+    category: str
+    slug: str
+    excerpt: Optional[str] = ""
+    imageUrl: Optional[str] = None
+
+
+@api_router.get("/articles", response_model=List[ArticleModel])
+async def get_articles():
+    articles = await db.articles.find().to_list(100)
+    for a in articles:
+        a["_id"] = str(a["_id"])
+    return articles
+
+@api_router.get("/articles/{slug}", response_model=ArticleModel)
+async def get_article_by_slug(slug: str):
+    article = await db.articles.find_one({"slug": slug})
+    if not article:
+        raise HTTPException(status_code=404, detail="Article not found")
+    article["_id"] = str(article["_id"])
+    return article
+
+@api_router.get("/categories")
+async def get_categories():
+    categories = await db.categories.find().to_list(100)
+    return [c["name"] for c in categories]
+
+@api_router.get("/prototypes", response_model=List[PrototypeModel])
+async def get_prototypes():
+    prototypes = await db.prototypes.find().to_list(100)
+    for p in prototypes:
+        p["_id"] = str(p["_id"])
+    return prototypes
+
+@api_router.get("/scheduled-articles", response_model=List[ScheduledArticleModel])
+async def get_scheduled_articles():
+    scheduled = await db.scheduled_articles.find().to_list(100)
+    for s in scheduled:
+        s["_id"] = str(s["_id"])
+    return scheduled
+
+@api_router.post("/upload")
+async def upload_image(file: UploadFile = File(...)):
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="File must be an image")
+    
+    ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
+    filename = f"{uuid.uuid4()}.{ext}"
+    file_path = ROOT_DIR / "uploads" / filename
+    
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+        
+    return {"url": f"/uploads/{filename}"}
+
+@api_router.post("/articles", response_model=ArticleModel)
+async def create_article(payload: ArticleCreate):
+    excerpt = payload.excerpt or (payload.content[:150] + "..." if len(payload.content) > 150 else payload.content)
+    image_url = payload.imageUrl or "https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+    article_doc = {
+        "id": str(uuid.uuid4()),
+        "slug": payload.slug,
+        "title": payload.title,
+        "excerpt": excerpt,
+        "content": payload.content,
+        "category": payload.category,
+        "author": {
+            "name": "Admin User",
+            "role": "Author",
+            "avatar": "https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+        },
+        "publishedAt": datetime.now(timezone.utc).isoformat(),
+        "readingTime": f"{max(1, len(payload.content) // 1000)} min read",
+        "imageUrl": image_url,
+        "tags": [payload.category],
+        "featured": False
+    }
+    result = await db.articles.insert_one(article_doc)
+    created = await db.articles.find_one({"_id": result.inserted_id})
+    created["_id"] = str(created["_id"])
+    return created
+
+@api_router.delete("/articles/{article_id}")
+async def delete_article(article_id: str):
+    result = await db.articles.delete_one({"id": article_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Article not found")
+    return {"ok": True, "message": "Article deleted successfully"}
 
 
 @api_router.post("/status", response_model=StatusCheck)

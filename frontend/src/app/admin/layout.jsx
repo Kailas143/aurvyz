@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, PenTool, CalendarClock, BarChart3, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, PenTool, CalendarClock, BarChart3, Settings, LogOut, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function AdminLayout({ children }) {
@@ -10,6 +10,7 @@ export default function AdminLayout({ children }) {
 
   const navItems = [
     { href: "/admin", icon: LayoutDashboard, label: "Overview" },
+    { href: "/admin/articles", icon: FileText, label: "All Articles" },
     { href: "/admin/editor", icon: PenTool, label: "New Article" },
     { href: "/admin/scheduler", icon: CalendarClock, label: "Scheduler" },
     { href: "/admin/analytics", icon: BarChart3, label: "Analytics" },

@@ -1,7 +1,18 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
-import { categories } from "@/lib/mockData";
+import { useState, useEffect } from "react";
 
 export function CategoryFilter({ selected, onSelect }) {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/categories`)
+      .then(res => res.json())
+      .then(data => setCategories(data))
+      .catch(err => console.error("Error fetching categories:", err));
+  }, []);
+
   return (
     <div className="flex flex-wrap gap-2 mb-8">
       <Button

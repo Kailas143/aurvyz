@@ -1,19 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Nav from "@/components/landing/Nav";
 import Footer from "@/components/landing/Footer";
 import { FeaturedArticle } from "@/components/blog/FeaturedArticle";
 import { ArticleCard } from "@/components/blog/ArticleCard";
 import { CategoryFilter } from "@/components/blog/CategoryFilter";
 import { NewsletterSignup } from "@/components/blog/NewsletterSignup";
-import { articles } from "@/lib/mockData";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 
 export default function InsightsPage() {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/articles`)
+      .then(res => res.json())
+      .then(data => {
+        setArticles(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error fetching articles:", err);
+        setLoading(false);
+      });
+  }, []);
 
   const featuredArticle = articles.find(a => a.featured) || articles[0];
   
@@ -40,7 +54,13 @@ export default function InsightsPage() {
             </p>
           </header>
 
-          <FeaturedArticle article={featuredArticle} />
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+            </div>
+          ) : (
+            <>
+              {featuredArticle && <FeaturedArticle article={featuredArticle} />}
 
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
@@ -66,6 +86,8 @@ export default function InsightsPage() {
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No articles found</h3>
               <p className="text-gray-500 dark:text-gray-400">Try adjusting your search or category filter.</p>
             </div>
+          )}
+          </>
           )}
 
           <NewsletterSignup />
