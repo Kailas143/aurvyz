@@ -517,6 +517,10 @@ class ArticleCreate(BaseModel):
     excerpt: Optional[str] = ""
     imageUrl: Optional[str] = None
 
+class SEOAnalyzeRequest(BaseModel):
+    title: str
+    content: str
+
 
 @api_router.get("/articles", response_model=List[ArticleModel])
 async def get_articles():
@@ -599,6 +603,16 @@ async def delete_article(article_id: str):
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Article not found")
     return {"ok": True, "message": "Article deleted successfully"}
+
+@api_router.post("/seo-analyze")
+async def analyze_seo(payload: SEOAnalyzeRequest):
+    try:
+        existing_titles = await db.articles.distinct("title")
+        report = await audit_chat_service.generate_seo_report(payload.title, payload.content, existing_titles=existing_titles)
+        return report
+    except Exception as e:
+        logger.error(f"SEO analysis failed: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate SEO report")
 
 
 @api_router.post("/status", response_model=StatusCheck)

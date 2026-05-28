@@ -9,6 +9,8 @@ export const metadata = {
   description: "Explore our interactive prototypes, workflow demos, and operational systems.",
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function PrototypesPage() {
   let prototypes = [];
   try {

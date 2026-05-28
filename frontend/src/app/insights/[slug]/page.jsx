@@ -11,19 +11,7 @@ import FadeUp from "@/components/ui/FadeUp";
 
 import { marked } from "marked";
 
-export async function generateStaticParams() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}/api/articles`);
-    if (!res.ok) return [];
-    const articles = await res.json();
-    return articles.map((article) => ({
-      slug: article.slug,
-    }));
-  } catch (error) {
-    console.error("Error fetching articles for static params", error);
-    return [];
-  }
-}
+export const dynamic = 'force-dynamic';
 
 export default async function ArticlePage({ params }) {
   const { slug } = await params;

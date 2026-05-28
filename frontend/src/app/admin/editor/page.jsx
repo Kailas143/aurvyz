@@ -14,9 +14,11 @@ import { Sparkles, Save, Send, Bold, Italic, Heading1, Heading2, List, Quote, Co
 import { Badge } from "@/components/ui/badge";
 
 // Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "http://placeholder.supabase.co";
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "placeholder_key";
 const supabase = createClient(supabaseUrl, supabaseKey);
+
+export const dynamic = 'force-dynamic';
 
 export default function AdminEditor() {
   const router = useRouter();
@@ -30,6 +32,14 @@ export default function AdminEditor() {
   const [isPublishing, setIsPublishing] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   
+  const [seoData, setSeoData] = useState({
+    headline_suggestion: "Run SEO analysis to get headline ideas.",
+    internal_linking: "Run SEO analysis for internal linking tips.",
+    readability: "-",
+    seo_score: "-"
+  });
+  const [isAnalyzingSEO, setIsAnalyzingSEO] = useState(false);
+
   const insertFormatting = (prefix, suffix = "") => {
     const textarea = document.getElementById("content");
     if (!textarea) return;
@@ -86,6 +96,36 @@ export default function AdminEditor() {
     } finally {
       setIsUploadingImage(false);
       e.target.value = "";
+    }
+  };
+
+  const handleAnalyzeSEO = async () => {
+    if (!title && !content) {
+      toast.error("Please add a title and content to analyze.");
+      return;
+    }
+    
+    setIsAnalyzingSEO(true);
+    try {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const res = await fetch(`${backendUrl}/api/seo-analyze`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content })
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setSeoData(data);
+        toast.success("SEO analysis complete!");
+      } else {
+        toast.error("Failed to analyze SEO.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Error connecting to AI service.");
+    } finally {
+      setIsAnalyzingSEO(false);
     }
   };
 
@@ -235,23 +275,37 @@ export default function AdminEditor() {
 
       <div className="w-full lg:w-80 space-y-6">
         <Card className="border-blue-100 dark:border-blue-900 bg-blue-50/50 dark:bg-blue-900/10">
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-lg flex items-center gap-2 text-blue-700 dark:text-blue-400">
               <Sparkles className="w-5 h-5" /> AI SEO Assistant
             </CardTitle>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-8 border-blue-200 hover:bg-blue-100 text-blue-700 dark:border-blue-800 dark:hover:bg-blue-900/50 dark:text-blue-300"
+              onClick={handleAnalyzeSEO}
+              disabled={isAnalyzingSEO}
+            >
+              {isAnalyzingSEO ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Sparkles className="w-4 h-4 mr-1" />}
+              Analyze
+            </Button>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 pt-2">
             <div className="bg-white dark:bg-gray-950 p-3 rounded border border-gray-100 dark:border-gray-800 text-sm">
               <strong className="text-gray-900 dark:text-white block mb-1">Headline Suggestion</strong>
-              This headline could improve CTR. Consider adding operational keywords like "Systematize" or "Scale".
+              {seoData.headline_suggestion}
             </div>
             <div className="bg-white dark:bg-gray-950 p-3 rounded border border-gray-100 dark:border-gray-800 text-sm">
               <strong className="text-gray-900 dark:text-white block mb-1">Internal Linking</strong>
-              Based on your draft, you should link to your previous article: <span className="text-blue-600 underline cursor-pointer">Designing Workflow Automation</span>.
+              {seoData.internal_linking}
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
-              <Badge variant="outline" className="text-green-600 bg-green-50">Readability: High</Badge>
-              <Badge variant="outline" className="text-amber-600 bg-amber-50">SEO Score: 78/100</Badge>
+              <Badge variant="outline" className={`${seoData.readability === 'High' ? 'text-green-600 bg-green-50' : 'text-amber-600 bg-amber-50'}`}>
+                Readability: {seoData.readability}
+              </Badge>
+              <Badge variant="outline" className={`${seoData.seo_score > 70 ? 'text-green-600 bg-green-50' : 'text-amber-600 bg-amber-50'}`}>
+                SEO Score: {seoData.seo_score}/100
+              </Badge>
             </div>
           </CardContent>
         </Card>

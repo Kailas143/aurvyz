@@ -72,6 +72,55 @@ class GeminiAuditChatService:
             raise RuntimeError("Empty Gemini response")
         return text.strip()
 
+    async def generate_seo_report(self, title: str, content: str, existing_titles: List[str] = None) -> dict:
+        if not self.configured:
+            raise RuntimeError("GEMINI_API_KEY not configured")
+
+        titles_str = ", ".join(existing_titles) if existing_titles else "No existing articles"
+
+        prompt = f"""You are an expert SEO Assistant. Analyze the following article draft.
+Title: {title}
+Content: {content}
+
+Here are the titles of existing articles on the blog: [{titles_str}]
+
+Return your analysis as a JSON object with EXACTLY the following keys:
+- "headline_suggestion": A single string suggesting a better, more engaging headline.
+- "internal_linking": A short string suggesting what topic to link internally based on the content. ONLY suggest an internal link to one of the existing articles provided above. If none are highly relevant, return "No highly relevant internal links found."
+- "readability": A string enum of either "High", "Medium", or "Low".
+- "seo_score": An integer from 0 to 100 representing the overall SEO score.
+"""
+
+        payload = {
+            "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+            "generationConfig": {
+                "temperature": 0.3,
+                "responseMimeType": "application/json",
+            },
+        }
+        url = f"{GEMINI_API_BASE}/models/{self.model}:generateContent"
+
+        async with httpx.AsyncClient(timeout=self.timeout) as client:
+            response = await client.post(
+                url,
+                params={"key": self.api_key},
+                json=payload,
+                headers={"Content-Type": "application/json"},
+            )
+            response.raise_for_status()
+            data = response.json()
+
+        text = self._extract_text(data)
+        if not text:
+            raise RuntimeError("Empty Gemini response")
+            
+        import json
+        try:
+            return json.loads(text)
+        except json.JSONDecodeError:
+            logger.error("Failed to parse Gemini JSON: %s", text)
+            raise RuntimeError("Invalid JSON from Gemini")
+
     def _build_contents(self, history: List[ChatTurnLike], message: str) -> List[dict]:
         contents: List[dict] = []
         for turn in history:
