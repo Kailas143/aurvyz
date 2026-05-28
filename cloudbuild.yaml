@@ -17,6 +17,8 @@ steps:
     id: 'Build Frontend'
     args:
       - 'build'
+      - '--build-arg'
+      - 'NEXT_PUBLIC_API_URL=https://aurvyz-y5qehoxb2a-ew.a.run.app'
       - '-t'
       - 'europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/aurvyz/frontend:${SHORT_SHA}'
       - '-t'
