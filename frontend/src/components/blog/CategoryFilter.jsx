@@ -7,7 +7,7 @@ export function CategoryFilter({ selected, onSelect }) {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/categories`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000')}/api/categories`)
       .then(res => res.json())
       .then(data => setCategories(data))
       .catch(err => console.error("Error fetching categories:", err));

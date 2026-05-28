@@ -11,7 +11,7 @@ export default function AdminScheduler() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/scheduled-articles`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000')}/api/scheduled-articles`)
       .then(res => res.json())
       .then(data => {
         setScheduledArticles(data);

@@ -107,7 +107,7 @@ export default function AdminEditor() {
     
     setIsAnalyzingSEO(true);
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000');
       const res = await fetch(`${backendUrl}/api/seo-analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -139,7 +139,7 @@ export default function AdminEditor() {
     const finalSlug = slug || title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/articles`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000')}/api/articles`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

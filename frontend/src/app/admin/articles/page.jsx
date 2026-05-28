@@ -15,7 +15,7 @@ export default function ArticlesList() {
 
   const fetchArticles = async () => {
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000');
       const res = await fetch(`${backendUrl}/api/articles`);
       if (res.ok) {
         const data = await res.json();
@@ -40,7 +40,7 @@ export default function ArticlesList() {
 
     setIsDeleting(id);
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000');
       const res = await fetch(`${backendUrl}/api/articles/${id}`, {
         method: "DELETE",
       });

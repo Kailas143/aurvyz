@@ -18,7 +18,7 @@ export default async function ArticlePage({ params }) {
   let article = null;
   
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}/api/articles/${slug}`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000')}/api/articles/${slug}`);
     if (res.ok) {
       article = await res.json();
     }
