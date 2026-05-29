@@ -154,6 +154,21 @@ class Lead(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
+class GoogleLeadColumnData(BaseModel):
+    column_name: str
+    string_value: str
+    column_id: str
+
+class GoogleLeadWebhookPayload(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    lead_id: str
+    user_column_data: List[GoogleLeadColumnData]
+    api_version: str
+    form_id: int
+    campaign_id: int
+    google_key: str
+
+
 class ChatTurn(BaseModel):
     role: Literal["user", "assistant"]
     content: str
@@ -659,6 +674,45 @@ async def list_leads(limit: int = 100):
         if isinstance(it.get('created_at'), str):
             it['created_at'] = datetime.fromisoformat(it['created_at'])
     return items
+
+
+@api_router.post("/webhooks/google-leads", response_model=Lead, status_code=201)
+async def google_ads_webhook(payload: GoogleLeadWebhookPayload, background_tasks: BackgroundTasks):
+    expected_key = os.environ.get("GOOGLE_ADS_WEBHOOK_KEY")
+    if expected_key and payload.google_key != expected_key:
+        raise HTTPException(status_code=403, detail="Invalid Google Key")
+
+    email = ""
+    name = "Google Lead"
+    phone = ""
+    for col in payload.user_column_data:
+        if col.column_id == "EMAIL":
+            email = col.string_value
+        elif col.column_id == "FULL_NAME" or col.column_id == "FIRST_NAME":
+            name = col.string_value
+        elif col.column_id == "PHONE_NUMBER":
+            phone = col.string_value
+    
+    if not email:
+        email = f"unknown_{payload.lead_id}@example.com"
+        
+    message = f"[Google Ads Lead]\\nCampaign ID: {payload.campaign_id}\\nForm ID: {payload.form_id}\\nPhone: {phone}"
+
+    lead = Lead(
+        name=name,
+        email=email,
+        message=message,
+        lead_type="contact",
+        source="google_ads_webhook"
+    )
+    doc = lead.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.leads.insert_one(doc)
+    logger.info(f"New Google Ads lead captured: {lead.email}")
+
+    background_tasks.add_task(send_lead_notification, lead)
+
+    return lead
 
 
 @api_router.post("/audit-chat", response_model=AuditChatResponse)
