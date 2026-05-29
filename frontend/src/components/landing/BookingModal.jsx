@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import {
   Dialog,
@@ -23,6 +24,7 @@ const CALENDLY_URL =
  *  2) Calendly iframe, prefilled with the intake data
  */
 export default function BookingModal({ open, onOpenChange }) {
+  const router = useRouter();
   const [step, setStep] = useState("intake"); // 'intake' | 'booking'
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
@@ -31,6 +33,23 @@ export default function BookingModal({ open, onOpenChange }) {
     company: "",
     message: "",
   });
+
+  useEffect(() => {
+    function isCalendlyEvent(e) {
+      return e.data.event && e.data.event.indexOf('calendly') === 0;
+    }
+    
+    function handleMessage(e) {
+      if (isCalendlyEvent(e)) {
+        if (e.data.event === 'calendly.event_scheduled') {
+          router.push('/success');
+        }
+      }
+    }
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [router]);
 
   useEffect(() => {
     if (!open) {
