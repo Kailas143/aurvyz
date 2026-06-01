@@ -36,7 +36,7 @@ const steps = [
 export default function HowItWorks() {
   return (
     <section
-      id="how"
+      id="how-it-works"
       data-testid="how-section"
       className="relative py-16 sm:py-20"
     >

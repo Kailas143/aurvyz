@@ -114,7 +114,7 @@ export default function Footer({ onBookCall }) {
               <ul className="mt-4 space-y-3 text-sm text-white/75">
                 <li>
                   <button
-                    onClick={scrollTo("#cta")}
+                    onClick={scrollTo("#audit")}
                     className="inline-flex items-center gap-1 hover:text-white"
                   >
                     Free Systems Audit

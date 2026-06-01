@@ -76,7 +76,7 @@ export default function CTASection({ onBookCall }) {
 
   return (
     <section
-      id="cta"
+      id="audit"
       data-testid="cta-section"
       className="relative py-16 sm:py-20 bg-[#0B3C5D] text-white overflow-hidden"
     >

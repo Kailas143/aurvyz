@@ -23,7 +23,7 @@ const staggerContainer = {
 
 export default function CaseStudy() {
   const scrollToCTA = () => {
-    const el = document.querySelector("#cta");
+    const el = document.querySelector("#audit");
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 

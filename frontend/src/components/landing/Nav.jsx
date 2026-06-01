@@ -9,7 +9,7 @@ const links = [
   { href: "/#capabilities", label: "Capabilities" },
   { href: "/demo-lab", label: "Demo Lab" },
   { href: "/#use-cases", label: "Use Cases" },
-  { href: "/#how", label: "Process" },
+  { href: "/#how-it-works", label: "Process" },
   { href: "/#case-study", label: "Work" },
   { href: "/insights", label: "Insights" },
 ];
@@ -110,7 +110,7 @@ export default function Nav({ onBookCall }) {
             asChild
             className="bg-[#0B3C5D] hover:bg-[#08304a] text-white rounded-full px-5 h-10 shadow-sm"
           >
-            <a href="/#cta" onClick={navigate("/#cta")}>Free Audit</a>
+            <a href="/#audit" onClick={navigate("/#audit")}>Free Audit</a>
           </Button>
         </div>
       </div>

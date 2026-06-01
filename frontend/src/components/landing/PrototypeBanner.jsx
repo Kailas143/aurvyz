@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 export default function PrototypeBanner({ onStartAudit }) {
   return (
     <section
+      id="prototype"
       data-testid="prototype-banner"
       className="py-12 bg-white"
     >
