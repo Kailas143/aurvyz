@@ -234,7 +234,7 @@ export default function CTASection({ onBookCall }) {
 
           <p className="mt-6 text-[11px] text-[#4B5563] text-center">
             By submitting you agree to be contacted by the Aurvyz team. We
-            never share your details.
+            never share your details. Read our <a href="/privacy-policy" className="underline hover:text-[#0B3C5D] transition-colors">Privacy Policy</a>.
           </p>
         </motion.form>
       </div>

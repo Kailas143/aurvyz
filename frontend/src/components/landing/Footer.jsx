@@ -138,7 +138,7 @@ export default function Footer({ onBookCall }) {
         <div className="mt-14 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/50">
           <div>© {new Date().getFullYear()} Aurvyz AI. All rights reserved.</div>
           <div className="flex items-center gap-5">
-            <span>Privacy</span>
+            <a href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</a>
             <span>Terms</span>
             <span>Security</span>
           </div>

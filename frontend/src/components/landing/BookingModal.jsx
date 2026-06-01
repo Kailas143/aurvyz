@@ -209,7 +209,7 @@ export default function BookingModal({ open, onOpenChange }) {
             </form>
 
             <p className="mt-4 text-[11px] text-[#4B5563]">
-              No hard sell. 30 minutes · free · confidential.
+              No hard sell. 30 minutes · free · confidential. See our <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#0B3C5D] transition-colors">Privacy Policy</a>.
             </p>
           </div>
         )}
