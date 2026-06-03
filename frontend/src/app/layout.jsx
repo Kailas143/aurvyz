@@ -47,7 +47,7 @@ export default function RootLayout({ children }) {
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,600,700,800&f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet" />
-        
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -66,7 +66,7 @@ export default function RootLayout({ children }) {
             })
           }}
         />
-        
+
         <Script id="ignore-perf" strategy="beforeInteractive">
           {`window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);`}
         </Script>
@@ -75,7 +75,7 @@ export default function RootLayout({ children }) {
       <body className="antialiased">
         <noscript>
           <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M44VKRQP"
-          height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe>
+            height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe>
         </noscript>
         <ThemeProvider
           attribute="class"
@@ -88,7 +88,7 @@ export default function RootLayout({ children }) {
           <Toaster position="top-right" />
           <Clarity />
         </ThemeProvider>
-        
+
         <Script id="posthog" strategy="afterInteractive">
           {`
             !(function (t, e) {
@@ -162,7 +162,7 @@ export default function RootLayout({ children }) {
             });
           `}
         </Script>
-        
+
         {/* Google Analytics */}
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-Z6YFLNS5ZC" strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
@@ -173,6 +173,16 @@ export default function RootLayout({ children }) {
             gtag('config', 'G-Z6YFLNS5ZC');
           `}
         </Script>
+        {/* Google Ads */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18191561809">
+        </script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'AW-18191561809');
+        </script>
 
         {/* Google Tag Manager */}
         <Script id="gtm-script" strategy="afterInteractive">
