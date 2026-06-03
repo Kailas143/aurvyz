@@ -34,7 +34,6 @@ export const metadata = {
 
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { CommandMenu } from "@/components/ui/CommandMenu";
-import Clarity from "@/components/Clarity";
 
 export default function RootLayout({ children }) {
   return (
@@ -86,7 +85,6 @@ export default function RootLayout({ children }) {
           <div id="root">{children}</div>
           <CommandMenu />
           <Toaster position="top-right" />
-          <Clarity />
         </ThemeProvider>
 
         <Script id="posthog" strategy="afterInteractive">
