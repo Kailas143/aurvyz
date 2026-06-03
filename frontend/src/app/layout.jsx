@@ -174,15 +174,26 @@ export default function RootLayout({ children }) {
           `}
         </Script>
         {/* Google Ads */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18191561809">
-        </script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
+        <Script src="https://www.googletagmanager.com/gtag/js?id=AW-18191561809" strategy="afterInteractive" />
+        <Script id="google-ads" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-18191561809');
+          `}
+        </Script>
 
-          gtag('config', 'AW-18191561809');
-        </script>
+        {/* Microsoft Clarity */}
+        <Script id="clarity-script" strategy="afterInteractive">
+          {`
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "x09ry50skr");
+          `}
+        </Script>
 
         {/* Google Tag Manager */}
         <Script id="gtm-script" strategy="afterInteractive">
