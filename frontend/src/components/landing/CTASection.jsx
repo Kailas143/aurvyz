@@ -109,12 +109,10 @@ export default function CTASection({ onBookCall }) {
             data-testid="cta-headline"
             className="font-display mt-4 text-3xl sm:text-5xl font-black leading-[1.05] tracking-tight"
           >
-            Get a free audit of your AI systems.
+            Ready to Automate Your Business?
           </h2>
           <p className="mt-5 text-white/70 text-base leading-relaxed max-w-md">
-            Share a few details and our product team will return a tailored
-            report: what to automate first, what to rebuild, and the fastest
-            path to measurable ROI.
+            Let's identify the workflows costing your team time and build a system that solves them.
           </p>
 
           <motion.ul 
@@ -228,7 +226,7 @@ export default function CTASection({ onBookCall }) {
               variant="outline"
               className="h-14 px-8 rounded-full border-[#0B3C5D]/20 text-[#0B3C5D] hover:bg-white flex-1 shadow-sm font-bold text-base transition-all"
             >
-              Book a Call
+              Book Strategy Call
             </Button>
           </div>
 

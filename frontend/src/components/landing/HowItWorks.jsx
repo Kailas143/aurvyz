@@ -3,33 +3,27 @@ import { Search, Lightbulb, Hammer, Rocket, Zap, Monitor } from "lucide-react";
 const steps = [
   {
     icon: Search,
-    title: "Analyze Your Business",
-    desc: "We audit your workflows, tools, and bottlenecks based on your real operations — not generic templates.",
-    when: "Day 1",
-  },
-  {
-    icon: Lightbulb,
-    title: "Define Solution & Modules",
-    desc: "We break your architecture into clear modules and features so you know exactly what will be built.",
-    when: "Day 1",
+    title: "Free AI Audit",
+    desc: "We analyze your workflow and identify automation opportunities.",
+    when: "Step 1",
   },
   {
     icon: Monitor,
-    title: "Build 24-Hour Prototype",
-    desc: "We create a working prototype with real UI and demo data so you can validate everything before development.",
-    when: "Day 2",
+    title: "Rapid Prototype",
+    desc: "Receive a working prototype within 24 hours.",
+    when: "Step 2",
   },
   {
-    icon: Hammer,
-    title: "Approve & Develop",
-    desc: "Once approved, we build the full solution — backend, integrations, and automation — fast and reliably.",
-    when: "Day 3–6",
+    icon: Lightbulb,
+    title: "Validate",
+    desc: "Review and test the solution before making any commitment.",
+    when: "Step 3",
   },
   {
     icon: Rocket,
-    title: "Deploy & Go Live",
-    desc: "We deploy your system, connect real data, and ensure everything runs smoothly.",
-    when: "Day 7",
+    title: "Build & Deploy",
+    desc: "We complete and deploy the production-ready system.",
+    when: "Step 4",
   },
 ];
 
@@ -49,12 +43,11 @@ export default function HowItWorks() {
             data-testid="how-headline"
             className="font-display mt-4 text-3xl sm:text-5xl font-bold text-[#0B3C5D] leading-[1.08] tracking-tight"
           >
-            From idea to execution in
-            <span className="nx-gradient-text"> 7 days</span>.
+            A simple process with
+            <span className="nx-gradient-text"> zero risk</span>.
           </h2>
           <p className="mt-5 text-base sm:text-lg text-[#4B5563] leading-relaxed">
-            Five steps from first call to compounding results. Rapid MVP
-            delivery — no mystery, no scope creep, no vague timelines.
+            We don't charge upfront development fees. You review a working prototype before making any commitment.
           </p>
 
           <div
@@ -66,10 +59,10 @@ export default function HowItWorks() {
             </span>
             <span className="text-sm text-[#1F2937]">
               <span className="font-semibold text-[#0B3C5D]">
-                7-day working solution
+                No upfront fees.
               </span>
               <span className="text-[#4B5563]">
-                {" "}· delivered by a senior product team · scope-dependent
+                {" "}Pay only after you see a working system.
               </span>
             </span>
           </div>
@@ -99,7 +92,7 @@ export default function HowItWorks() {
             />
           </svg>
 
-          <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {steps.map((s, i) => (
               <div
                 key={i}

@@ -67,12 +67,23 @@ export default function Hero({ onBookCall, onStartAudit }) {
         {/* UPPER GRID: Headline Only */}
         <div className="grid lg:grid-cols-12 gap-10 items-start mb-12 lg:mb-16">
           <div className="lg:col-span-12">
-            <h1 className="sr-only">Aurvyz AI — Future-Ready AI Operational Systems</h1>
+            <h1 className="sr-only">Aurvyz — Custom Software & AI Systems Built Around Your Business</h1>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-xs sm:text-sm tracking-[0.2em] uppercase text-[#328CC1] font-bold mb-6 flex items-center gap-3"
+            >
+              <span className="w-8 h-[2px] bg-[#328CC1]" />
+              Intelligence, Engineered.
+            </motion.div>
+
             <h2
               data-testid="hero-headline"
-              className="font-display text-5xl sm:text-7xl lg:text-[7.5rem] font-black text-[#0B3C5D] leading-[1] tracking-tight mb-2"
+              className="font-display text-4xl sm:text-6xl lg:text-[7rem] font-black text-[#0B3C5D] leading-[1.05] tracking-tight mb-6"
             >
-              <StaggeredText text="Future-Ready AI" />
+              <StaggeredText text="Custom Software &" />
               <motion.span 
                 variants={wordAnimation}
                 initial="initial"
@@ -80,9 +91,19 @@ export default function Hero({ onBookCall, onStartAudit }) {
                 transition={{ delay: 0.4 }}
                 className="text-[#328CC1] block"
               >
-                Operational Systems.
+                AI Systems
               </motion.span>
+              <StaggeredText text="Built Around Your Business." className="text-3xl sm:text-5xl lg:text-[5rem] mt-2" />
             </h2>
+            
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.8 }}
+              className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#4B5563]"
+            >
+              Future-Ready Systems. Built on Trust.
+            </motion.p>
           </div>
         </div>
 
@@ -195,37 +216,43 @@ export default function Hero({ onBookCall, onStartAudit }) {
             >
               <motion.p
                 variants={fadeInUp}
-                className="text-lg sm:text-2xl text-[#4B5563] leading-relaxed mb-10"
+                className="text-lg sm:text-xl text-[#4B5563] leading-relaxed mb-8"
               >
-                We design and engineer high-performance <span className="font-bold">AI systems</span> that automate operations, reduce manual work, and <span className="font-bold text-[#0B3C5D]">deliver interactive prototypes in under 24 hours.</span>
+                We build systems that automate workflows, reduce manual effort, improve visibility, and help businesses scale. <span className="font-bold text-[#0B3C5D]">Get a working prototype delivered in 24 hours with no upfront fees—pay only after you validate it.</span>
               </motion.p>
 
               <motion.div 
                 variants={fadeInUp}
-                className="flex flex-col sm:flex-row items-center gap-4"
+                className="flex flex-col items-start gap-4"
               >
-                <Button
-                  data-testid="hero-cta-start-audit"
-                  onClick={onStartAudit}
-                  className="h-16 px-10 rounded-2xl bg-[#0B3C5D] text-white hover:bg-[#08304a] shadow-2xl transition-all w-full sm:w-auto font-black text-lg flex items-center justify-between gap-4 group"
-                >
-                  Get Free AI Audit
-                  <div className="w-8 h-8 rounded-lg bg-[#2EC4B6] flex items-center justify-center text-[#0B3C5D] group-hover:rotate-45 transition-transform">
-                    <ArrowRight className="w-5 h-5" />
-                  </div>
-                </Button>
-                
-                <Button
-                  data-testid="hero-cta-call"
-                  onClick={onBookCall}
-                  variant="outline"
-                  className="h-16 px-10 rounded-2xl border-[#0B3C5D]/10 text-[#0B3C5D] hover:bg-white hover:border-[#0B3C5D]/20 transition-all w-full sm:w-auto font-black text-lg flex items-center justify-between gap-4"
-                >
-                  Work with us
-                  <div className="w-8 h-8 rounded-lg bg-black/5 flex items-center justify-center text-[#0B3C5D]">
-                    <ArrowRight className="w-5 h-5 -rotate-45" />
-                  </div>
-                </Button>
+                <div className="flex flex-col sm:flex-row items-center gap-4 w-full">
+                  <Button
+                    data-testid="hero-cta-start-audit"
+                    onClick={onStartAudit}
+                    className="h-16 px-10 rounded-2xl bg-[#0B3C5D] text-white hover:bg-[#08304a] shadow-2xl transition-all w-full sm:w-auto font-black text-lg flex items-center justify-between gap-4 group"
+                  >
+                    Get Free AI Audit
+                    <div className="w-8 h-8 rounded-lg bg-[#2EC4B6] flex items-center justify-center text-[#0B3C5D] group-hover:rotate-45 transition-transform">
+                      <ArrowRight className="w-5 h-5" />
+                    </div>
+                  </Button>
+                  
+                  <Button
+                    data-testid="hero-cta-call"
+                    onClick={onBookCall}
+                    variant="outline"
+                    className="h-16 px-10 rounded-2xl border-[#0B3C5D]/10 text-[#0B3C5D] hover:bg-white hover:border-[#0B3C5D]/20 transition-all w-full sm:w-auto font-black text-lg flex items-center justify-between gap-4"
+                  >
+                    Book Strategy Call
+                    <div className="w-8 h-8 rounded-lg bg-black/5 flex items-center justify-center text-[#0B3C5D]">
+                      <ArrowRight className="w-5 h-5 -rotate-45" />
+                    </div>
+                  </Button>
+                </div>
+                <div className="flex items-center gap-2 mt-2 text-sm font-medium text-[#4B5563]">
+                  <Sparkles className="w-4 h-4 text-[#2EC4B6]" />
+                  See a working prototype before you spend a rupee.
+                </div>
               </motion.div>
             </motion.div>
           </div>

@@ -80,7 +80,7 @@ export default function Nav({ onBookCall }) {
               Aurvyz<span className="text-[#2EC4B6]">.</span>AI
             </span>
             <span className="mt-1 text-[10px] font-medium tracking-[0.18em] uppercase text-[#0B3C5D]/55">
-              Operational Systems Company
+              Intelligence, Engineered.
             </span>
           </span>
         </a>

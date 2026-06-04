@@ -1,11 +1,12 @@
 import { Clock3, TrendingUp, Cog, Zap, Rocket } from "lucide-react";
 
 const benefits = [
-  { icon: Rocket, k: "Ship in 7 Days", v: "Rapid MVP development so you see a working solution in one week — scope-dependent, never rushed on quality." },
-  { icon: Clock3, k: "Save Time", v: "Reclaim 20–40 hours per week by automating repetitive, manual workflows." },
-  { icon: TrendingUp, k: "Increase Revenue", v: "Higher-converting systems and products that compound pipeline quarter over quarter." },
-  { icon: Cog, k: "Reduce Manual Work", v: "Your team stops copy-pasting and starts compounding — with AI agents doing the grunt work." },
-  { icon: Zap, k: "Improve Efficiency", v: "Real-time data, fewer errors, faster decisions. Ops that scale without scaling headcount." },
+  { icon: Rocket, k: "Prototype First", v: "See a working version of your system before you commit to full development." },
+  { icon: Clock3, k: "No Upfront Risk", v: "We build the initial prototype on our dime. You only pay when you decide to proceed." },
+  { icon: Cog, k: "Custom-Built Solutions", v: "Software tailored precisely to your workflows, not shoehorned into generic templates." },
+  { icon: Zap, k: "Fast Delivery", v: "From first call to a working prototype in 24 hours. Full deployment in weeks, not months." },
+  { icon: TrendingUp, k: "Direct Technical Team", v: "Work directly with the engineers building your system. No account managers playing telephone." },
+  { icon: Rocket, k: "Long-Term Support", v: "We maintain, monitor, and scale your systems as your business grows." },
 ];
 
 export default function Benefits() {
@@ -19,19 +20,16 @@ export default function Benefits() {
         <div className="grid lg:grid-cols-12 gap-10 items-start">
           <div className="lg:col-span-5">
             <div className="text-xs tracking-[0.22em] uppercase text-[#328CC1] font-semibold">
-              / The Impact
+              / Why Aurvyz
             </div>
             <h2
               data-testid="benefits-headline"
               className="font-display mt-4 text-3xl sm:text-5xl font-bold text-[#0B3C5D] leading-[1.08] tracking-tight"
             >
-              Outcomes you can
-              <br />
-              <span className="nx-gradient-text">actually measure</span>.
+              Why Businesses Choose Aurvyz.
             </h2>
             <p className="mt-5 text-sm sm:text-base text-[#4B5563] max-w-md leading-relaxed">
-              We align on metrics before we align on scope. Every engagement is
-              tied to business outcomes, not deliverables.
+              We eliminate the risk of custom software development with rapid prototypes and clear, outcome-driven engineering.
             </p>
           </div>
 

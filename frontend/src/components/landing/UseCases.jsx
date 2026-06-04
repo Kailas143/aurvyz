@@ -1,37 +1,5 @@
-import { Stethoscope, ShoppingBag, Truck, Users, Rocket, CheckCircle2, Briefcase } from "lucide-react";
-
-const useCases = [
-  {
-    industry: "Clinics",
-    icon: Stethoscope,
-    features: ["Patient booking", "Records management", "Billing automation"],
-  },
-  {
-    industry: "E-commerce",
-    icon: ShoppingBag,
-    features: ["Custom order management", "Supplier sync", "Returns portal"],
-  },
-  {
-    industry: "Logistics",
-    icon: Truck,
-    features: ["Dispatch system", "Delivery tracking", "Invoice automation"],
-  },
-  {
-    industry: "Service Businesses",
-    icon: Users,
-    features: ["CRM", "Lead tracking", "Staff scheduling"],
-  },
-  {
-    industry: "Startups",
-    icon: Rocket,
-    features: ["MVPs", "Internal dashboards", "AI assistants"],
-  },
-  {
-    industry: "Consultancies",
-    icon: Briefcase,
-    features: ["Client portal", "Resource planning", "Automated reporting"],
-  },
-];
+import { Stethoscope, ShoppingBag, Truck, Users, Rocket, Briefcase, Building2, Monitor, Globe } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function UseCases() {
   return (
@@ -47,64 +15,110 @@ export default function UseCases() {
       <div className="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
         <div className="max-w-2xl mb-16">
           <div className="text-xs tracking-[0.22em] uppercase text-[#328CC1] font-semibold">
-            / Industry Experience
+            / For Every Industry
           </div>
           <h2
             data-testid="use-cases-headline"
             className="font-display mt-4 text-3xl sm:text-5xl font-bold text-[#0B3C5D] leading-[1.08] tracking-tight"
           >
-            Systems Engineered for Scale.
+            Transformative AI for every business tier.
           </h2>
           <p className="mt-5 text-sm sm:text-base text-[#4B5563] max-w-xl leading-relaxed">
-            Industry-specific operational systems. We don't just build software; we build the infrastructure of modern businesses.
+            We provide custom solutions across all industries. Our vision is to make powerful AI capabilities accessible to every business owner, without the burden of massive enterprise costs.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {useCases.map((uc, i) => (
-            <div
-              key={i}
-              data-testid={`use-case-card-${uc.industry.toLowerCase().replace(/\s+/g, '-')}`}
-              className={`group relative p-8 rounded-3xl border border-[#0B3C5D]/10 bg-[#F7F9FB] hover:bg-white hover:shadow-[0_20px_50px_rgba(11,60,93,0.1)] hover:border-[#2EC4B6]/30 transition-all duration-500 ${i === 3 ? "lg:col-start-1" : ""
-                }`}
-            >
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-14 h-14 rounded-2xl bg-white border border-[#0B3C5D]/5 flex items-center justify-center text-[#0B3C5D] group-hover:bg-[#0B3C5D] group-hover:text-white transition-all duration-500 shadow-sm">
-                  <uc.icon className="w-6 h-6" strokeWidth={1.5} />
-                </div>
-                <h3 className="font-display text-xl font-bold text-[#0B3C5D]">
-                  {uc.industry}
-                </h3>
-              </div>
+        {/* Graphical Representation */}
+        <div className="mt-12 sm:mt-16 relative w-full h-[400px] sm:h-[500px] rounded-3xl bg-[#F7F9FB] border border-[#0B3C5D]/10 overflow-hidden flex items-center justify-center">
+          {/* Background pattern */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(11,60,93,0.06)_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+          
+          {/* Glow effects */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[#2EC4B6]/10 rounded-full blur-[80px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] bg-[#328CC1]/10 rounded-full blur-[60px]" />
 
-              <ul className="space-y-4">
-                {uc.features.map((f, j) => (
-                  <li key={j} className="flex items-start gap-3 text-sm text-[#4B5563]">
-                    <CheckCircle2 className="w-4 h-4 mt-0.5 text-[#2EC4B6] flex-shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />
-                    <span className="group-hover:text-[#0B3C5D] transition-colors">{f}</span>
-                  </li>
-                ))}
-              </ul>
+          {/* Orbit rings */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] sm:w-[450px] h-[280px] sm:h-[450px] border border-[#0B3C5D]/10 rounded-full" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] sm:w-[650px] h-[420px] sm:h-[650px] border border-[#0B3C5D]/5 rounded-full" />
 
-              <div className="mt-10 flex items-center gap-2 text-[11px] font-bold text-[#328CC1] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
-                <span>View Capability</span>
-                <div className="w-8 h-[1px] bg-[#328CC1]/30 group-hover:w-12 transition-all duration-500" />
-              </div>
-            </div>
-          ))}
+          {/* Central Node */}
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            className="relative z-20 w-24 h-24 sm:w-32 sm:h-32 bg-white rounded-full shadow-[0_0_40px_rgba(46,196,182,0.2)] border border-[#2EC4B6]/30 flex flex-col items-center justify-center"
+          >
+            <span className="font-display font-bold text-[#0B3C5D] text-lg sm:text-2xl tracking-tight leading-none">
+              Aurvyz<span className="text-[#2EC4B6]">.</span>
+            </span>
+            <span className="text-[9px] sm:text-[10px] font-bold text-[#328CC1] tracking-widest uppercase mt-1">Core</span>
+          </motion.div>
 
-          {/* Contact Card to fill the 6th slot */}
-          <div className="group relative p-8 rounded-3xl border border-dashed border-[#0B3C5D]/20 bg-transparent flex flex-col items-center justify-center text-center hover:border-[#2EC4B6]/50 transition-all duration-500">
-            <h4 className="font-display text-lg font-semibold text-[#0B3C5D]/60 group-hover:text-[#0B3C5D]">
-              Your Industry Next?
-            </h4>
-            <p className="mt-2 text-sm text-[#4B5563]/70 group-hover:text-[#4B5563]">
-              We build custom AI systems for unique business challenges.
-            </p>
-            <button className="mt-6 text-sm font-bold text-[#2EC4B6] hover:text-[#0B3C5D] transition-colors">
-              Talk to an Engineer →
-            </button>
-          </div>
+          {/* Floating Industry Badges */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
+            className="absolute top-[15%] sm:top-[20%] left-[10%] sm:left-[15%] px-3 sm:px-4 py-2 sm:py-2.5 bg-white rounded-full shadow-lg border border-[#0B3C5D]/5 flex items-center gap-2 z-10"
+          >
+            <Stethoscope className="w-4 h-4 text-[#2EC4B6]" />
+            <span className="text-xs sm:text-sm font-bold text-[#0B3C5D]">Healthcare</span>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
+            className="absolute bottom-[15%] sm:bottom-[20%] right-[10%] sm:right-[15%] px-3 sm:px-4 py-2 sm:py-2.5 bg-white rounded-full shadow-lg border border-[#0B3C5D]/5 flex items-center gap-2 z-10"
+          >
+            <ShoppingBag className="w-4 h-4 text-[#328CC1]" />
+            <span className="text-xs sm:text-sm font-bold text-[#0B3C5D]">E-commerce</span>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }}
+            className="absolute top-[25%] sm:top-[30%] right-[5%] sm:right-[15%] px-3 sm:px-4 py-2 sm:py-2.5 bg-white rounded-full shadow-lg border border-[#0B3C5D]/5 flex items-center gap-2 z-10"
+          >
+            <Truck className="w-4 h-4 text-[#2EC4B6]" />
+            <span className="text-xs sm:text-sm font-bold text-[#0B3C5D]">Logistics</span>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.4 }}
+            className="absolute bottom-[25%] sm:bottom-[30%] left-[5%] sm:left-[15%] px-3 sm:px-4 py-2 sm:py-2.5 bg-white rounded-full shadow-lg border border-[#0B3C5D]/5 flex items-center gap-2 z-10"
+          >
+            <Briefcase className="w-4 h-4 text-[#328CC1]" />
+            <span className="text-xs sm:text-sm font-bold text-[#0B3C5D]">Finance & Consulting</span>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.5 }}
+            className="absolute top-[8%] sm:top-[12%] left-1/2 -translate-x-1/2 px-3 sm:px-4 py-2 sm:py-2.5 bg-white rounded-full shadow-lg border border-[#0B3C5D]/5 flex items-center gap-2 z-10"
+          >
+            <Rocket className="w-4 h-4 text-[#2EC4B6]" />
+            <span className="text-xs sm:text-sm font-bold text-[#0B3C5D]">Startups</span>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.6 }}
+            className="absolute bottom-[8%] sm:bottom-[12%] left-1/2 -translate-x-1/2 px-3 sm:px-4 py-2 sm:py-2.5 bg-white rounded-full shadow-lg border border-[#0B3C5D]/5 flex items-center gap-2 z-10"
+          >
+            <Building2 className="w-4 h-4 text-[#328CC1]" />
+            <span className="text-xs sm:text-sm font-bold text-[#0B3C5D]">Real Estate</span>
+          </motion.div>
+          
+          {/* Generic/Global badge */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.7 }}
+            className="absolute hidden sm:flex top-[50%] -translate-y-1/2 left-[5%] px-4 py-2.5 bg-[#0B3C5D] rounded-full shadow-lg border border-[#0B3C5D]/5 items-center gap-2 z-10"
+          >
+            <Globe className="w-4 h-4 text-white" />
+            <span className="text-sm font-bold text-white">Your Industry</span>
+          </motion.div>
+          
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.8 }}
+            className="absolute hidden sm:flex top-[50%] -translate-y-1/2 right-[5%] px-4 py-2.5 bg-white rounded-full shadow-lg border border-[#0B3C5D]/5 items-center gap-2 z-10"
+          >
+            <Monitor className="w-4 h-4 text-[#2EC4B6]" />
+            <span className="text-sm font-bold text-[#0B3C5D]">SaaS & Tech</span>
+          </motion.div>
         </div>
       </div>
     </section>

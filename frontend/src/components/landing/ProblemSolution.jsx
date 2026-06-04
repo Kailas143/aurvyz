@@ -4,24 +4,28 @@ import { motion } from "framer-motion";
 const problems = [
   {
     icon: Unplug,
-    title: "Disconnected Systems",
-    body: "Tools that don't talk to each other. Data lives in silos. Teams patch it with spreadsheets.",
+    title: "Disconnected Tools",
+    body: "Your data is scattered across multiple apps, spreadsheets, and chat conversations. Teams spend time searching for information instead of getting work done.",
   },
   {
     icon: Clock,
-    title: "Manual Overload",
-    body: "Hours lost to copy-paste work. Your best people doing work a workflow agent should own.",
+    title: "Too Much Manual Work",
+    body: "Repetitive tasks, follow-ups, data entry, and reporting consume valuable time that could be spent serving customers and growing the business.",
   },
 ];
 
 const pillars = [
   {
-    title: "Builder DNA",
-    body: "We launch our own AI products. That expertise flows into every client system we engineer.",
+    title: "Built Around Your Workflow",
+    body: "No generic software or one-size-fits-all templates. Every system is tailored to your processes, team, and goals.",
   },
   {
-    title: "Product Thinking",
-    body: "No one-off code. We treat your business like a product: clear users, sharp metrics, iterative releases.",
+    title: "Fast, Practical Execution",
+    body: "We move quickly. Start with a prototype, validate the solution, and then scale it into a production-ready system.",
+  },
+  {
+    title: "Technology That Grows With You",
+    body: "From simple workflow automation to advanced AI systems, we build solutions that save time today and support your growth tomorrow.",
   },
 ];
 
@@ -57,13 +61,13 @@ export default function ProblemSolution() {
             className="relative"
           >
             <motion.div variants={fadeInUp} className="text-xs tracking-[0.22em] uppercase text-[#328CC1] font-semibold mb-4">
-              / The Challenge
+              / The Problem
             </motion.div>
             <motion.h2 variants={fadeInUp} className="font-display text-3xl sm:text-4xl lg:text-5xl font-black text-[#0B3C5D] leading-[1.1] tracking-tight">
-              Legacy software is the <span className="text-[#4B5563]">ceiling</span> on your growth.
+              Growing a business shouldn't mean doing <span className="text-[#4B5563]">more manual work.</span>
             </motion.h2>
             <motion.p variants={fadeInUp} className="mt-6 text-base text-[#4B5563] leading-relaxed">
-              Most businesses are held back by legacy tools that require manual management instead of driving automatic growth.
+              Many businesses still rely on spreadsheets, disconnected tools, and repetitive processes that slow teams down and create unnecessary complexity.
             </motion.p>
 
             <motion.div variants={staggerContainer} className="mt-10 space-y-6">
@@ -98,13 +102,13 @@ export default function ProblemSolution() {
             
             <div className="relative z-10">
               <div className="text-xs tracking-[0.22em] uppercase text-[#2EC4B6] font-semibold mb-4">
-                / Our Approach
+                / Our Solution
               </div>
               <h3 className="font-display text-3xl lg:text-4xl font-black leading-tight">
-                Engineering <span className="text-[#2EC4B6]">AI systems of leverage</span>.
+                We build systems that help your business <span className="text-[#2EC4B6]">run smarter.</span>
               </h3>
               <p className="mt-6 text-white/70 leading-relaxed text-base">
-                We don't just build software; we engineer the operational infrastructure that becomes the foundation of your growth. Strategic assets designed to gain value as you scale.
+                Aurvyz creates custom software, AI assistants, and automation systems designed around the way your business actually works.
               </p>
 
               <div className="mt-10 space-y-8">
