@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X } from "lucide-react";
 
 const links = [
   { href: "/#why-aurvyz", label: "Why Aurvyz" },
@@ -16,6 +17,7 @@ const links = [
 
 export default function Nav({ onBookCall }) {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
@@ -24,6 +26,7 @@ export default function Nav({ onBookCall }) {
   }, []);
 
   const navigate = (href) => (e) => {
+    setMobileMenuOpen(false);
     if (href.startsWith("/#")) {
       const id = href.replace("/", "");
       const el = document.querySelector(id);
@@ -112,8 +115,48 @@ export default function Nav({ onBookCall }) {
           >
             <a href="/#audit" onClick={navigate("/#audit")}>Free Audit</a>
           </Button>
+          <button
+            className="md:hidden ml-2 p-2 text-[#0B3C5D] rounded-md hover:bg-[#0B3C5D]/5 transition-colors"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
+
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden overflow-hidden bg-[#F7F9FB] border-b border-[#0B3C5D]/10"
+          >
+            <div className="px-5 py-4 flex flex-col gap-4">
+              {links.map((l) => (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  onClick={navigate(l.href)}
+                  className="text-base font-medium text-[#1F2937] hover:text-[#0B3C5D] transition-colors"
+                >
+                  {l.label}
+                </a>
+              ))}
+              <button
+                onClick={(e) => {
+                  setMobileMenuOpen(false);
+                  if (onBookCall) onBookCall(e);
+                }}
+                className="sm:hidden text-left text-base font-medium text-[#1F2937] hover:text-[#0B3C5D] transition-colors"
+              >
+                Book a Call
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
