@@ -1,41 +1,9 @@
-import { BrainCircuit, ArrowRight, Clock, Stethoscope, ReceiptText } from "lucide-react";
+import { ArrowRight, Clock, Box } from "lucide-react";
 import { motion } from "framer-motion";
-
-const solutions = [
-  {
-    icon: Stethoscope,
-    name: "ClinicOS",
-    desc: "Unifies bookings, records, and AI front-desk for clinic teams.",
-    tag: "Business OS",
-  },
-  {
-    icon: ReceiptText,
-    name: "BillFlow AI",
-    desc: "AI-powered invoice analysis and approval workflow system.",
-    tag: "Finance AI",
-  },
-];
-
-const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-50px" },
-  transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
-};
-
-const staggerContainer = {
-  initial: {},
-  whileInView: {
-    transition: {
-      staggerChildren: 0.1
-    }
-  },
-  viewport: { once: true }
-};
 
 const floatingAnimation = {
   animate: {
-    y: [0, -8, 0],
+    y: [0, -4, 0],
     transition: {
       duration: 4,
       repeat: Infinity,
@@ -44,267 +12,300 @@ const floatingAnimation = {
   }
 };
 
+const BrowserWindow = ({ url, imgSrc, imgAlt, isDark = true }) => {
+  return (
+    <div className={`w-full h-full rounded-2xl overflow-hidden border ${isDark ? 'border-white/10 bg-[#0B1120]' : 'border-[#0B3C5D]/10 bg-white'} shadow-2xl flex flex-col`}>
+      {/* Top Bar */}
+      <div className={`h-10 flex items-center px-4 border-b ${isDark ? 'border-white/5 bg-white/[0.02]' : 'border-[#0B3C5D]/5 bg-[#F7F9FB]'}`}>
+        <div className="flex gap-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-red-400/80"></div>
+          <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/80"></div>
+          <div className="w-2.5 h-2.5 rounded-full bg-green-400/80"></div>
+        </div>
+        <div className={`mx-auto px-6 py-1 rounded-md text-[10px] font-mono tracking-wider ${isDark ? 'bg-black/40 text-white/40' : 'bg-white text-[#0B3C5D]/40 border border-[#0B3C5D]/5'}`}>
+          {url}
+        </div>
+        <div className="w-10" /> {/* Spacer to center URL */}
+      </div>
+      {/* Content */}
+      <div className={`relative flex-1 ${isDark ? 'bg-[#0B1120]' : 'bg-white'}`}>
+        <img 
+          src={imgSrc} 
+          alt={imgAlt} 
+          className="w-full h-full object-cover object-top"
+        />
+      </div>
+    </div>
+  );
+};
+
 export default function LivePrototypes() {
   return (
-    <section id="live-prototypes" className="py-16 sm:py-20 bg-[#F7F9FB] overflow-hidden border-t border-[#0B3C5D]/5">
-      <div className="max-w-7xl mx-auto px-5 sm:px-8">
+    <section id="live-prototypes" className="py-16 sm:py-24 bg-[#0A0F1C] overflow-hidden">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8">
         
-        {/* Examples / Solutions Heading */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h3 className="font-display text-2xl sm:text-3xl font-black text-[#0B3C5D]">Real Systems. Real Business Problems.</h3>
-            <p className="text-sm text-[#4B5563] mt-2">Explore live interactive prototypes of systems we've built.</p>
-          </motion.div>
-          <div className="hidden md:block h-[1px] flex-1 mx-8 bg-[#0B3C5D]/10" />
+        {/* Header Area */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+          <div className="max-w-3xl">
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2EC4B6]/10 border border-[#2EC4B6]/20 text-[#2EC4B6] text-[10px] font-bold uppercase tracking-widest mb-6"
+            >
+              <Box className="w-3 h-3" />
+              Portfolio Showcase
+            </motion.div>
+            <motion.h3 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="font-display text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight"
+            >
+              Real Systems. <span className="text-[#2EC4B6]">Real Business Problems.</span>
+            </motion.h3>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-base sm:text-lg text-slate-400 mt-4 max-w-2xl"
+            >
+              Explore fully functional, interactive mockups of workflows and customized internal systems we've shipped to production.
+            </motion.p>
+          </div>
+          
           <motion.a 
-            whileHover={{ x: 5 }}
-            href="/demo-lab" 
-            className="inline-flex items-center gap-2 text-sm font-bold text-[#0B3C5D] hover:text-[#2EC4B6] transition-colors"
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            href="#audit" 
+            className="hidden md:inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-white/10 text-white text-sm font-bold hover:bg-white/5 hover:border-white/20 transition-all shrink-0"
           >
-            Explore Live Prototypes <ArrowRight className="w-4 h-4" />
+            Request Similar Build <ArrowRight className="w-4 h-4" />
           </motion.a>
         </div>
 
-        {/* Flagship solution / Image */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-8 relative rounded-3xl overflow-hidden bg-[#0B3C5D] text-white p-8 sm:p-12 grid lg:grid-cols-2 gap-12 items-center"
-        >
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#2EC4B6]/10 to-transparent pointer-events-none" />
-          <div>
-            <div className="flex items-center gap-3 mb-6">
-                <motion.span 
-                  variants={floatingAnimation}
-                  animate="animate"
-                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2EC4B6]/15 text-[#2EC4B6] text-[10px] font-bold uppercase tracking-widest"
-                >
+        {/* --- ROW 1: Clinic AI --- */}
+        <div className="grid lg:grid-cols-12 gap-6 mb-8">
+          {/* Left Text Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="lg:col-span-5 bg-[#111827] border border-white/10 rounded-3xl p-8 sm:p-10 flex flex-col justify-center"
+          >
+            <div className="flex flex-wrap items-center gap-3 mb-8">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-[#2EC4B6] text-[#0A0F1C] text-[10px] font-black uppercase tracking-widest">
                 Flagship Prototype
-                </motion.span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white/90 text-[10px] font-bold uppercase tracking-widest border border-white/10">
-                    <Clock className="w-3 h-3 text-[#2EC4B6]" />
-                    Delivered in 18 hours
-                </span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm bg-white/5 text-white/70 text-[10px] font-bold uppercase tracking-widest border border-white/10">
+                <Clock className="w-3 h-3 text-[#2EC4B6]" />
+                Delivered in 18 hours
+              </span>
             </div>
-            <h4 className="font-display text-3xl sm:text-4xl font-black leading-tight">
-              Clinic AI <span className="text-[#2EC4B6]">Operations System</span>.
+            
+            <h4 className="font-display text-3xl sm:text-4xl font-black text-white leading-[1.1] mb-6">
+              Clinic AI <span className="text-[#2EC4B6]">Operations System.</span>
             </h4>
-            <p className="mt-6 text-white/70 leading-relaxed max-w-lg text-base">
+            
+            <p className="text-slate-300 leading-relaxed mb-8 text-sm sm:text-base">
               Reduce appointment coordination, patient intake work, and administrative overhead with a unified clinic operations platform.
             </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              {["AI Front-desk", "Patient Intake", "Real-time Pulse"].map((tag, i) => (
-                <motion.div 
-                  key={tag}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.5 + i * 0.1 }}
-                  className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-medium"
-                >
+            
+            <div className="flex flex-wrap gap-3 mb-10">
+              {["Front-desk", "Patient Intake", "Real-time Pulse"].map((tag) => (
+                <div key={tag} className="px-3 py-1.5 rounded-sm bg-[#0A0F1C] border border-white/10 text-[11px] font-semibold text-slate-300 flex items-center gap-2">
+                  <span className="w-1 h-1 rounded-full bg-[#2EC4B6]/50" />
                   {tag}
-                </motion.div>
+                </div>
               ))}
             </div>
-            <div className="mt-10">
-                <motion.a 
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    href="/demo-lab" 
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#2EC4B6] text-[#0B3C5D] font-bold text-sm hover:shadow-lg transition-all shadow-[#2EC4B6]/20"
-                >
-                    Explore Live Prototype <ArrowRight className="w-4 h-4" />
-                </motion.a>
+            
+            <div>
+              <motion.a 
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  href="/demo-lab" 
+                  className="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-3.5 rounded-xl bg-[#2EC4B6] text-[#0A0F1C] font-black text-sm hover:shadow-[0_0_20px_rgba(46,196,182,0.3)] transition-all"
+              >
+                  Explore Live Prototype <ArrowRight className="w-4 h-4" />
+              </motion.a>
+              <p className="mt-4 text-xs text-slate-500 max-w-[280px]">
+                Click on the dynamic dashboard right-hand card to test live actions.
+              </p>
             </div>
-          </div>
-          <div className="relative group">
-            <div className="absolute -inset-4 bg-[#2EC4B6]/20 blur-2xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity" />
-            <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
-              <img 
-                src="/assets/clinic-demo.png" 
-                alt="Interface of ClinicOS, a medical operations stack with AI front-desk and patient records" 
-                className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-            </div>
-          </div>
-        </motion.div>
-        
-        {/* Transition Divider */}
-        <div className="flex items-center gap-4 mb-8">
-            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#0B3C5D]/10 to-transparent" />
-            <BrainCircuit className="w-5 h-5 text-[#328CC1] opacity-30" />
-            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#0B3C5D]/10 to-transparent" />
-        </div>
-        
-        {/* Flagship solution 2 / Global Admissions OS */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-12 relative rounded-3xl overflow-hidden bg-white border border-[#0B3C5D]/10 p-8 sm:p-12 grid lg:grid-cols-2 gap-12 items-center"
-        >
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#328CC1]/5 to-transparent pointer-events-none" />
-          <div className="order-2 lg:order-1 relative group">
-            <div className="absolute -inset-4 bg-[#328CC1]/10 blur-2xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity" />
-            <div className="relative rounded-2xl overflow-hidden border border-[#0B3C5D]/5 shadow-2xl">
-              <img 
-                src="/assets/global-admissions-demo.png" 
-                alt="Global Admissions Infrastructure showing AI-driven student eligibility pipeline" 
-                className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-            </div>
-          </div>
-          <div className="order-1 lg:order-2">
-            <div className="flex items-center gap-3 mb-6">
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0B3C5D]/5 text-[#0B3C5D] text-[10px] font-bold uppercase tracking-widest">
-                Latest Deployment
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#328CC1]/10 text-[#0B3C5D] text-[10px] font-bold uppercase tracking-widest border border-[#328CC1]/10">
-                    <Clock className="w-3 h-3 text-[#328CC1]" />
-                    Delivered in 24 hours
-                </span>
-            </div>
-            <h4 className="font-display text-3xl sm:text-4xl font-black text-[#0B3C5D] leading-tight">
-              Global Admissions <span className="nx-gradient-text">AI Application</span>.
-            </h4>
-            <p className="mt-6 text-[#4B5563] leading-relaxed max-w-lg text-base">
-              Eliminate manual student eligibility checks and counselor follow-ups with an automated application processing system.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              {["AI Counselor", "University Pipeline", "WhatsApp Automations"].map((tag, i) => (
-                <motion.div 
-                  key={tag}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.5 + i * 0.1 }}
-                  className="px-4 py-2 rounded-xl bg-[#0B3C5D]/5 border border-[#0B3C5D]/10 text-xs font-semibold text-[#0B3C5D]"
-                >
-                  {tag}
-                </motion.div>
-              ))}
-            </div>
-            <div className="mt-10">
-                <motion.a 
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    href="/demo-lab" 
-                    className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#0B3C5D] text-white font-bold text-base hover:shadow-xl transition-all"
-                >
-                    Explore Live Prototype <ArrowRight className="w-4 h-4" />
-                </motion.a>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Transition Divider */}
-        <div className="flex items-center gap-4 mb-8">
-            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#0B3C5D]/10 to-transparent" />
-            <BrainCircuit className="w-5 h-5 text-[#328CC1] opacity-30" />
-            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#0B3C5D]/10 to-transparent" />
-        </div>
-
-        {/* Flagship solution 3 / Automated Sales Outreach */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-12 relative rounded-3xl overflow-hidden bg-[#020617] text-white p-8 sm:p-12 grid lg:grid-cols-2 gap-12 items-center"
-        >
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#2EC4B6]/10 to-transparent pointer-events-none" />
-          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/carbon-fibre.png")' }} />
+          </motion.div>
           
-          <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-6">
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2EC4B6]/10 border border-[#2EC4B6]/20 text-[#2EC4B6] text-[10px] font-bold uppercase tracking-widest">
-                <span className="flex h-1.5 w-1.5 rounded-full bg-[#2EC4B6] animate-pulse" />
-                Live Project • Production Ready
+          {/* Right Image Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="lg:col-span-7 bg-[#111827] border border-white/10 rounded-3xl p-4 sm:p-6 lg:p-8 relative group"
+          >
+            <BrowserWindow 
+              url="app.clinicos.ai/sys/hub"
+              imgSrc="/assets/clinic-demo.png"
+              imgAlt="Interface of ClinicOS"
+              isDark={true}
+            />
+            {/* Hover overlay hint */}
+            <div className="absolute top-10 right-10 z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2EC4B6]/20 border border-[#2EC4B6]/50 text-[#2EC4B6] text-[10px] font-black uppercase tracking-widest backdrop-blur-md">
+                    <span className="w-2 h-2 rounded-full bg-[#2EC4B6] animate-pulse" /> Simulator Active
                 </span>
             </div>
-            <h4 className="font-display text-3xl sm:text-4xl font-black leading-tight">
-              Scale your sales outreach <span className="text-[#2EC4B6]">without the manual work.</span>
+          </motion.div>
+        </div>
+
+        {/* --- ROW 2: Global Admissions --- */}
+        <div className="grid lg:grid-cols-12 gap-6 mb-8">
+          {/* Left Image Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="lg:col-span-7 bg-white border border-[#0B3C5D]/10 rounded-3xl p-4 sm:p-6 lg:p-8 order-2 lg:order-1 relative group"
+          >
+            <BrowserWindow 
+              url="admissions.globaluni.edu/pipeline"
+              imgSrc="/assets/global-admissions-demo.png"
+              imgAlt="Interface of Global Admissions OS"
+              isDark={false}
+            />
+            {/* Hover overlay hint */}
+            <div className="absolute top-10 right-10 z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-700 text-[10px] font-black uppercase tracking-widest backdrop-blur-md">
+                    <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" /> Live Connected
+                </span>
+            </div>
+          </motion.div>
+
+          {/* Right Text Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="lg:col-span-5 bg-white border border-[#0B3C5D]/10 rounded-3xl p-8 sm:p-10 flex flex-col justify-center order-1 lg:order-2"
+          >
+            <div className="flex flex-wrap items-center gap-3 mb-8">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest">
+                Latest Deployment
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm bg-[#0B3C5D]/5 text-[#0B3C5D]/70 text-[10px] font-bold uppercase tracking-widest border border-[#0B3C5D]/10">
+                <Clock className="w-3 h-3 text-indigo-600" />
+                Delivered in 24 hours
+              </span>
+            </div>
+            
+            <h4 className="font-display text-3xl sm:text-4xl font-black text-[#0B3C5D] leading-[1.1] mb-6">
+              Global Admissions <span className="text-indigo-600">AI Application.</span>
             </h4>
-            <p className="mt-6 text-slate-400 leading-relaxed max-w-lg text-base">
+            
+            <p className="text-[#4B5563] leading-relaxed mb-8 text-sm sm:text-base">
+              Eliminate manual student eligibility checks and counselor follow-ups with an automated student processing system.
+            </p>
+            
+            <div className="flex flex-wrap gap-3 mb-10">
+              {["AI Counselor", "University Pipeline", "WhatsApp Automations"].map((tag) => (
+                <div key={tag} className="px-3 py-1.5 rounded-sm bg-white border border-[#0B3C5D]/10 text-[11px] font-semibold text-[#0B3C5D] flex items-center gap-2">
+                  <span className="w-1 h-1 rounded-full bg-indigo-400" />
+                  {tag}
+                </div>
+              ))}
+            </div>
+            
+            <div>
+              <motion.a 
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  href="/demo-lab" 
+                  className="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-3.5 rounded-xl bg-[#0B3C5D] text-white font-black text-sm hover:shadow-[0_0_20px_rgba(11,60,93,0.2)] transition-all"
+              >
+                  Explore Live Prototype <ArrowRight className="w-4 h-4" />
+              </motion.a>
+              <p className="mt-4 text-xs text-slate-500 max-w-[280px]">
+                Simulated pipeline works completely. Approve records or load alternative student records inside the simulator.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* --- ROW 3: Sales Outreach --- */}
+        <div className="grid lg:grid-cols-12 gap-6">
+          {/* Left Text Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="lg:col-span-5 bg-[#111827] border border-white/10 rounded-3xl p-8 sm:p-10 flex flex-col justify-center"
+          >
+            <div className="flex flex-wrap items-center gap-3 mb-8">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-[#328CC1] text-white text-[10px] font-black uppercase tracking-widest">
+                Internal Management
+              </span>
+            </div>
+            
+            <h4 className="font-display text-3xl sm:text-4xl font-black text-white leading-[1.1] mb-6">
+              Scale your sales outreach <span className="text-[#328CC1]">without the manual work.</span>
+            </h4>
+            
+            <p className="text-slate-300 leading-relaxed mb-8 text-sm sm:text-base">
               Stop wasting hours on manual outreach and dropped follow-ups. This automated system generates personalized emails, tracks engagement, and handles follow-ups for you.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              {['Automated Outreach', 'Lead Tracking', 'Email Sequences'].map((tag, i) => (
-                <motion.div 
-                  key={tag}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.5 + i * 0.1 }}
-                  className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[11px] font-mono text-slate-300"
-                >
+            
+            <div className="flex flex-wrap gap-3 mb-10">
+              {['Automated Outreach', 'Lead Tracking', 'Email Sequences'].map((tag) => (
+                <div key={tag} className="px-3 py-1.5 rounded-sm bg-[#0A0F1C] border border-white/10 text-[11px] font-semibold text-slate-300 flex items-center gap-2">
+                  <span className="w-1 h-1 rounded-full bg-[#328CC1]/50" />
                   {tag}
-                </motion.div>
+                </div>
               ))}
             </div>
-            <div className="mt-10">
-                <motion.a 
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    href="https://autolead-frontend-145662328298.asia-south1.run.app/" 
-                    target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#2EC4B6] text-[#020617] font-bold text-sm hover:shadow-lg transition-all shadow-[#2EC4B6]/20"
-                >
-                    Launch Platform <ArrowRight className="w-4 h-4" />
-                </motion.a>
+            
+            <div>
+              <motion.a 
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  href="https://autolead-frontend-145662328298.asia-south1.run.app/" 
+                  target="_blank" rel="noopener noreferrer"
+                  className="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-3.5 rounded-xl bg-[#328CC1] text-white font-black text-sm hover:shadow-[0_0_20px_rgba(50,140,193,0.3)] transition-all"
+              >
+                  Launch Platform <ArrowRight className="w-4 h-4" />
+              </motion.a>
+              <p className="mt-4 text-xs text-slate-500 max-w-[280px]">
+                Click on the shell triggers on the dashboard mock to generate emails dynamically.
+              </p>
             </div>
-          </div>
-          <div className="relative group z-10">
-            <div className="absolute -inset-4 bg-[#2EC4B6]/20 blur-2xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity" />
-            <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-slate-900/50 backdrop-blur-sm">
-              <img 
-                src="/assets/aurvyz-platform-dashboard.png" 
-                alt="Aurvyz Outreach Dashboard showing automated engagement" 
-                className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-              />
-            </div>
-          </div>
-        </motion.div>
-
-
-        {/* Solutions Grid */}
-        <motion.div 
-          variants={staggerContainer}
-          initial="initial"
-          whileInView="whileInView"
-          viewport={{ once: true }}
-          className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto"
-        >
-          {solutions.map((s, i) => (
-            <motion.div 
-              key={i} 
-              variants={fadeInUp}
-              whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              className="group relative p-8 rounded-3xl bg-white border border-[#0B3C5D]/10 hover:shadow-xl transition-all overflow-hidden"
-            >
-               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                 <s.icon className="w-24 h-24" />
-               </div>
-               <div className="relative z-10">
-                <span className="text-[10px] tracking-widest uppercase text-[#328CC1] font-bold">
-                  {s.tag}
+          </motion.div>
+          
+          {/* Right Image Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="lg:col-span-7 bg-[#111827] border border-white/10 rounded-3xl p-4 sm:p-6 lg:p-8 relative group"
+          >
+            <BrowserWindow 
+              url="campaigns.aurvyz.ai/drafts"
+              imgSrc="/assets/aurvyz-platform-dashboard.png"
+              imgAlt="Aurvyz Outreach Dashboard"
+              isDark={true}
+            />
+             {/* Hover overlay hint */}
+             <div className="absolute top-10 right-10 z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#328CC1]/20 border border-[#328CC1]/50 text-[#328CC1] text-[10px] font-black uppercase tracking-widest backdrop-blur-md">
+                    <span className="w-2 h-2 rounded-full bg-[#328CC1] animate-pulse" /> UI Active. Click.
                 </span>
-                <h4 className="font-display text-xl font-bold text-[#0B3C5D] mt-3">{s.name}</h4>
-                <p className="mt-2 text-sm text-[#4B5563] leading-relaxed">{s.desc}</p>
-                <div className="mt-6 flex items-center gap-2 text-sm font-bold text-[#0B3C5D] group-hover:text-[#2EC4B6] transition-colors">
-                  Explore Capability <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </div>
-               </div>
-            </motion.div>
-          ))}
-        </motion.div>
+            </div>
+          </motion.div>
+        </div>
 
       </div>
     </section>
