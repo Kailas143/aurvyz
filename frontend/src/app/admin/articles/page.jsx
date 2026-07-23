@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Trash2, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { apiUrl } from "@/lib/api";
 
 export default function ArticlesList() {
   const [articles, setArticles] = useState([]);
@@ -15,8 +16,7 @@ export default function ArticlesList() {
 
   const fetchArticles = async () => {
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000');
-      const res = await fetch(`${backendUrl}/api/articles`);
+      const res = await fetch(apiUrl("/articles"));
       if (res.ok) {
         const data = await res.json();
         setArticles(data);
@@ -40,8 +40,7 @@ export default function ArticlesList() {
 
     setIsDeleting(id);
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000');
-      const res = await fetch(`${backendUrl}/api/articles/${id}`, {
+      const res = await fetch(apiUrl(`/articles/${id}`), {
         method: "DELETE",
       });
 

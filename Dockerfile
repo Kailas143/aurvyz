@@ -16,12 +16,12 @@ COPY backend/ .
 # Create necessary directories
 RUN mkdir -p /app/logs
 
-# Expose port 8080 (Cloud Run standard)
-EXPOSE 8080
+# Expose the backend port
+EXPOSE 10000
 
 # Set environment variables
-ENV PORT=8080
+ENV PORT=10000
 ENV PYTHONUNBUFFERED=1
 
-# Run the application with uvicorn
-CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8080"]
+# Run the application with uvicorn using the platform-provided port
+CMD ["sh", "-c", "uvicorn server:app --host 0.0.0.0 --port ${PORT:-10000}"]

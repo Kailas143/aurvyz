@@ -10,6 +10,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { apiUrl } from "@/lib/api";
 
 export function CommandMenu() {
   const [open, setOpen] = React.useState(false);
@@ -19,12 +20,12 @@ export function CommandMenu() {
   const [prototypes, setPrototypes] = React.useState([]);
 
   React.useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000')}/api/articles`)
+    fetch(apiUrl("/articles"))
       .then(res => res.json())
       .then(data => setArticles(data))
       .catch(console.error);
       
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000')}/api/prototypes`)
+    fetch(apiUrl("/prototypes"))
       .then(res => res.json())
       .then(data => setPrototypes(data))
       .catch(console.error);

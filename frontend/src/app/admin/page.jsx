@@ -6,6 +6,7 @@ import { Plus, Clock, TrendingUp, Users, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
+import { apiUrl } from "@/lib/api";
 
 export default function AdminOverview() {
   const [analyticsData, setAnalyticsData] = useState(null);
@@ -14,8 +15,8 @@ export default function AdminOverview() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000')}/api/analytics`).then(r => r.json()),
-      fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000')}/api/scheduled-articles`).then(r => r.json())
+      fetch(apiUrl("/analytics")).then(r => r.json()),
+      fetch(apiUrl("/scheduled-articles")).then(r => r.json())
     ])
     .then(([analytics, articles]) => {
       setAnalyticsData(analytics);

@@ -1,113 +1,97 @@
-# Aurvyz: Engineering Operational Systems
+# Auruz Site
 
-Aurvyz specializes in designing and engineering AI-powered operational systems that automate workflows, reduce manual work, and deliver high-performance interactive prototypes.
+This repository contains the Auruz marketing site and supporting backend APIs.
+It is not an outreach automation platform.
 
----
+## What Is In This Repo
 
-## 📂 Project: Aurvyz Outreach Automation Platform
+- `frontend/`: Next.js site for the landing pages, insights, prototypes, privacy page, and admin content screens.
+- `backend/`: FastAPI API for leads, audit chat, articles, prototypes, categories, analytics, and Calendly sync.
+- `Dockerfile`: optional container deployment asset for the backend.
 
-The **Aurvyz Outreach Automation Platform** is a production-ready system designed to scale personalized outreach while maintaining a human touch. It combines advanced AI personalization with a robust, concurrent backend architecture.
+## Core Features
 
-### 🚀 Key Features
-*   **Step-Based Progression**: Build complex outreach funnels with unlimited steps (Intro ➔ Value Add ➔ Re-engagement).
-*   **Precision Delay Logic**: Define custom intervals between steps (e.g., "Wait 3 business days before Step 2").
-*   **Intelligent "Stop-on-Reply"**: Automatically halts future steps for a lead once a response is detected.
-*   **Smart Send Windows**: Define precise operating hours (e.g., 9 AM – 5 PM) to ensure outreach hits inboxes at peak activity.
-*   **Gemini 2.5 Flash Integration**: Leverages the latest LLM models to generate hyper-personalized intro lines that feel genuinely human.
+- Marketing website for Auruz/Aurvyz services and case studies
+- Lead capture for contact, call booking, and audit requests
+- AI audit chat backed by Gemini
+- Insights/blog content API
+- Prototype showcase API
+- Admin content management screens
 
-### 🏗️ Technical Architecture
-*   **API Core**: Built with **FastAPI** for high-speed, non-blocking performance.
-*   **Task Orchestration**: Distributed task management using **Celery + Redis**.
-*   **Infrastructure**: Deployed as independent, horizontally scalable services in **Google Cloud Run**.
-*   **Real-Time Processing**: Webhook engine for instant sentiment classification the second a lead responds.
+## Local Development
 
----
+### Backend
 
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn server:app --reload --port 8000
+```
 
-## 🛠️ Development Setup
+### Frontend
 
-### Backend (FastAPI)
-1.  **Navigate to the backend directory**:
-    ```bash
-    cd backend
-    ```
-2.  **Install dependencies**:
-    ```bash
-    pip install -r requirements.txt
-    ```
-3.  **Run the development server**:
-    ```bash
-    uvicorn server:app --reload --port 8000
-    ```
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-### Frontend (React)
-1.  **Navigate to the frontend directory**:
-    ```bash
-    cd frontend
-    ```
-2.  **Install dependencies**:
-    ```bash
-    npm install
-    ```
-3.  **Start the development server**:
-    ```bash
-    npm start
-    ```
-dell@Ubuntu:~$ sudo docker run -d --name mongodb -p 27017:27017 -v mongodb_data:/data/db mongo:latest
+### Local MongoDB
 
+```bash
+docker run -d --name aurvyz-mongodb \
+  -e MONGO_INITDB_DATABASE=aurvyz \
+  -p 27017:27017 mongo:7
+```
 
----
+## Environment Variables
 
-## 🔑 Configuration (Environment Variables)
-
-Configure your `backend/.env` file with the following keys:
+Create `backend/.env` with the values your environment needs:
 
 ```env
-MONGO_URL=<your-mongodb-connection-string>
-DB_NAME=aurvyz
+MONGODB_URL=mongodb://127.0.0.1:27017/aurvyz
+# or DATABASE_URL=mongodb://127.0.0.1:27017/aurvyz
 GEMINI_API_KEY=<your-gemini-api-key>
 GEMINI_MODEL=gemini-2.5-flash
-RESEND_API_KEY=<your-resend-api-key>
-SENDER_EMAIL=<your-sender-email>
-NOTIFY_EMAIL=<email-to-receive-lead-notifications>
+SMTP_HOST=<smtp-host>
+SMTP_PORT=465
+SMTP_USER=<smtp-user>
+SMTP_PASS=<smtp-password>
+SENDER_EMAIL=<from-email>
+NOTIFY_EMAIL=<team-inbox>
+CALENDLY_PERSONAL_ACCESS_TOKEN=<optional-calendly-token>
+CALENDLY_USER_URI=<optional-calendly-user-uri>
 ```
 
----
+For the frontend, set `NEXT_PUBLIC_BACKEND_URL` when the API is not served from the same host.
+For image uploads in the admin editor, set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` only if you want frontend upload storage to use Supabase.
 
-## 📦 Deployment (Cloud Run)
+## Deployment
 
-The platform is optimized for **Google Cloud Run** using a Dockerized architecture.
+Recommended deployment split:
 
-**Deploy to Production**:
-```bash
-# Deploy the backend service
-gcloud run deploy aurvyz \
-  --source . \
-  --region europe-west1 \
-  --allow-unauthenticated
+- Frontend: Vercel
+- Backend: Render
 
-# Deploy the frontend service
-gcloud run deploy aurvyz-frontend \
-  --source . \
-  --region europe-west1 \
-  --allow-unauthenticated
-```
+### Vercel
 
-**Live Application**: [Launch Aurvyz Outreach Platform](https://autolead-frontend-145662328298.asia-south1.run.app/)
+- Root directory: `frontend`
+- Build command: `npm run build`
+- Output: Next.js default
+- Environment variable: `NEXT_PUBLIC_BACKEND_URL=https://<your-render-backend-url>`
 
----
+### Render
 
-## ⚡ Technical Commands Reference
+- Use the root `Dockerfile` for the backend, or run from `backend/`
+- Expose the backend as a web service
+- Set the backend environment variables from the section above
+- Point `SUPABASE_DB_URL` or `DATABASE_URL` at your Supabase Postgres instance
 
-| Action | Command |
-| :--- | :--- |
-| **Install Backend** | `pip install -r backend/requirements.txt` |
-| **Run Backend** | `uvicorn server:app --reload` (in /backend) |
-| **Install Frontend** | `npm install` (in /frontend) |
-| **Run Frontend** | `npm start` (in /frontend) |
-| **Build Docker** | `docker build -t aurvyz-backend -f Dockerfile .` |
-| **View Logs** | `gcloud run logs read aurvyz --region europe-west1` |
+Useful command:
 
----
+- `docker build -t aurvyz-backend -f Dockerfile .`
 
-Built with ❤️ by the Aurvyz Engineering Team.
+## Notes
+
+- The repository and infrastructure still use several `aurvyz` names internally.
+- GCP-specific deployment files and references have been removed for a Vercel + Render setup.

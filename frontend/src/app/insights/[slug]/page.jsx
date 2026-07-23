@@ -1,14 +1,14 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Clock, Share2, Bookmark, CheckCircle2, ChevronRight, Zap } from "lucide-react";
+import { ArrowLeft, Clock, Share2, Bookmark, ChevronRight, Zap } from "lucide-react";
 import Nav from "@/components/landing/Nav";
 import Footer from "@/components/landing/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import FadeUp from "@/components/ui/FadeUp";
-
+import { apiUrl } from "@/lib/api";
 import { marked } from "marked";
 
 export const dynamic = 'force-dynamic';
@@ -18,7 +18,7 @@ export default async function ArticlePage({ params }) {
   let article = null;
   
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000')}/api/articles/${slug}`);
+    const res = await fetch(apiUrl(`/articles/${slug}`));
     if (res.ok) {
       article = await res.json();
     }

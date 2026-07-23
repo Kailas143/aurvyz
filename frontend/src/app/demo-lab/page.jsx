@@ -58,12 +58,10 @@ export default function DemoLab() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#0B3C5D]/90 via-[#0B3C5D]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-8">
                              <a 
-                                href="https://aurvyz-global-admissions-os-20080430338.asia-southeast1.run.app" 
-                                target="_blank" 
-                                rel="noreferrer"
+                                href="/prototypes"
                                 className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#2EC4B6] text-[#0B3C5D] font-bold text-base shadow-2xl hover:scale-105 active:scale-95 transition-all"
                              >
-                                Open Live Demo <ExternalLink className="w-4 h-4" />
+                                View Prototype <ExternalLink className="w-4 h-4" />
                              </a>
                         </div>
                     </div>
@@ -113,12 +111,10 @@ export default function DemoLab() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#0B3C5D]/90 via-[#0B3C5D]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-8">
                              <a 
-                                href="https://aurvyz-clinic-operations-46587032761.asia-southeast1.run.app/" 
-                                target="_blank" 
-                                rel="noreferrer"
+                                href="/prototypes"
                                 className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#2EC4B6] text-[#0B3C5D] font-bold text-base shadow-2xl hover:scale-105 active:scale-95 transition-all"
                              >
-                                Open Live Demo <ExternalLink className="w-4 h-4" />
+                                View Prototype <ExternalLink className="w-4 h-4" />
                              </a>
                         </div>
                     </div>
@@ -169,12 +165,10 @@ export default function DemoLab() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#0B3C5D]/90 via-[#0B3C5D]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-8">
                              <a 
-                                href="https://billflow-ai-invoice-approval-46587032761.asia-southeast1.run.app/" 
-                                target="_blank" 
-                                rel="noreferrer"
+                                href="/prototypes"
                                 className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#2EC4B6] text-[#0B3C5D] font-bold text-base shadow-2xl hover:scale-105 active:scale-95 transition-all"
                              >
-                                Open Live Demo <ExternalLink className="w-4 h-4" />
+                                View Prototype <ExternalLink className="w-4 h-4" />
                              </a>
                         </div>
                     </div>

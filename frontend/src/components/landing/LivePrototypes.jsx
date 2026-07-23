@@ -272,8 +272,7 @@ export default function LivePrototypes() {
               <motion.a 
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  href="https://autolead-frontend-145662328298.asia-south1.run.app/" 
-                  target="_blank" rel="noopener noreferrer"
+                  href="/demo-lab"
                   className="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-3.5 rounded-xl bg-[#328CC1] text-white font-black text-sm hover:shadow-[0_0_20px_rgba(50,140,193,0.3)] transition-all"
               >
                   Launch Platform <ArrowRight className="w-4 h-4" />

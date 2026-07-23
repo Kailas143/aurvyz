@@ -5,13 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar as CalendarIcon, Clock, MoreVertical, Plus, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { apiUrl } from "@/lib/api";
 
 export default function AdminScheduler() {
   const [scheduledArticles, setScheduledArticles] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000')}/api/scheduled-articles`)
+    fetch(apiUrl("/scheduled-articles"))
       .then(res => res.json())
       .then(data => {
         setScheduledArticles(data);

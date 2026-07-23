@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Sparkles, Save, Send, Bold, Italic, Heading1, Heading2, List, Quote, Code, Link as LinkIcon, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { apiUrl } from "@/lib/api";
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://okbmujshtcgwicsrowgy.supabase.co";
@@ -107,8 +108,7 @@ export default function AdminEditor() {
     
     setIsAnalyzingSEO(true);
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000');
-      const res = await fetch(`${backendUrl}/api/seo-analyze`, {
+      const res = await fetch(apiUrl("/seo-analyze"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title, content })
@@ -139,7 +139,7 @@ export default function AdminEditor() {
     const finalSlug = slug || title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000')}/api/articles`, {
+      const res = await fetch(apiUrl("/articles"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

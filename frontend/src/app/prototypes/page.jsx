@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import Nav from "@/components/landing/Nav";
 import Footer from "@/components/landing/Footer";
+import { apiUrl } from "@/lib/api";
 
 export const metadata = {
   title: "Prototypes | Aurvyz AI",
@@ -14,7 +15,7 @@ export const dynamic = 'force-dynamic';
 export default async function PrototypesPage() {
   let prototypes = [];
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://aurvyz-y5qehoxb2a-ew.a.run.app' : 'http://localhost:8000')}/api/prototypes`);
+    const res = await fetch(apiUrl("/prototypes"));
     if (res.ok) {
       prototypes = await res.json();
     }
