@@ -29,7 +29,10 @@ class CalendlyService:
 
     def _refresh_from_env(self) -> None:
         if not self.personal_access_token:
-            self.personal_access_token = os.environ.get("CALENDLY_PAT", "")
+            self.personal_access_token = (
+                os.environ.get("CALENDLY_PAT", "")
+                or os.environ.get("CALENDLY_PERSONAL_ACCESS_TOKEN", "")
+            )
         if not self.user_uri:
             self.user_uri = os.environ.get("CALENDLY_USER_URI") or None
 
@@ -45,7 +48,11 @@ class CalendlyService:
     ) -> Dict[str, Any]:
         self._refresh_from_env()
         if not self.configured:
-            return {"ok": False, "error": "CALENDLY_PAT not configured", "matched": 0}
+            return {
+                "ok": False,
+                "error": "CALENDLY_PAT or CALENDLY_PERSONAL_ACCESS_TOKEN not configured",
+                "matched": 0,
+            }
 
         summary = {
             "ok": True,
@@ -111,9 +118,9 @@ class CalendlyService:
         if not email:
             return False
 
-        lead_doc = await db.leads.find_one({"email": email, "lead_type": "call"}, {"_id": 0})
+        lead_doc = await db.find_lead_by_email(email, lead_type="call")
         if not lead_doc:
-            lead_doc = await db.leads.find_one({"email": email}, {"_id": 0})
+            lead_doc = await db.find_lead_by_email(email)
         if not lead_doc:
             lead_doc = await self._create_direct_lead(db, email, invitee, summary)
             if not lead_doc:
@@ -124,14 +131,13 @@ class CalendlyService:
             return True
 
         booking_record = self._build_booking_record(event, invitee, event_uuid)
-        await db.leads.update_one(
-            {"id": lead_doc["id"]},
+        updated_bookings = [*bookings, booking_record]
+        await db.update_lead(
+            lead_doc["id"],
             {
-                "$set": {
-                    "scheduled": True,
-                    "scheduled_at": event.get("start_time"),
-                },
-                "$push": {"calendly_bookings": booking_record},
+                "scheduled": True,
+                "scheduled_at": event.get("start_time"),
+                "calendly_bookings": updated_bookings,
             },
         )
         summary["newly_scheduled"] += 1
@@ -168,8 +174,7 @@ class CalendlyService:
                 source="calendly_direct",
             )
             new_doc = new_lead.model_dump()
-            new_doc["created_at"] = new_doc["created_at"].isoformat()
-            await db.leads.insert_one(new_doc)
+            await db.insert_lead(new_doc)
             logger.info("Calendly: created direct lead for %s", email)
             return new_doc
         except Exception as exc:

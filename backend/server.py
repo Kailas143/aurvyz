@@ -1,8 +1,6 @@
-from fastapi import FastAPI, APIRouter, HTTPException, BackgroundTasks, File, UploadFile
-from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, APIRouter, HTTPException, BackgroundTasks
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 import re
@@ -13,21 +11,18 @@ import uuid
 from datetime import datetime, timezone
 import asyncio
 import smtplib
-import shutil
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from calendly_poll import poll_calendly_once, start_scheduler, stop_scheduler
+from database import Database
 from services.llm_service import GeminiAuditChatService
 
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
-mongo_url = os.environ.get('MONGO_URL', 'mongodb://127.0.0.1:27017')
-client = AsyncIOMotorClient(mongo_url)
-db_name = os.environ.get('DB_NAME', 'aurvyz')
-db = client[db_name]
+# Database connection
+db = Database()
 
 # Configuration (from env)
 SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'hello@aurvyz.com')
@@ -111,28 +106,11 @@ logger = logging.getLogger(__name__)
 # Create the main app without a prefix
 app = FastAPI(title="Aurvyz — Landing API")
 
-# Mount uploads directory for static serving
-uploads_dir = ROOT_DIR / "uploads"
-uploads_dir.mkdir(exist_ok=True)
-app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
-
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
 
 # ---------- Models ----------
-class StatusCheck(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
-
-class StatusCheckCreate(BaseModel):
-    client_name: str
-
-
 class LeadCreate(BaseModel):
     name: str = Field(min_length=1, max_length=120)
     email: EmailStr
@@ -152,21 +130,6 @@ class Lead(BaseModel):
     lead_type: str = "audit"
     source: Optional[str] = "landing_page"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
-
-class GoogleLeadColumnData(BaseModel):
-    column_name: str
-    string_value: str
-    column_id: str
-
-class GoogleLeadWebhookPayload(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    lead_id: str
-    user_column_data: List[GoogleLeadColumnData]
-    api_version: str
-    form_id: int
-    campaign_id: int
-    google_key: str
 
 
 class ChatTurn(BaseModel):
@@ -356,9 +319,7 @@ async def _upsert_ai_audit_chat_lead(
     lead_type: str,
     company: Optional[str] = None,
 ) -> Lead:
-    existing = await db.leads.find_one(
-        {"email": email, "source": "ai_audit_chat"}, {"_id": 0}
-    )
+    existing = await db.find_lead_by_email(email, source="ai_audit_chat")
 
     message = f"[AI Audit Chat - {lead_type}]\n\n{transcript[:1800]}"
     if existing:
@@ -373,10 +334,8 @@ async def _upsert_ai_audit_chat_lead(
         if company:
             update_data["company"] = company
 
-        await db.leads.update_one({"id": existing["id"]}, {"$set": update_data})
+        await db.update_lead(existing["id"], update_data)
         created_at = existing.get("created_at")
-        if isinstance(created_at, str):
-            created_at = datetime.fromisoformat(created_at)
         return Lead(
             id=existing["id"],
             name=existing.get("name") or name,
@@ -397,8 +356,7 @@ async def _upsert_ai_audit_chat_lead(
         source="ai_audit_chat",
     )
     lead_doc = lead.model_dump()
-    lead_doc["created_at"] = lead_doc["created_at"].isoformat()
-    await db.leads.insert_one(lead_doc)
+    await db.insert_lead(lead_doc)
     return lead
 
 
@@ -464,26 +422,7 @@ async def root():
 
 @api_router.get("/analytics")
 async def get_analytics():
-    articles_count = await db.articles.count_documents({})
-    categories_count = await db.categories.count_documents({})
-    prototypes_count = await db.prototypes.count_documents({})
-    scheduled_count = await db.scheduled_articles.count_documents({})
-
-    # Aggregate categories by article count
-    pipeline = [
-        {"$group": {"_id": "$category", "count": {"$sum": 1}}},
-        {"$sort": {"count": -1}}
-    ]
-    cursor = db.articles.aggregate(pipeline)
-    top_categories = [{"name": doc["_id"] or "Uncategorized", "count": doc["count"]} async for doc in cursor]
-
-    return {
-        "articlesCount": articles_count,
-        "categoriesCount": categories_count,
-        "prototypesCount": prototypes_count,
-        "scheduledCount": scheduled_count,
-        "topCategories": top_categories
-    }
+    return await db.fetch_analytics()
 
 
 class Author(BaseModel):
@@ -539,51 +478,26 @@ class SEOAnalyzeRequest(BaseModel):
 
 @api_router.get("/articles", response_model=List[ArticleModel])
 async def get_articles():
-    articles = await db.articles.find().to_list(100)
-    for a in articles:
-        a["_id"] = str(a["_id"])
-    return articles
+    return await db.fetch_articles()
 
 @api_router.get("/articles/{slug}", response_model=ArticleModel)
 async def get_article_by_slug(slug: str):
-    article = await db.articles.find_one({"slug": slug})
+    article = await db.fetch_article_by_slug(slug)
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
-    article["_id"] = str(article["_id"])
     return article
 
 @api_router.get("/categories")
 async def get_categories():
-    categories = await db.categories.find().to_list(100)
-    return [c["name"] for c in categories]
+    return await db.fetch_categories()
 
 @api_router.get("/prototypes", response_model=List[PrototypeModel])
 async def get_prototypes():
-    prototypes = await db.prototypes.find().to_list(100)
-    for p in prototypes:
-        p["_id"] = str(p["_id"])
-    return prototypes
+    return await db.fetch_prototypes()
 
 @api_router.get("/scheduled-articles", response_model=List[ScheduledArticleModel])
 async def get_scheduled_articles():
-    scheduled = await db.scheduled_articles.find().to_list(100)
-    for s in scheduled:
-        s["_id"] = str(s["_id"])
-    return scheduled
-
-@api_router.post("/upload")
-async def upload_image(file: UploadFile = File(...)):
-    if not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="File must be an image")
-    
-    ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
-    filename = f"{uuid.uuid4()}.{ext}"
-    file_path = ROOT_DIR / "uploads" / filename
-    
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-        
-    return {"url": f"/uploads/{filename}"}
+    return await db.fetch_scheduled_articles()
 
 @api_router.post("/articles", response_model=ArticleModel)
 async def create_article(payload: ArticleCreate):
@@ -607,45 +521,24 @@ async def create_article(payload: ArticleCreate):
         "tags": [payload.category],
         "featured": False
     }
-    result = await db.articles.insert_one(article_doc)
-    created = await db.articles.find_one({"_id": result.inserted_id})
-    created["_id"] = str(created["_id"])
-    return created
+    return await db.create_article(article_doc)
 
 @api_router.delete("/articles/{article_id}")
 async def delete_article(article_id: str):
-    result = await db.articles.delete_one({"id": article_id})
-    if result.deleted_count == 0:
+    deleted = await db.delete_article(article_id)
+    if not deleted:
         raise HTTPException(status_code=404, detail="Article not found")
     return {"ok": True, "message": "Article deleted successfully"}
 
 @api_router.post("/seo-analyze")
 async def analyze_seo(payload: SEOAnalyzeRequest):
     try:
-        existing_titles = await db.articles.distinct("title")
+        existing_titles = await db.fetch_article_titles()
         report = await audit_chat_service.generate_seo_report(payload.title, payload.content, existing_titles=existing_titles)
         return report
     except Exception as e:
         logger.error(f"SEO analysis failed: {e}")
         raise HTTPException(status_code=500, detail="Failed to generate SEO report")
-
-
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_obj = StatusCheck(**input.model_dump())
-    doc = status_obj.model_dump()
-    doc['timestamp'] = doc['timestamp'].isoformat()
-    await db.status_checks.insert_one(doc)
-    return status_obj
-
-
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
-    for check in status_checks:
-        if isinstance(check['timestamp'], str):
-            check['timestamp'] = datetime.fromisoformat(check['timestamp'])
-    return status_checks
 
 
 @api_router.post("/leads", response_model=Lead, status_code=201)
@@ -656,8 +549,7 @@ async def create_lead(payload: LeadCreate, background_tasks: BackgroundTasks):
 
     lead = Lead(**payload.model_dump())
     doc = lead.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
-    await db.leads.insert_one(doc)
+    await db.insert_lead(doc)
     logger.info(f"New lead captured: {lead.email} ({lead.lead_type})")
 
     background_tasks.add_task(send_lead_notification, lead)
@@ -668,51 +560,7 @@ async def create_lead(payload: LeadCreate, background_tasks: BackgroundTasks):
 @api_router.get("/leads", response_model=List[Lead])
 async def list_leads(limit: int = 100):
     limit = max(1, min(limit, 500))
-    cursor = db.leads.find({}, {"_id": 0}).sort("created_at", -1).limit(limit)
-    items = await cursor.to_list(limit)
-    for it in items:
-        if isinstance(it.get('created_at'), str):
-            it['created_at'] = datetime.fromisoformat(it['created_at'])
-    return items
-
-
-@api_router.post("/webhooks/google-leads", response_model=Lead, status_code=201)
-async def google_ads_webhook(payload: GoogleLeadWebhookPayload, background_tasks: BackgroundTasks):
-    expected_key = os.environ.get("GOOGLE_ADS_WEBHOOK_KEY")
-    if expected_key and payload.google_key != expected_key:
-        raise HTTPException(status_code=403, detail="Invalid Google Key")
-
-    email = ""
-    name = "Google Lead"
-    phone = ""
-    for col in payload.user_column_data:
-        if col.column_id == "EMAIL":
-            email = col.string_value
-        elif col.column_id == "FULL_NAME" or col.column_id == "FIRST_NAME":
-            name = col.string_value
-        elif col.column_id == "PHONE_NUMBER":
-            phone = col.string_value
-    
-    if not email:
-        email = f"unknown_{payload.lead_id}@example.com"
-        
-    message = f"[Google Ads Lead]\\nCampaign ID: {payload.campaign_id}\\nForm ID: {payload.form_id}\\nPhone: {phone}"
-
-    lead = Lead(
-        name=name,
-        email=email,
-        message=message,
-        lead_type="contact",
-        source="google_ads_webhook"
-    )
-    doc = lead.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
-    await db.leads.insert_one(doc)
-    logger.info(f"New Google Ads lead captured: {lead.email}")
-
-    background_tasks.add_task(send_lead_notification, lead)
-
-    return lead
+    return await db.list_leads(limit)
 
 
 @api_router.post("/audit-chat", response_model=AuditChatResponse)
@@ -721,7 +569,7 @@ async def audit_chat(payload: AuditChatRequest, background_tasks: BackgroundTask
         raise HTTPException(status_code=503, detail="Chat unavailable: GEMINI_API_KEY not configured")
 
     session_id = payload.session_id or str(uuid.uuid4())
-    existing_chat = await db.audit_chats.find_one({"session_id": session_id}, {"_id": 0})
+    existing_chat = await db.get_audit_chat(session_id)
 
     try:
         reply = await audit_chat_service.generate_reply(
@@ -756,8 +604,12 @@ async def audit_chat(payload: AuditChatRequest, background_tasks: BackgroundTask
         "latest_intent": chat_intent,
         "updated_at": datetime.now(timezone.utc).isoformat(),
     }
-    await db.audit_chats.update_one(
-        {"session_id": session_id}, {"$set": doc}, upsert=True
+    await db.upsert_audit_chat(
+        session_id=session_id,
+        history=doc["history"],
+        captured_email=doc["captured_email"],
+        latest_intent=doc["latest_intent"],
+        updated_at=doc["updated_at"],
     )
 
     if captured_email:
@@ -799,7 +651,7 @@ class EmailReportRequest(BaseModel):
     company: Optional[str] = Field(default=None, max_length=160)
 
 
-REPORT_MARKER_RE = re.compile(r"🚨|💡\s*\*\*High-Impact|🛠️|📈|⚡\s*\*\*Next Step|🚀\s*\*\*How This Would Work For You\*\*")
+REPORT_MARKER_RE = re.compile(r"^(?:🚨|💡|🛠️|📈|⚡|🚀)\s*\*\*", re.MULTILINE)
 
 
 def _parse_audit_report(text: str) -> List[dict]:
@@ -902,17 +754,18 @@ def send_audit_report_email(to_email: str, name: str, html: str) -> dict:
 
 @api_router.post("/audit-chat/email-report")
 async def audit_chat_email_report(payload: EmailReportRequest, background_tasks: BackgroundTasks):
-    chat_doc = await db.audit_chats.find_one(
-        {"session_id": payload.session_id}, {"_id": 0}
-    )
+    chat_doc = await db.get_audit_chat(payload.session_id)
     if not chat_doc:
         raise HTTPException(status_code=404, detail="Chat session not found")
 
     history = chat_doc.get("history", [])
     report_text = ""
     for turn in reversed(history):
-        if turn.get("role") == "assistant" and REPORT_MARKER_RE.search(turn.get("content", "")):
-            report_text = turn["content"]
+        if not isinstance(turn, dict) or turn.get("role") != "assistant":
+            continue
+        content = turn.get("content", "")
+        if REPORT_MARKER_RE.search(content) or _parse_audit_report(content):
+            report_text = content
             break
     if not report_text:
         raise HTTPException(status_code=400, detail="No audit report found in this session yet")
@@ -927,7 +780,10 @@ async def audit_chat_email_report(payload: EmailReportRequest, background_tasks:
     )
 
     # Reconstruct the full chat transcript for the team notification
-    full_transcript = "\n".join([f"{t.get('role', '').title()}: {t.get('content', '')}" for t in history])
+    full_transcript = "\n".join([
+        f"{(t.get('role', '') if isinstance(t, dict) else '').title()}: {(t.get('content', '') if isinstance(t, dict) else str(t))}"
+        for t in history
+    ])
     
     # Always update/create the Lead with the latest full transcript and notify the team
     lead = await _upsert_ai_audit_chat_lead(
@@ -943,9 +799,10 @@ async def audit_chat_email_report(payload: EmailReportRequest, background_tasks:
     logger.info(f"Audit report emailed and team notified: lead={payload.email}")
 
     # Update audit_chat with captured email for traceability
-    await db.audit_chats.update_one(
-        {"session_id": payload.session_id},
-        {"$set": {"captured_email": payload.email, "report_emailed": send_result.get("ok", False)}},
+    await db.update_audit_chat_report_state(
+        session_id=payload.session_id,
+        captured_email=payload.email,
+        report_emailed=send_result.get("ok", False),
     )
 
     return {
@@ -988,10 +845,12 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def _startup_scheduler():
+    await db.connect()
+    await db.init_schema()
     start_scheduler(db, send_calendly_confirmation_email)
 
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
     stop_scheduler()
-    client.close()
+    await db.close()

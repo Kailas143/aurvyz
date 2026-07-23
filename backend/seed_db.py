@@ -1,14 +1,16 @@
 import asyncio
 import os
-from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
 from pathlib import Path
+from database import Database
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-mongo_url = os.environ.get('MONGO_URL', 'mongodb://127.0.0.1:27017')
-db_name = os.environ.get('DB_NAME', 'aurvyz')
+database_url = (
+  os.environ.get("MONGODB_URL")
+  or os.environ.get("DATABASE_URL")
+)
 
 CATEGORIES = [
   {"name": "AI Systems"},
@@ -211,29 +213,31 @@ SCHEDULED_ARTICLES = [
 ]
 
 async def seed():
-    client = AsyncIOMotorClient(mongo_url)
-    db = client[db_name]
+    db = Database(database_url)
+    await db.connect()
+    await db.init_schema()
     
-    print("Clearing existing collections...")
-    await db.articles.delete_many({})
-    await db.categories.delete_many({})
-    await db.prototypes.delete_many({})
-    await db.scheduled_articles.delete_many({})
+    print("Clearing existing tables...")
+    await db.reset_seed_tables()
     
     print("Seeding articles...")
-    await db.articles.insert_many(ARTICLES)
+    for article in ARTICLES:
+        await db.create_article(article)
     
     print("Seeding categories...")
-    await db.categories.insert_many(CATEGORIES)
+    for category in CATEGORIES:
+        await db.insert_category(category["name"])
     
     print("Seeding prototypes...")
-    await db.prototypes.insert_many(PROTOTYPES)
+    for prototype in PROTOTYPES:
+        await db.insert_prototype(prototype)
     
     print("Seeding scheduled articles...")
-    await db.scheduled_articles.insert_many(SCHEDULED_ARTICLES)
+    for article in SCHEDULED_ARTICLES:
+        await db.insert_scheduled_article(article)
     
     print("Done seeding!")
-    client.close()
+    await db.close()
 
 if __name__ == "__main__":
     asyncio.run(seed())
