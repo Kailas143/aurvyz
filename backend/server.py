@@ -10,9 +10,7 @@ from typing import List, Optional, Literal
 import uuid
 from datetime import datetime, timezone
 import asyncio
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import httpx
 from calendly_poll import poll_calendly_once, start_scheduler, stop_scheduler
 from database import Database
 from services.llm_service import GeminiAuditChatService
@@ -360,40 +358,39 @@ async def _upsert_ai_audit_chat_lead(
     return lead
 
 
-def _send_smtp_email(to_email: str, subject: str, html_content: str, reply_to: Optional[str] = None) -> bool:
-    """Send an email via SMTP (Zoho, Gmail, etc.) using environment credentials."""
-    smtp_host = os.environ.get("SMTP_HOST")
-    smtp_port = int(os.environ.get("SMTP_PORT", "465"))
-    smtp_user = os.environ.get("SMTP_USER")
-    smtp_pass = os.environ.get("SMTP_PASS")
-
-    if not all([smtp_host, smtp_user, smtp_pass]):
-        logger.warning("SMTP not configured. Check SMTP_HOST, SMTP_USER, SMTP_PASS in .env. Skipping email.")
+def _send_resend_email(to_email: str, subject: str, html_content: str, reply_to: Optional[str] = None) -> bool:
+    """Send an email via Resend HTTP API."""
+    resend_api_key = os.environ.get("RESEND_API_KEY")
+    if not resend_api_key:
+        logger.warning("Resend API key not configured. Check RESEND_API_KEY in .env. Skipping email.")
         return False
-
-    try:
-        msg = MIMEMultipart()
-        msg["From"] = f"Aurvyz <{smtp_user}>"
-        msg["To"] = to_email
-        msg["Subject"] = subject
-        if reply_to:
-            msg["Reply-To"] = reply_to
         
-        msg.attach(MIMEText(html_content, "html"))
-
-        # Port 465 uses SMTP_SSL; 587 would use STARTTLS
-        if smtp_port == 465:
-            with smtplib.SMTP_SSL(smtp_host, smtp_port) as server:
-                server.login(smtp_user, smtp_pass)
-                server.send_message(msg)
-        else:
-            with smtplib.SMTP(smtp_host, smtp_port) as server:
-                server.starttls()
-                server.login(smtp_user, smtp_pass)
-                server.send_message(msg)
-        return True
+    url = "https://api.resend.com/emails"
+    headers = {
+        "Authorization": f"Bearer {resend_api_key.strip()}",
+        "Content-Type": "application/json",
+    }
+    
+    payload = {
+        "from": f"Aurvyz <{SENDER_EMAIL}>",
+        "to": [to_email],
+        "subject": subject,
+        "html": html_content,
+    }
+    
+    if reply_to:
+        payload["reply_to"] = reply_to
+        
+    try:
+        # Note: Running sync httpx inside an async/sync hybrid app can be blocking if not careful, 
+        # but since the previous smtplib was blocking too, this maintains the same pattern.
+        with httpx.Client(timeout=15.0) as client:
+            response = client.post(url, headers=headers, json=payload)
+            response.raise_for_status()
+            logger.info(f"Resend email delivered to {to_email}: {response.json().get('id')}")
+            return True
     except Exception as e:
-        logger.error(f"SMTP error sending to {to_email}: {e}")
+        logger.error(f"Resend API error sending to {to_email}: {e}")
         return False
 
 
@@ -401,7 +398,7 @@ def send_lead_notification(lead: Lead) -> None:
     """Send an email notification to the team for every new lead captured."""
     html = _lead_email_html(lead)
     subject = f"New Lead: {lead.name} ({lead.lead_type.title()})"
-    success = _send_smtp_email(NOTIFY_EMAIL, subject, html, reply_to=lead.email)
+    success = _send_resend_email(NOTIFY_EMAIL, subject, html, reply_to=lead.email)
     if success:
         logger.info(f"Lead notification sent to {NOTIFY_EMAIL} for {lead.email}")
     else:
@@ -410,7 +407,7 @@ def send_lead_notification(lead: Lead) -> None:
 
 def send_calendly_confirmation_email(subject: str, html: str, reply_to: Optional[str] = None) -> None:
     """Relay Calendly booking confirmations to the team email."""
-    _send_smtp_email(NOTIFY_EMAIL, subject, html, reply_to=reply_to)
+    _send_resend_email(NOTIFY_EMAIL, subject, html, reply_to=reply_to)
     logger.info(f"Calendly confirmation relayed to {NOTIFY_EMAIL}: {subject}")
 
 
@@ -746,7 +743,7 @@ def _audit_report_email_html(name: str, sections: List[dict]) -> str:
 
 def send_audit_report_email(to_email: str, name: str, html: str) -> dict:
     """Send the generated audit report to the user's email."""
-    success = _send_smtp_email(to_email, f"Your Aurvyz Audit Report — {name}", html)
+    success = _send_resend_email(to_email, f"Your Aurvyz Audit Report — {name}", html)
     if success:
         return {"ok": True, "id": f"smtp_{int(datetime.now().timestamp())}"}
     return {"ok": False, "error": "SMTP delivery failed. Check server logs."}
